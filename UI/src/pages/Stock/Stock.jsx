@@ -35,7 +35,7 @@ import { FiTrash2, FiPlus } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FiInfo } from "react-icons/fi";
-
+import { FiEye, FiTrash } from "react-icons/fi";
 const Stock = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [stockItems, setStockItems] = useState([]);
@@ -285,8 +285,7 @@ const Stock = () => {
           </Button>
         </Flex>
 
-        <Card className="table-container">
-          {/* Removed CardBody — use a plain Box instead */}
+        <Card className="table-container" borderRadius="lg" boxShadow="md">
           <Box className="table-wrapper">
             <Table className="table" variant="unstyled" size="md">
               <Thead>
@@ -299,7 +298,6 @@ const Stock = () => {
                   <Th className="text-center">Action</Th>
                 </Tr>
               </Thead>
-
               <Tbody>
                 {stockItems.map((item) => (
                   <Tr key={item.id}>
@@ -312,9 +310,6 @@ const Stock = () => {
                         <span
                           style={{
                             cursor: "pointer",
-                            color: "var(--color-brand-600)",
-                            fontWeight: 600,
-                            fontFamily: "var(--font-body)",
                           }}
                           onClick={() => handleEdit(item.sid)}
                         >
@@ -331,11 +326,13 @@ const Stock = () => {
                     <Td className="text-center">
                       <Tooltip label="Delete Item" placement="top" hasArrow>
                         <IconButton
-                          icon={<FiTrash2 />}
+                          icon={<FiTrash />}
                           aria-label="Delete"
-                          colorScheme="red"
-                          size="sm"
-                          ml={2}
+                          size="md"
+                          variant="ghost"
+                          color="#ef4444"
+                          _hover={{ bg: "red.50" }}
+                          ml={1}
                           onClick={() => {
                             setDeleteItemId(item.sid);
                             onDeleteOpen();
@@ -345,11 +342,13 @@ const Stock = () => {
 
                       <Tooltip label="View History" placement="top" hasArrow>
                         <IconButton
-                          icon={<FiInfo />}
+                          icon={<FiEye />}
                           aria-label="View History"
-                          colorScheme="blue"
-                          size="sm"
-                          ml={2}
+                          size="md"
+                          variant="ghost"
+                          color="#2563eb"
+                          _hover={{ bg: "blue.50" }}
+                          ml={1}
                           onClick={() => handleViewHistory(item.sid, item.name)}
                         />
                       </Tooltip>
@@ -361,7 +360,13 @@ const Stock = () => {
           </Box>
 
           {/* Pagination below */}
-          <Flex justify="center" py={4} gap={2} bg="white">
+          <Flex
+            className="table-pagination"
+            justify="center"
+            py={4}
+            gap={2}
+            bg="white"
+          >
             <Button
               size="sm"
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
@@ -369,6 +374,7 @@ const Stock = () => {
             >
               Prev
             </Button>
+
             {Array.from({ length: totalPages }, (_, i) => (
               <Button
                 key={i}
@@ -380,6 +386,7 @@ const Stock = () => {
                 {i + 1}
               </Button>
             ))}
+
             <Button
               size="sm"
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
