@@ -25,17 +25,15 @@ import {
   useColorModeValue,
   Stack,
   Card,
-  CardBody,
   useToast,
   Tooltip,
   Spinner,
   Text,
 } from "@chakra-ui/react";
-import { FiTrash2, FiPlus } from "react-icons/fi";
+import { FiTrash2, FiPlus, FiEye, FiTrash } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FiInfo } from "react-icons/fi";
-import { FiEye, FiTrash } from "react-icons/fi";
+
 const Stock = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [stockItems, setStockItems] = useState([]);
@@ -49,11 +47,9 @@ const Stock = () => {
 
   const modalSize = useBreakpointValue({ base: "full", md: "lg" });
   const tableBg = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.100", "gray.600");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 10;
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [historyData, setHistoryData] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
@@ -69,8 +65,9 @@ const Stock = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false); // <-- Spinner state
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchStockItems(currentPage);
@@ -80,7 +77,7 @@ const Stock = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:9988/stock?page=${page}&limit=10`
+        `http://localhost:9988/stock?page=${page}&limit=${itemsPerPage}`
       );
       setStockItems(response.data.data || response.data);
       setTotalPages(response.data.totalPages || 1);
@@ -96,6 +93,7 @@ const Stock = () => {
       setLoading(false);
     }
   };
+
   const handleViewHistory = async (id, name) => {
     try {
       setSelectedStock(name);
@@ -104,7 +102,7 @@ const Stock = () => {
       );
       setHistoryData(response.data);
       setIsHistoryOpen(true);
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to load stock history",
@@ -154,10 +152,10 @@ const Stock = () => {
       setIsEditing(true);
       setEditingId(id);
       onOpen();
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
-        description: error.response?.data?.error || "Failed to fetch item",
+        description: "Failed to fetch item",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -217,7 +215,7 @@ const Stock = () => {
         title: "Error",
         description: error.response?.data?.message || error.message,
         status: "error",
-        duration: 9988,
+        duration: 3000,
         isClosable: true,
       });
     }
@@ -239,22 +237,15 @@ const Stock = () => {
   return (
     <>
       {loading && (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          w="100vw"
-          h="100vh"
-          bg="white"
-          zIndex={9999}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Spinner size="xl" color="blue.500" thickness="4px" mb={6} />
-          <Text fontSize="xl" color="black.600" fontWeight="normal">
-            Retrieving records, this may take a moment…{" "}
+        <Box className="page-loader">
+          <Spinner
+            size="xl"
+            color="var(--color-brand-600)"
+            thickness="4px"
+            mb={6}
+          />
+          <Text className="loader-text">
+            Retrieving records, please wait...
           </Text>
         </Box>
       )}
@@ -263,41 +254,40 @@ const Stock = () => {
         minH="100vh"
         bg={useColorModeValue("gray.50", "gray.900")}
       >
-        <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4}>
+        <Flex className="page-toolbar">
           <Heading
             fontSize={{ base: "2xl", md: "2xl" }}
-            fontWeight="semibold"
-            color="blue.600"
-            fontFamily="Orbitron, Segoe UI, sans-serif"
+            className="heading-simple"
           >
             Stock Details
           </Heading>
+
           <Button
-            colorScheme="blue"
-            variant="solid"
+            className="btn-primary"
+            leftIcon={<FiPlus />}
             onClick={() => {
               resetForm();
               onOpen();
             }}
-            leftIcon={<FiPlus />}
           >
             Add Stock
           </Button>
         </Flex>
 
-        <Card className="table-container" borderRadius="lg" boxShadow="md">
-          <Box className="table-wrapper">
-            <Table className="table" variant="unstyled" size="md">
+        <Card borderRadius="lg" boxShadow="md" overflow="hidden">
+          <Box overflowX="auto">
+            <Table variant="unstyled" size="md" className="table">
               <Thead>
                 <Tr>
                   <Th>ID</Th>
                   <Th>Product Name</Th>
-                  <Th className="text-right">Rate (₹)</Th>
-                  <Th className="text-right">Total Qty</Th>
-                  <Th className="text-right">Available Qty</Th>
-                  <Th className="text-center">Action</Th>
+                  <Th textAlign="right">Rate (₹)</Th>
+                  <Th textAlign="right">Total Qty</Th>
+                  <Th textAlign="right">Available Qty</Th>
+                  <Th textAlign="center">Action</Th>
                 </Tr>
               </Thead>
+
               <Tbody>
                 {stockItems.map((item) => (
                   <Tr key={item.id}>
@@ -319,18 +309,17 @@ const Stock = () => {
                     </Td>
 
                     <Td>{item.name}</Td>
-                    <Td className="text-right">₹{item.rate}</Td>
-                    <Td className="text-right">{item.quantity}</Td>
-                    <Td className="text-right">{item.availableQty}</Td>
-
-                    <Td className="text-center">
-                      <Tooltip label="Delete Item" placement="top" hasArrow>
+                    <Td textAlign="right">₹{item.rate}</Td>
+                    <Td textAlign="right">{item.quantity}</Td>
+                    <Td textAlign="right">{item.availableQty}</Td>
+                    <Td textAlign="center">
+                      <Tooltip label="Delete Item" hasArrow>
                         <IconButton
                           icon={<FiTrash />}
                           aria-label="Delete"
                           size="md"
                           variant="ghost"
-                          color="#ef4444"
+                          color="red.500"
                           _hover={{ bg: "red.50" }}
                           ml={1}
                           onClick={() => {
@@ -339,16 +328,15 @@ const Stock = () => {
                           }}
                         />
                       </Tooltip>
-
-                      <Tooltip label="View History" placement="top" hasArrow>
+                      <Tooltip label="View History" hasArrow>
                         <IconButton
                           icon={<FiEye />}
                           aria-label="View History"
                           size="md"
                           variant="ghost"
-                          color="#2563eb"
+                          color="blue.600"
                           _hover={{ bg: "blue.50" }}
-                          ml={1}
+                          ml={2}
                           onClick={() => handleViewHistory(item.sid, item.name)}
                         />
                       </Tooltip>
@@ -359,7 +347,6 @@ const Stock = () => {
             </Table>
           </Box>
 
-          {/* Pagination below */}
           <Flex
             className="table-pagination"
             justify="center"
