@@ -24,7 +24,7 @@ import {
   FiUserPlus,
 } from "react-icons/fi";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
-import Header from "../Header/Header";
+
 import { getLocalStorageItem } from "../../utils/localStoragesHelper";
 import { useMenu } from "../../components/Menuprovider";
 
@@ -35,6 +35,7 @@ import {
   RiUserAddLine,
   RiToolsLine,
 } from "react-icons/ri";
+import Header from "../../components/Header/Header";
 
 const LeftMenu = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -83,10 +84,10 @@ const LeftMenu = () => {
         position={isMobile ? "fixed" : "relative"}
         left={0}
         top={0}
-        zIndex="sticky"
-        w={isMobile ? "280px" : isMenuOpen ? "280px" : "80px"}
+        zIndex="banner" // Changed to banner for better stacking
+        w={isMobile ? "280px" : isMenuOpen ? "230px" : "80px"}
         transition="all 0.3s ease"
-        boxShadow="0 0 20px rgba(98, 93, 240, 0.1)"
+        boxShadow="2xl" // Stronger shadow for sidebar only
         borderRight="1px solid"
         borderColor="gray.200"
         transform={
@@ -149,8 +150,6 @@ const LeftMenu = () => {
                 </Text>
               </Box>
             )}
-
-            {/* Desktop Toggle Button */}
           </Flex>
 
           {/* Mobile Menu Toggle */}
@@ -268,8 +267,8 @@ const LeftMenu = () => {
         flex="1"
         transition="all 0.3s ease"
         overflowY="auto"
-        ml={isMobile ? 0 : isMenuOpen ? "280px" : "80px"}
-        w={isMobile ? "100%" : `calc(100% - ${isMenuOpen ? "280px" : "80px"})`}
+        ml={isMobile ? 0 : isMenuOpen ? 0 : 0} // Remove ml to prevent shifting
+        w={isMobile ? "100%" : "100%"} // Full width always
       >
         <Header />
         <Box p={6}>
@@ -286,7 +285,7 @@ const LeftMenu = () => {
           w="100vw"
           h="100vh"
           bg="blackAlpha.600"
-          zIndex="overlay"
+          zIndex="overlay" // Higher than sidebar
           onClick={toggleMobileMenu}
         />
       )}
