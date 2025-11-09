@@ -1,213 +1,775 @@
-/* ===========================
-   Header
-   =========================== */
+/* ============================================================
+   HEADER (Top Navigation)
+   ============================================================ */
 .app-header {
-  background-color: var(--color-card-bg);
+  background-color: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
-  padding: 0.75rem 2rem;
+  padding: 0.4rem 1rem;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: var(--transition-base);
 }
 
-/* ===========================
-   Page Toolbar
-   =========================== */
-.page-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f8faff;
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.75rem 0rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.page-toolbar h1 {
-  font-family: var(--font-heading);
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-brand-700);
-  margin: 0;
-}
-
-/* ===========================
-   Simple Heading (Page Title)
-   =========================== */
-.heading-simple {
-  font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text);
-  margin: 0;
-  line-height: 1.3;
-}
-
-/* ===========================
-   Primary Button
-   =========================== */
-.btn-primary {
-  background-color: #012af6;
-  color: #ffffff;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 500;
-  border: none;
+/* Universal Icon Button (used in header + sidebar close) */
+.icon-btn {
+  background: transparent !important;
+  border: 1px solid transparent;
+  color: var(--color-text-light);
   border-radius: var(--radius-md);
-  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 2px 6px rgba(1, 42, 246, 0.25);
+  padding: 3px 5px; /* compact */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-base);
+  width: 28px;
+  height: 28px;
+}
+
+.icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.icon-btn:hover {
+  /* border-color: var(--color-brand-primary); */
+  color: var(--color-brand-primary);
+  background: rgba(98, 93, 240, 0.08);
+  transform: scale(1.02);
+}
+
+.icon-btn:active {
+  transform: scale(0.96);
+}
+
+.icon-btn:focus {
+  outline: none;
+  /* border-color: var(--color-brand-primary); */
+}
+
+/* Search Bar */
+.header-search {
+  flex: 1;
+  max-width: 300px;
+  margin: 0 0.75rem;
+}
+.header-search input {
+  width: 100%;
+  background: var(--color-brand-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.25rem 2rem;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  transition: var(--transition-base);
+}
+.header-search input:hover {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 1px var(--color-brand-primary);
+}
+.header-search input:focus {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 2px rgba(98, 93, 240, 0.2);
+  outline: none;
+}
+
+/* Profile Button */
+.profile-menu-btn {
+  display: flex;
+  align-items: center;
+  background: transparent !important;
+  color: var(--color-text);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 0.2rem 0.5rem;
+  transition: var(--transition-base);
+  font-size: 0.8rem;
+}
+.profile-menu-btn:hover {
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  background: rgba(98, 93, 240, 0.05);
+  box-shadow: 0 1px 3px rgba(98, 93, 240, 0.15);
+  transform: scale(1.03);
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-width: 220px;
+}
+
+.profile-dropdown-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-brand-primary),
+    var(--color-brand-secondary)
+  );
+  padding: 0.8rem;
+  color: white;
+  position: relative;
+}
+.profile-dropdown-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0.1;
+}
+
+/* Profile Menu Item */
+.menu-item {
+  color: var(--color-text);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  transition: var(--transition-base);
+}
+.menu-item:hover {
+  background: #f8faff;
+  color: var(--color-brand-primary);
+  transform: translateX(3px);
+  border-left: 2px solid var(--color-brand-primary);
+}
+.menu-item.logout {
+  color: #e53e3e;
+}
+.menu-item.logout:hover {
+  background: #fff5f5;
+  color: #c53030;
+  border-left: 2px solid #e53e3e;
 }
 
-.btn-primary:hover {
-  background-color: #001dd8;
-  box-shadow: 0 3px 8px rgba(1, 42, 246, 0.3);
-}
-
-.btn-primary svg {
-  font-size: 1rem;
-  vertical-align: middle;
-}
-
-/* ===========================
-   Loading Overlay
-   =========================== */
-.page-loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
+/* ============================================================
+   SIDEBAR (Left Navigation)
+   ============================================================ */
+.sidebar {
+  background-color: var(--color-card-bg);
+  border-right: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.9);
-  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+/* Logo Section */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+.sidebar-logo img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+.sidebar-logo-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--color-brand-primary);
+}
+.sidebar-logo-sub {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+/* Menu Section */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  flex: 1;
+}
+
+/* Sidebar Link */
+.menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  transition: var(--transition-base);
+  text-decoration: none !important;
+  height: 40px;
+  width: 100%;
+}
+.menu-link:hover,
+.menu-link:focus,
+.menu-link:active {
+  text-decoration: none !important;
+}
+.menu-link:hover {
+  background-color: var(--color-brand-primary);
+  color: white;
+  transform: translateX(4px);
+  box-shadow: 0 4px 10px rgba(98, 93, 240, 0.3);
+}
+.menu-link.active {
+  background-color: var(--color-brand-primary);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(98, 93, 240, 0.3);
+}
+
+/* Icon */
+.menu-icon {
+  font-size: 1rem;
+  color: inherit;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+.menu-link:hover .menu-icon {
+  color: white;
+}
+
+/* Collapsed State */
+.sidebar.collapsed .menu-link {
+  justify-content: center;
+  padding: 0;
+  gap: 0;
+  height: 40px;
+  width: 100%;
+  transform: none;
+}
+.sidebar.collapsed .menu-icon {
+  margin: 0;
+}
+.sidebar.collapsed .menu-link:hover {
+  background-color: var(--color-brand-primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(98, 93, 240, 0.3);
+}
+.sidebar.collapsed .menu-link span,
+.sidebar.collapsed .menu-link .chakra-text {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+/* Footer User Info */
+.sidebar-user {
+  background: var(--color-brand-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
+}
+.sidebar-user-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.sidebar-user-role {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .app-header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.4rem 0.5rem;
+  }
+  .header-search {
+    max-width: 100%;
+    margin: 0.25rem 0;
+  }
+  .profile-menu-btn span {
+    display: none;
+  }
+
+  .sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* ===== GLOBAL LOADING OVERLAY ===== */
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  z-index: 1200; /* same as Chakra modal level */
 }
 
-.page-loader .loader-text {
-  font-family: var(--font-body);
-  font-size: var(--font-size-lg);
-  color: var(--color-muted);
+.loading-text {
+  font-family: "Inter", sans-serif;
+  font-size: 0.875rem;
+  color: #4a5568; /* gray.600 */
+  margin-top: 0.5rem;
+}
+
+/* ===== GLOBAL PAGE HEADER ===== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.4rem 0;
+}
+
+/* Page Title */
+.page-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 20px; /* smaller like your original */
+  font-weight: 600;
+  color: #625df0;
+  margin: 0;
+}
+
+/* Primary Action Button */
+.btn-primary {
+  background-color: #625df0 !important;
+  color: #ffffff !important;
+  font-family: "Inter", sans-serif;
   font-weight: 500;
-  margin-top: 1rem;
+  border-radius: 5px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important;
 }
 
-/* ===========================
-   Table
-   =========================== */
-.table-container {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(30, 41, 59, 0.06);
-  border: 1px solid #e2e8f0;
+.btn-primary:hover {
+  background-color: #5854d4 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(98, 93, 240, 0.3) !important;
+}
+
+.btn-primary:active {
+  background-color: #4f4bc0 !important;
+  transform: translateY(0);
+}
+
+/* ===== Table Card ===== */
+.table-card {
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(98, 93, 240, 0.12); /* deeper but soft */
+  border: none;
   overflow: hidden;
+  height: calc(100% - 180px);
+  display: flex;
+  flex-direction: column;
 }
 
+/* ===== Scroll Only Table Body ===== */
+.table-scroll {
+  overflow-y: auto;
+  overflow-x: auto;
+  max-height: calc(100vh - 180px);
+}
+
+/* ===== Table ===== */
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-family: "Inter";
-  font-size: 0.95rem;
-  color: #1e293b;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
 }
 
-/* Table Head */
+/* ===== Table Header ===== */
 .table thead {
-  background: linear-gradient(to bottom, #f1f4ff, #e6ebff);
+  background-color: #dee1ff; /* deeper blue background */
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
 .table th {
+  font-weight: 600;
+  color: #33386f;
+  padding: 0.75rem 0.5rem;
   text-align: left;
-  padding: 1rem 1.25rem;
-  font-weight: 550;
-  font-size: 0.78rem;
-  color: #1e293b;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-top: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.75rem;
+  background: #dee1ff; /* uniform header bg */
 }
 
-/* Table Body */
-.table tbody tr {
-  border-bottom: 1px solid #d1ddff;
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.table tbody tr:hover {
-  background-color: #f8fbff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-}
-
+/* ===== Table Rows & Data Cells ===== */
 .table td {
-  padding: 0.8rem 1rem;
-  font-weight: 400;
-  font-size: 16px;
+  color: #4a4a6f;
+  border-bottom: 1px solid #b4bcf9;
+  padding: 0.6rem 0.5rem;
   vertical-align: middle;
-  font-family: "Inter";
-}
-
-/* ===========================
-   Pagination
-   =========================== */
-.table-pagination {
-  background: #fff;
-  padding: 1rem 0;
-  border-top: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.table-pagination button {
-  font-family: "Inter", sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
+  background: #ffffff;
   font-weight: 500;
-  border-radius: 6px;
-  border: 1px solid #dbe3ff;
-  color: #1e293b;
-  background-color: #ffffff;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  padding: 0.4rem 0.75rem;
-  min-width: 36px;
+  transition: background-color 0.2s ease;
 }
 
-.table-pagination button:hover {
-  background-color: #f0f4ff;
-  color: #1d4ed8;
-  border-color: #c7d2fe;
+/* ===== Hover effect ===== */
+.table tbody tr:hover td {
+  background-color: #eef0ff; /* light bluish hover */
 }
 
-.table-pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: #f8fafc;
-  color: #94a3b8;
+/* ===== Clickable Product ID ===== */
+.table td.clickable-id {
+  color: #625df0;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-/* Active Page */
-.table-pagination .chakra-button[data-variant="solid"] {
-  background-color: #1d4ed8 !important;
+.table td.clickable-id:hover {
+  color: #4f4bc0;
+}
+
+/* ===== Action Buttons ===== */
+.table-action-btn {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  padding: 3px 6px !important;
+}
+
+.table-action-btn.delete {
+  color: #e53e3e !important;
+}
+
+.table-action-btn.delete:hover {
+  background: #fff5f5 !important;
+  transform: scale(1.05);
+}
+
+.table-action-btn.view {
+  color: #625df0 !important;
+}
+
+.table-action-btn.view:hover {
+  background: #625df0 !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+
+/* ===== Pagination Footer ===== */
+.pagination-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: #fff;
+  border-top: 1px solid #dfe3ff;
+}
+
+.pagination-text {
+  font-family: "Inter", sans-serif;
+  font-size: 0.7rem;
+  color: #4a4a6f;
+}
+
+.pagination-btn {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.7rem !important;
+  border-radius: 0.4rem !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid #625df0 !important;
+  color: #625df0 !important;
+  background: transparent !important;
+}
+
+.pagination-btn.active {
+  background-color: #625df0 !important;
+  color: white !important;
+  border-color: #625df0 !important;
+}
+
+.pagination-btn:hover {
+  background-color: #625df0 !important;
+  color: white !important;
+}
+
+/* ============================================================
+   GLOBAL MODAL STYLING
+   ============================================================ */
+
+.modal-box {
+  border-radius: 1rem !important;
+  border: 1px solid #e2e6ff !important;
+  box-shadow: 0 10px 40px rgba(98, 93, 240, 0.2) !important;
+  background-color: #fff !important;
+  overflow: hidden !important;
+}
+
+.modal-header {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 600 !important;
+  color: #33386f !important;
+  border-bottom: 1px solid #dfe3ff !important;
+  background: #f3f4ff !important;
+  font-size: 0.95rem !important;
+  padding: 0.9rem 1.2rem !important;
+}
+
+.modal-body {
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.8rem !important;
+  color: #4a4a6f !important;
+  padding: 1rem 1.25rem !important;
+}
+
+.modal-footer {
+  border-top: 1px solid #dfe3ff !important;
+  padding: 0.75rem 1.25rem !important;
+  background: #fafbff !important;
+}
+
+/* ============================================================
+   BUTTONS (REUSABLE)
+   ============================================================ */
+.btn-primary {
+  background-color: #625df0 !important;
   color: #fff !important;
-  border: 1px solid #1d4ed8 !important;
-  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25) !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.25s ease !important;
 }
 
-.table-pagination .chakra-button[data-variant="solid"]:hover {
-  background-color: #1d4ed8 !important;
+.btn-primary:hover {
+  background-color: #5854d4 !important;
+  transform: translateY(-1px);
+}
+
+.btn-cancel {
+  color: #4a4a6f !important;
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-cancel:hover {
+  background-color: #f5f6ff !important;
+}
+
+.btn-danger {
+  background-color: #e53e3e !important;
   color: #fff !important;
-  border-color: #1d4ed8 !important;
-  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25) !important;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-danger:hover {
+  background-color: #c53030 !important;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   TABLE INSIDE MODALS
+   ============================================================ */
+.table th,
+.table td {
+  border-bottom: 1px solid #b4bcf9 !important;
+  font-size: 0.7rem !important;
+}
+
+.table .added {
+  color: #625df0 !important;
+  font-weight: 600 !important;
+}
+
+.empty-text {
+  text-align: center;
+  padding: 2rem 0;
+  color: #8082b0;
+  font-size: 0.8rem;
+  font-family: "Inter", sans-serif;
+}
+
+/* ============================================================
+   🌐 GLOBAL MODAL, BUTTON & TABLE STYLES (Minimal + Consistent)
+   Fonts: Inter + Poppins | Color: #625DF0
+   ============================================================ */
+
+/* -------- Modal Container -------- */
+.modal-box {
+  border-radius: 0.9rem !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(98, 93, 240, 0.12) !important;
+  box-shadow: 0 8px 40px rgba(98, 93, 240, 0.15) !important;
+  overflow: hidden !important;
+}
+
+/* -------- Modal Header -------- */
+.modal-header {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  color: #2f2f46 !important;
+  background: linear-gradient(180deg, #f4f5ff 0%, #ebedff 100%) !important;
+  border-bottom: 1px solid rgba(98, 93, 240, 0.15) !important;
+  padding: 0.7rem 1rem !important;
+}
+
+/* -------- Modal Body -------- */
+.modal-body {
+  font-family: "Inter", sans-serif !important;
+  color: #4a4a6f !important;
+  font-size: 0.75rem !important;
+  line-height: 1.4 !important;
+  padding: 0.9rem 1rem !important;
+}
+
+/* -------- Modal Footer -------- */
+.modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  background: #fafbff !important;
+  border-top: 1px solid rgba(98, 93, 240, 0.1) !important;
+  padding: 0.6rem 1rem !important;
+  gap: 0.5rem !important;
+}
+
+/* ============================================================
+   🎨 BUTTONS (REUSABLE)
+   ============================================================ */
+
+/* Primary Action (Save / Update / Close) */
+.btn-primary {
+  background-color: #625df0 !important;
+  color: #ffffff !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border-radius: 0.45rem !important;
+  padding: 0.35rem 0.75rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 3px 10px rgba(98, 93, 240, 0.15);
+}
+.btn-primary:hover {
+  background-color: #5854d4 !important;
+  transform: translateY(-1px);
+}
+
+/* Neutral / Cancel Button */
+.btn-cancel {
+  background: transparent !important;
+  color: #4a4a6f !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  border: 1px solid rgba(74, 74, 111, 0.1) !important;
+  border-radius: 0.45rem !important;
+  padding: 0.35rem 0.7rem !important;
+  transition: all 0.2s ease !important;
+}
+.btn-cancel:hover {
+  background-color: #f6f7ff !important;
+}
+
+/* Danger / Delete Button */
+.btn-danger {
+  background-color: #e53e3e !important;
+  color: #fff !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border-radius: 0.45rem !important;
+  padding: 0.35rem 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+.btn-danger:hover {
+  background-color: #c53030 !important;
+  transform: translateY(-1px);
+}
+
+
+
+/* ============================================================
+   🧾 GLOBAL FORM STYLING (Compact, Clean, Inter + Poppins)
+   ============================================================ */
+
+/* ============================================================
+   🧾 GLOBAL FORM STYLING (Extra Compact for Modals)
+   ============================================================ */
+
+.modal-form {
+  font-family: "Inter", sans-serif;
+}
+
+/* Label styling */
+.modal-form .chakra-form__label {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 500 !important;
+  color: #4a4a6f !important;
+  font-size: 0.68rem !important; /* slightly smaller */
+  margin-bottom: 0.2rem !important;
+}
+
+/* Input fields — reduced size */
+.modal-form .chakra-input {
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.72rem !important;
+  height: 26px !important; /* smaller height */
+  border-radius: 0.35rem !important;
+  border: 1px solid #cdd1f5 !important;
+  padding: 0.2rem 0.45rem !important; /* compact padding */
+  transition: all 0.2s ease !important;
+}
+
+.modal-form .chakra-input:hover {
+  border-color: #625df0 !important;
+}
+
+.modal-form .chakra-input:focus {
+  border-color: #625df0 !important;
+  box-shadow: 0 0 0 1px #625df0 !important;
+}
+
+/* Stack spacing between form fields */
+.modal-form .chakra-stack > .chakra-form-control {
+  margin-bottom: 0.4rem !important;
+}
+
+/* Placeholder style */
+.modal-form .chakra-input::placeholder {
+  color: #9a9cc0 !important;
+  font-size: 0.7rem !important;
 }

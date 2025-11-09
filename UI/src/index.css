@@ -1,86 +1,58 @@
+/* ===========================
+   Global Theme Variables
+   =========================== */
 :root {
   /* ========= Brand Colors ========= */
-  --color-brand-25: #f5faff;
-  --color-brand-50: #e8f0ff;
-  --color-brand-100: #dbeafe;
-  --color-brand-200: #bfdbfe;
-  --color-brand-300: #93c5fd;
-  --color-brand-400: #60a5fa;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
-  --color-brand-800: #1e40af;
-  --color-brand-900: #1e3a8a;
+  --color-brand-primary: #625df0;
+  --color-brand-secondary: #8b87eb;
+  --color-brand-light: #f8faff;
 
-  /* ========= Neutral / Background ========= */
-  --color-bg: #f8faff;
+  /* ========= Text Colors ========= */
+  --color-text: #2d3748;
+  --color-text-light: #4a5568;
+  --color-text-muted: #718096;
+  --color-text-white: #ffffff;
+
+  /* ========= Backgrounds ========= */
+  --color-bg: #ffffff;
+  --color-bg-dark: #1a202c;
   --color-card-bg: #ffffff;
-  --color-border: #e5e7eb;
-  --color-text: #1e293b;
-  --color-muted: #64748b;
-  --color-hover-bg: #f1f5f9;
+  --color-card-bg-dark: #2d3748;
 
-  /* ========= Accent ========= */
-  --color-accent: #10b981;
-  --color-danger: #ef4444;
+  /* ========= Borders ========= */
+  --color-border: #e2e8f0;
+  --color-border-dark: #4a5568;
+
+  /* ========= Shadows ========= */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 40px rgba(98, 93, 240, 0.2);
 
   /* ========= Typography ========= */
-  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-heading: "Poppins", "Segoe UI", system-ui, sans-serif;
-
+  --font-body: "Inter", "Roboto", sans-serif;
+  --font-heading: "Poppins", sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
 
-  /* ========= Radius & Shadows ========= */
+  /* ========= Radius ========= */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+  /* ========= Transitions ========= */
+  --transition-base: all 0.3s ease;
 }
 
-/* ===========================
-   Base / Global
-   =========================== */
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-body);
-  font-size: var(--font-size-md);
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-a {
-  color: var(--color-brand-600);
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  color: var(--color-text);
-  margin: 0 0 0.5rem 0;
+/* Dark mode overrides */
+[data-theme="dark"] {
+  --color-bg: var(--color-bg-dark);
+  --color-card-bg: var(--color-card-bg-dark);
+  --color-border: var(--color-border-dark);
+  --color-text: #e2e8f0;
+  --color-text-light: #a0aec0;
+  --color-text-muted: #cbd5e0;
 }

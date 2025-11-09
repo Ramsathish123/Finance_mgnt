@@ -242,278 +242,88 @@ const Stock = () => {
   return (
     <>
       {loading && (
-        <Box
-          position="fixed"
-          top="0"
-          left="0"
-          right="0"
-          bottom="0"
-          bg="white"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          zIndex="modal"
-        >
-          <Spinner size="xl" color="#625DF0" thickness="4px" mb={4} />
-          <Text fontSize="sm" color="gray.600" fontFamily="Inter, sans-serif">
+        <Box className="loading-overlay">
+          <Spinner size="xl" color="#625DF0" thickness="4px" mb={2} />
+          <Text className="loading-text">
             Retrieving records, please wait...
           </Text>
         </Box>
       )}
-      <Box fontFamily="Inter, sans-serif" overflow="hidden">
-        {/* Page Header */}
-        <Flex
-          justify="space-between"
-          align="center"
-          position="sticky"
-          top="0"
-          zIndex="1"
-          py={2}
-        >
-          <Heading
-            fontSize="lg"
-            fontWeight="bold"
-            color="#625DF0"
-            fontFamily="Poppins, sans-serif"
-          >
-            Stock Details
-          </Heading>
 
+      <Box overflow="hidden">
+        {/* Page Header */}
+        <Flex className="page-header">
+          <Text className="page-title">Stock Details</Text>
           <Button
-            leftIcon={<FiPlus />}
-            bg="#625DF0"
-            color="white"
-            _hover={{
-              bg: "#5854d4",
-              transform: "translateY(-2px)",
-              boxShadow: "0 4px 12px rgba(98, 93, 240, 0.3)",
-            }}
-            _active={{
-              bg: "#4f4bc0",
-            }}
-            transition="all 0.3s ease"
-            fontWeight="500"
-            borderRadius="lg"
+            className="btn-primary"
             size="sm"
             onClick={() => {
               resetForm();
               onOpen();
             }}
+            leftIcon={<FiPlus />}
           >
             Add Stock
           </Button>
         </Flex>
 
-        {/* Table Card */}
-        <Card
-          borderRadius="xl"
-          boxShadow="0 0 20px rgba(98, 93, 240, 0.1)"
-          border="1px solid"
-          borderColor={borderColor}
-          overflow="hidden"
-          bg="white"
-          h="calc(100% - 80px)"
-        >
-          <Box overflowX="auto" maxH="calc(100vh - 220px)">
-            <Table variant="simple" size="sm">
-              <Thead bg="#eaebffff" position="sticky" top="0" zIndex="1">
+        <Card className="table-card">
+          <Box className="table-scroll">
+            <Table className="table" variant="simple" size="sm">
+              <Thead>
                 <Tr>
-                  <Th
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="600"
-                    color="gray.700"
-                    fontSize="xs"
-                    py={3}
-                    borderBottom="2px solid"
-                    borderColor={tableBorderColor}
-                  >
-                    ID
-                  </Th>
-                  <Th
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="600"
-                    color="gray.700"
-                    fontSize="xs"
-                    borderBottom="2px solid"
-                    borderColor={tableBorderColor}
-                  >
-                    Product Name
-                  </Th>
-                  <Th
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="600"
-                    color="gray.700"
-                    fontSize="xs"
-                    textAlign="right"
-                    borderBottom="2px solid"
-                    borderColor={tableBorderColor}
-                  >
-                    Rate (₹)
-                  </Th>
-                  <Th
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="600"
-                    color="gray.700"
-                    fontSize="xs"
-                    textAlign="right"
-                    borderBottom="2px solid"
-                    borderColor={tableBorderColor}
-                  >
-                    Total Qty
-                  </Th>
-                  <Th
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="600"
-                    color="gray.700"
-                    fontSize="xs"
-                    textAlign="right"
-                    borderBottom="2px solid"
-                    borderColor={tableBorderColor}
-                  >
-                    Available Qty
-                  </Th>
-                  <Th
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="600"
-                    color="gray.700"
-                    fontSize="xs"
-                    textAlign="center"
-                    borderBottom="2px solid"
-                    borderColor={tableBorderColor}
-                  >
-                    Action
-                  </Th>
+                  <Th>ID</Th>
+                  <Th>Product Name</Th>
+                  <Th className="text-right">Rate (₹)</Th>
+                  <Th className="text-right">Total Qty</Th>
+                  <Th className="text-right">Available Qty</Th>
+                  <Th textAlign="center">Action</Th>
                 </Tr>
               </Thead>
-
               <Tbody>
                 {stockItems.map((item) => (
-                  <Tr
-                    key={item.id}
-                    _hover={{
-                      bg: "#f7f9ffff",
-                    }}
-                    transition="all 0.2s ease"
-                  >
-                    <Td borderBottom="1px solid" borderColor={rowBorderColor}>
-                      <Tooltip
-                        label={`Edit Item ID: ${item.sid}`}
-                        placement="top"
-                        hasArrow
-                        bg="#625DF0"
-                        color="white"
-                      >
-                        <Text
-                          cursor="pointer"
-                          fontFamily="Inter, sans-serif"
-                          fontSize="xs"
-                          color="#625DF0"
-                          fontWeight="500"
-                          textDecoration="underline"
-                          onClick={() => handleEdit(item.sid)}
-                          _hover={{
-                            color: "#5854d4",
-                            textDecoration: "none",
-                          }}
-                          transition="all 0.2s ease"
-                        >
-                          {item.id}
-                        </Text>
-                      </Tooltip>
+                  <Tr key={item.sid}>
+                    <Td
+                      className="clickable-id"
+                      onClick={() => handleEdit(item.sid)}
+                    >
+                      {item.id}
                     </Td>
+                    <Td>{item.name}</Td>
+                    <Td className="text-right">₹{item.rate}</Td>
+                    <Td className="text-right">{item.quantity}</Td>
+                    <Td className="text-right">{item.availableQty}</Td>
 
-                    <Td
-                      fontFamily="Inter, sans-serif"
-                      fontSize="xs"
-                      color="gray.700"
-                      borderBottom="1px solid"
-                      borderColor={rowBorderColor}
-                    >
-                      {item.name}
-                    </Td>
-                    <Td
-                      textAlign="right"
-                      fontFamily="Inter, sans-serif"
-                      fontSize="xs"
-                      color="gray.700"
-                      fontWeight="500"
-                      borderBottom="1px solid"
-                      borderColor={rowBorderColor}
-                    >
-                      ₹{item.rate}
-                    </Td>
-                    <Td
-                      textAlign="right"
-                      fontFamily="Inter, sans-serif"
-                      fontSize="xs"
-                      color="gray.700"
-                      borderBottom="1px solid"
-                      borderColor={rowBorderColor}
-                    >
-                      {item.quantity}
-                    </Td>
-                    <Td
-                      textAlign="right"
-                      fontFamily="Inter, sans-serif"
-                      fontSize="xs"
-                      color="gray.700"
-                      borderBottom="1px solid"
-                      borderColor={rowBorderColor}
-                    >
-                      {item.availableQty}
-                    </Td>
-                    <Td
-                      textAlign="center"
-                      borderBottom="1px solid"
-                      borderColor={rowBorderColor}
-                    >
-                      <Tooltip
-                        label="Delete Item"
-                        hasArrow
-                        bg="#625DF0"
-                        color="white"
-                      >
-                        <IconButton
-                          icon={<FiTrash />}
-                          aria-label="Delete"
-                          size="xs"
-                          variant="ghost"
-                          color="red.500"
-                          _hover={{
-                            bg: "red.50",
-                            transform: "scale(1.05)",
-                          }}
-                          ml={1}
-                          transition="all 0.3s ease"
-                          onClick={() => {
-                            setDeleteItemId(item.sid);
-                            onDeleteOpen();
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip
-                        label="View History"
-                        hasArrow
-                        bg="#625DF0"
-                        color="white"
-                      >
-                        <IconButton
-                          icon={<FiEye />}
-                          aria-label="View History"
-                          size="xs"
-                          variant="ghost"
-                          color="#625DF0"
-                          _hover={{
-                            bg: "#625DF0",
-                            color: "white",
-                            transform: "scale(1.05)",
-                          }}
-                          ml={2}
-                          transition="all 0.3s ease"
-                          onClick={() => handleViewHistory(item.sid, item.name)}
-                        />
-                      </Tooltip>
+                    <Td>
+                      <Flex justify="left" align="left" gap="6px">
+                        <Tooltip label="Delete Item" bg="#625DF0" color="white">
+                          <IconButton
+                            icon={<FiTrash />}
+                            aria-label="Delete"
+                            size="xs"
+                            className="table-action-btn delete"
+                            onClick={() => {
+                              setDeleteItemId(item.sid);
+                              onDeleteOpen();
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip
+                          label="View History"
+                          bg="#625DF0"
+                          color="white"
+                        >
+                          <IconButton
+                            icon={<FiEye />}
+                            aria-label="View History"
+                            size="xs"
+                            className="table-action-btn view"
+                            onClick={() =>
+                              handleViewHistory(item.sid, item.name)
+                            }
+                          />
+                        </Tooltip>
+                      </Flex>
                     </Td>
                   </Tr>
                 ))}
@@ -521,41 +331,16 @@ const Stock = () => {
             </Table>
           </Box>
 
-          {/* Pagination - Right Aligned with Item Count */}
-          <Flex
-            justify="space-between"
-            align="center"
-            py={3}
-            bg="white"
-            borderTop="1px solid"
-            borderColor={tableBorderColor}
-            px={6}
-          >
-            {/* Left side - Items count */}
-            <Box>
-              <Text
-                fontFamily="Inter, sans-serif"
-                fontSize="xs"
-                color="gray.600"
-              >
-                Showing {stockItems.length} items
-              </Text>
-            </Box>
-
-            {/* Right side - Pagination */}
+          <Flex className="pagination-footer">
+            <Text className="pagination-text">
+              Showing {stockItems.length} items
+            </Text>
             <HStack spacing={2}>
               <Button
                 size="xs"
-                variant="outline"
+                className="pagination-btn"
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 isDisabled={currentPage === 1}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                _hover={{
-                  bg: "#625DF0",
-                  color: "white",
-                  borderColor: "#625DF0",
-                }}
               >
                 Prev
               </Button>
@@ -564,17 +349,9 @@ const Stock = () => {
                 <Button
                   key={i}
                   size="xs"
-                  variant={currentPage === i + 1 ? "solid" : "outline"}
-                  bg={currentPage === i + 1 ? "#625DF0" : "transparent"}
-                  color={currentPage === i + 1 ? "white" : "gray.700"}
-                  borderColor={currentPage === i + 1 ? "#625DF0" : "gray.300"}
-                  _hover={{
-                    bg: "#625DF0",
-                    color: "white",
-                    borderColor: "#625DF0",
-                  }}
-                  fontFamily="Inter, sans-serif"
-                  fontWeight="500"
+                  className={`pagination-btn ${
+                    currentPage === i + 1 ? "active" : ""
+                  }`}
                   onClick={() => setCurrentPage(i + 1)}
                 >
                   {i + 1}
@@ -583,18 +360,11 @@ const Stock = () => {
 
               <Button
                 size="xs"
-                variant="outline"
+                className="pagination-btn"
                 onClick={() =>
                   setCurrentPage((p) => Math.min(p + 1, totalPages))
                 }
                 isDisabled={currentPage === totalPages}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                _hover={{
-                  bg: "#625DF0",
-                  color: "white",
-                  borderColor: "#625DF0",
-                }}
               >
                 Next
               </Button>
@@ -602,27 +372,16 @@ const Stock = () => {
           </Flex>
         </Card>
 
-        {/* Add/Edit Modal */}
+        {/* Add / Edit Modal */}
         <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
           <ModalOverlay />
-          <ModalContent
-            borderRadius="xl"
-            boxShadow="0 10px 40px rgba(98, 93, 240, 0.2)"
-            border="1px solid"
-            borderColor={borderColor}
-          >
-            <ModalHeader
-              fontFamily="Poppins, sans-serif"
-              fontWeight="600"
-              color="gray.800"
-              borderBottom="1px solid"
-              borderColor={tableBorderColor}
-            >
+          <ModalContent className="modal-box">
+            <ModalHeader className="modal-header">
               {isEditing ? "Edit Stock Item" : "Add New Stock Item"}
             </ModalHeader>
             <ModalCloseButton />
-            <ModalBody py={4}>
-              <Stack spacing={4}>
+            <ModalBody className="modal-body">
+              <Stack spacing={3} className="modal-form">
                 <FormControl>
                   <FormLabel
                     fontFamily="Inter, sans-serif"
@@ -792,83 +551,40 @@ const Stock = () => {
                 </FormControl>
               </Stack>
             </ModalBody>
-            <ModalFooter borderTop="1px solid" borderColor={tableBorderColor}>
-              <Button
-                variant="ghost"
-                mr={3}
-                onClick={onClose}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                borderRadius="lg"
-              >
+            <ModalFooter className="modal-footer">
+              <Button variant="ghost" className="btn-cancel" onClick={onClose}>
                 Cancel
               </Button>
-              <Button
-                bg="#625DF0"
-                color="white"
-                _hover={{
-                  bg: "#5854d4",
-                  transform: "translateY(-1px)",
-                }}
-                onClick={handleSave}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                borderRadius="lg"
-              >
+              <Button className="btn-primary" onClick={handleSave}>
                 {isEditing ? "Update" : "Save"}
               </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
 
-        {/* Delete Confirmation Modal */}
+        {/* Delete Modal */}
         <Modal isOpen={isDeleteOpen} onClose={onDeleteClose} isCentered>
           <ModalOverlay />
-          <ModalContent
-            borderRadius="xl"
-            boxShadow="0 10px 40px rgba(98, 93, 240, 0.2)"
-            border="1px solid"
-            borderColor={borderColor}
-          >
-            <ModalHeader
-              fontFamily="Poppins, sans-serif"
-              fontWeight="600"
-              color="gray.800"
-            >
-              Confirm Deletion
-            </ModalHeader>
+          <ModalContent className="modal-box">
+            <ModalHeader className="modal-header">Confirm Deletion</ModalHeader>
             <ModalCloseButton />
-            <ModalBody>
-              <Text fontFamily="Inter, sans-serif" color="gray.600">
-                Are you sure you want to delete this stock item? This action
-                cannot be undone.
-              </Text>
+            <ModalBody className="modal-body">
+              <Text>Are you sure you want to delete this stock item?</Text>
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter className="modal-footer">
               <Button
                 variant="ghost"
-                mr={3}
+                className="btn-cancel"
                 onClick={onDeleteClose}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                borderRadius="lg"
               >
                 Cancel
               </Button>
               <Button
-                bg="red.500"
-                color="white"
-                _hover={{
-                  bg: "red.600",
-                  transform: "translateY(-1px)",
-                }}
+                className="btn-danger"
                 onClick={() => {
                   handleDelete(deleteItemId);
                   onDeleteClose();
                 }}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                borderRadius="lg"
               >
                 Delete
               </Button>
@@ -884,149 +600,51 @@ const Stock = () => {
           isCentered
         >
           <ModalOverlay />
-          <ModalContent
-            borderRadius="xl"
-            boxShadow="0 10px 40px rgba(98, 93, 240, 0.2)"
-            border="1px solid"
-            borderColor={borderColor}
-          >
-            <ModalHeader
-              fontFamily="Poppins, sans-serif"
-              fontWeight="600"
-              color="gray.800"
-              borderBottom="1px solid"
-              borderColor={tableBorderColor}
-            >
-              Stock History — {selectedStock}
+          <ModalContent className="modal-box">
+            <ModalHeader className="modal-header">
+              Stock History - {selectedStock}
             </ModalHeader>
             <ModalCloseButton />
-            <ModalBody py={4}>
+            <ModalBody className="modal-body">
               {historyData.length > 0 ? (
-                <Box
-                  borderRadius="lg"
-                  border="1px solid"
-                  borderColor={borderColor}
-                  overflow="hidden"
-                >
-                  <Table variant="simple" size="sm">
-                    <Thead bg="#eaebffff">
-                      <Tr>
-                        <Th
-                          fontFamily="Inter, sans-serif"
-                          fontWeight="600"
-                          color="gray.700"
-                          fontSize="xs"
-                          borderBottom="2px solid"
-                          borderColor={tableBorderColor}
-                        >
-                          Date & Time
-                        </Th>
-                        <Th
-                          fontFamily="Inter, sans-serif"
-                          fontWeight="600"
-                          color="gray.700"
-                          fontSize="xs"
-                          isNumeric
-                          borderBottom="2px solid"
-                          borderColor={tableBorderColor}
-                        >
-                          Old Qty
-                        </Th>
-                        <Th
-                          fontFamily="Inter, sans-serif"
-                          fontWeight="600"
-                          color="gray.700"
-                          fontSize="xs"
-                          isNumeric
-                          borderBottom="2px solid"
-                          borderColor={tableBorderColor}
-                        >
-                          Added Qty
-                        </Th>
-                        <Th
-                          fontFamily="Inter, sans-serif"
-                          fontWeight="600"
-                          color="gray.700"
-                          fontSize="xs"
-                          isNumeric
-                          borderBottom="2px solid"
-                          borderColor={tableBorderColor}
-                        >
-                          New Qty
-                        </Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {historyData.map((record, index) => (
-                        <Tr key={index}>
-                          <Td
-                            fontFamily="Inter, sans-serif"
-                            fontSize="xs"
-                            color="gray.600"
-                            borderBottom="1px solid"
-                            borderColor={rowBorderColor}
-                          >
-                            {new Date(record.updated_at).toLocaleString()}
-                          </Td>
-                          <Td
-                            fontFamily="Inter, sans-serif"
-                            fontSize="xs"
-                            color="gray.600"
-                            isNumeric
-                            borderBottom="1px solid"
-                            borderColor={rowBorderColor}
-                          >
-                            {record.old_qty}
-                          </Td>
-                          <Td
-                            fontFamily="Inter, sans-serif"
-                            fontSize="xs"
-                            color="#625DF0"
-                            fontWeight="600"
-                            isNumeric
-                            borderBottom="1px solid"
-                            borderColor={rowBorderColor}
-                          >
-                            +{record.added_qty}
-                          </Td>
-                          <Td
-                            fontFamily="Inter, sans-serif"
-                            fontSize="xs"
-                            color="gray.600"
-                            isNumeric
-                            borderBottom="1px solid"
-                            borderColor={rowBorderColor}
-                          >
-                            {record.new_qty}
-                          </Td>
+                <Box className="table-card">
+                  <Box className="table-scroll">
+                    <Table className="table">
+                      <Thead>
+                        <Tr>
+                          <Th>Date & Time</Th>
+                          <Th className="text-right">Old Qty</Th>
+                          <Th className="text-right">Added Qty</Th>
+                          <Th className="text-right">New Qty</Th>
                         </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
+                      </Thead>
+                      <Tbody>
+                        {historyData.map((record, index) => (
+                          <Tr key={index}>
+                            <Td>
+                              {new Date(record.updated_at).toLocaleString()}
+                            </Td>
+                            <Td className="text-right">{record.old_qty}</Td>
+                            <Td className="text-right added">
+                              +{record.added_qty}
+                            </Td>
+                            <Td className="text-right">{record.new_qty}</Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </Box>
                 </Box>
               ) : (
-                <Text
-                  textAlign="center"
-                  py={8}
-                  color="gray.500"
-                  fontFamily="Inter, sans-serif"
-                >
+                <Text className="empty-text">
                   No history found for this stock item.
                 </Text>
               )}
             </ModalBody>
-            <ModalFooter borderTop="1px solid" borderColor={tableBorderColor}>
+            <ModalFooter className="modal-footer">
               <Button
-                bg="#625DF0"
-                color="white"
-                _hover={{
-                  bg: "#5854d4",
-                  transform: "translateY(-1px)",
-                }}
+                className="btn-primary"
                 onClick={() => setIsHistoryOpen(false)}
-                fontFamily="Inter, sans-serif"
-                fontWeight="500"
-                borderRadius="lg"
               >
                 Close
               </Button>
