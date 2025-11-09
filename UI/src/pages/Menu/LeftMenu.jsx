@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -9,35 +9,56 @@ import {
   Text,
   Tooltip,
   Icon,
-  Button,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { FiMenu, FiX, FiHome, FiFileText, FiTool, FiBox, FiDollarSign, FiBarChart2, FiLogIn, FiAtSign, FiUserPlus } from "react-icons/fi";
-import { Outlet, Link as RouterLink } from "react-router-dom";
+import {
+  FiMenu,
+  FiX,
+  FiHome,
+  FiFileText,
+  FiTool,
+  FiBox,
+  FiDollarSign,
+  FiBarChart2,
+  FiLogIn,
+  FiAtSign,
+  FiUserPlus,
+} from "react-icons/fi";
+import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
 import Header from "../Header/Header";
 import { getLocalStorageItem } from "../../utils/localStoragesHelper";
 import { useMenu } from "../../components/Menuprovider";
 
+import {
+  RiBillLine,
+  RiMoneyDollarCircleLine,
+  RiPieChartLine,
+  RiUserAddLine,
+  RiToolsLine,
+} from "react-icons/ri";
+
 const LeftMenu = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const location = useLocation();
+  const { isMenuOpen, toggleMenu, isMobileMenuOpen, toggleMobileMenu } =
+    useMenu();
 
   const storedUser = getLocalStorageItem("user");
-  const { isMenuOpen, isMobileMenuOpen } = useMenu();
 
+  // Modern Ri Icons - Very catchy and modern
   const menuItems =
     storedUser?.role === "user"
       ? [
-          { icon: FiFileText, label: "Invoice", href: "/invoice" },
-          { icon: FiTool, label: "Service", href: "/service" },
+          { icon: RiBillLine, label: "Invoice", href: "/invoice" },
+          { icon: RiToolsLine, label: "Service", href: "/service" },
         ]
       : [
-          { icon: FiHome, label: "Home", href: "/dashboard" },
-          { icon: FiFileText, label: "Invoice", href: "/invoice" },
-          { icon: FiTool, label: "Service", href: "/service" },
+          { icon: FiHome, label: "Dashboard", href: "/dashboard" },
+          { icon: RiBillLine, label: "Invoice", href: "/invoice" },
+          { icon: RiToolsLine, label: "Service", href: "/service" },
           { icon: FiBox, label: "Stock", href: "/stock" },
-          { icon: FiDollarSign, label: "Expense", href: "/expense" },
-          { icon: FiBarChart2, label: "Report", href: "/report" },
-          { icon: FiUserPlus, label: "register", href: "/register" },
+          { icon: RiMoneyDollarCircleLine, label: "Expense", href: "/expense" },
+          { icon: RiPieChartLine, label: "Report", href: "/report" },
+          { icon: RiUserAddLine, label: "Register", href: "/register" },
         ];
 
   useEffect(() => {
@@ -45,98 +66,230 @@ const LeftMenu = () => {
     console.log("Retrieved user from localStorage:", storedUser);
   }, []);
 
+  const isActiveLink = (href) => {
+    return (
+      location.pathname === href || location.pathname.startsWith(href + "/")
+    );
+  };
+
   return (
-    <Flex h="100vh" overflow="hidden">
+    <Flex h="100vh" overflow="hidden" bg="gray.50">
+      {/* Sidebar */}
       <Box
         as="nav"
-        bg="gray.800"
-        color="white"
+        bg="white"
+        color="gray.700"
         h="100vh"
         position={isMobile ? "fixed" : "relative"}
         left={0}
         top={0}
         zIndex="sticky"
-        w={isMobile ? "250px" : isMenuOpen ? "250px" : "80px"} // desktop toggle width
+        w={isMobile ? "280px" : isMenuOpen ? "280px" : "80px"}
         transition="all 0.3s ease"
-        transform={isMobile ? (isMenuOpen ? "translateX(0)" : "translateX(-100%)") : "translateX(0)"}
+        boxShadow="0 0 20px rgba(98, 93, 240, 0.1)"
+        borderRight="1px solid"
+        borderColor="gray.200"
+        transform={
+          isMobile
+            ? isMobileMenuOpen
+              ? "translateX(0)"
+              : "translateX(-100%)"
+            : "translateX(0)"
+        }
       >
         <Flex direction="column" h="full" p={4} overflowY="auto">
-          {/* Logo and Neon App Name */}
-          <Flex align="center" mb={10} w="full" justify={isMobile ? "flex-start" : "center"} direction="row">
+          {/* Logo and App Name */}
+          <Flex
+            align="center"
+            mb={8}
+            w="full"
+            justify={isMobile || isMenuOpen ? "flex-start" : "center"}
+            direction="row"
+            position="relative"
+          >
             <Box
-              bg="gray.900"
-              borderRadius="full"
-              boxShadow="0 0 16px #00fff7, 0 0 32px #00fff7"
-              p={1}
-              mr={isMobile ? 4 : 0}
-              transition="margin 0.3s"
+              bg="white"
+              borderRadius="lg"
+              boxShadow="0 4px 12px rgba(98, 93, 240, 0.15)"
+              mr={isMobile || isMenuOpen ? 3 : 0}
+              transition="all 0.3s"
+              border="1px solid"
+              borderColor="gray.100"
             >
               <img
                 src="/logo.jpg"
                 alt="TechAppzy Logo"
                 style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: "50%",
+                  width: 40,
+                  height: 40,
+                  borderRadius: "8px",
                   display: "block",
-                  background: "#222",
-                  boxShadow: "0 0 12px #00fff7",
+                  background: "white",
                 }}
               />
             </Box>
             {(isMobile || isMenuOpen) && (
-              <Text
-                fontWeight="bold"
-                fontSize="2xl"
-                letterSpacing="wider"
-                color="#00fff7"
-                textShadow="0 0 8px #00fff7, 0 0 16px #00fff7, 0 0 32px #0ff"
-                fontFamily="Orbitron, Segoe UI, sans-serif"
-                ml={2}
-                userSelect="none"
-              >
-                TechAppzy
-              </Text>
+              <Box flex="1">
+                <Text
+                  fontWeight="bold"
+                  fontSize="xl"
+                  color="#625DF0"
+                  fontFamily="Poppins, sans-serif"
+                  userSelect="none"
+                >
+                  TechAppzy
+                </Text>
+                <Text
+                  fontSize="xs"
+                  color="gray.500"
+                  fontFamily="Inter, sans-serif"
+                  userSelect="none"
+                >
+                  Business Suite
+                </Text>
+              </Box>
             )}
+
+            {/* Desktop Toggle Button */}
           </Flex>
 
-          <VStack align={isMobile ? "flex-start" : "center"} spacing={4}>
-            {/* Menu toggle icon at the top */}
+          {/* Mobile Menu Toggle */}
+          {isMobile && (
+            <Flex justify="flex-end" mb={4}>
+              <IconButton
+                aria-label="Close menu"
+                icon={<FiX />}
+                variant="ghost"
+                size="sm"
+                onClick={toggleMobileMenu}
+                color="gray.500"
+                _hover={{ bg: "#625DF0", color: "white" }}
+              />
+            </Flex>
+          )}
 
-            {/* Render the rest of the menu items */}
-            {menuItems.map((item, index) => (
-              <Tooltip
-                key={index}
-                label={item.label}
-                placement="right"
-                hasArrow
-                isDisabled={isMobile || isMenuOpen} // Show tooltip only when sidebar is collapsed
-                openDelay={300}
-              >
-                <Link
-                  as={RouterLink}
-                  to={item.href}
-                  display="flex"
-                  alignItems="center"
-                  p={2}
-                  borderRadius="md"
-                  w="full"
-                  _hover={{ bg: "gray.700", textDecoration: "none" }}
+          {/* Menu Items */}
+          <VStack
+            align={isMobile || isMenuOpen ? "flex-start" : "center"}
+            spacing={2}
+            flex="1"
+          >
+            {menuItems.map((item, index) => {
+              const isActive = isActiveLink(item.href);
+              return (
+                <Tooltip
+                  key={index}
+                  label={item.label}
+                  placement="right"
+                  hasArrow
+                  isDisabled={isMobile || isMenuOpen}
+                  openDelay={300}
+                  bg="#625DF0"
+                  color="white"
                 >
-                  <Icon as={item.icon} boxSize={5} />
-                  {(isMobile || isMenuOpen) && <Text ml={3}>{item.label}</Text>}
-                </Link>
-              </Tooltip>
-            ))}
+                  <Link
+                    as={RouterLink}
+                    to={item.href}
+                    display="flex"
+                    alignItems="center"
+                    p={3}
+                    borderRadius="lg"
+                    w="full"
+                    bg={isActive ? "#625DF0" : "transparent"}
+                    color={isActive ? "white" : "gray.700"}
+                    _hover={{
+                      bg: isActive ? "#625DF0" : "#625DF0",
+                      color: "white",
+                      textDecoration: "none",
+                      transform: "translateX(4px)",
+                      boxShadow: "0 4px 12px rgba(98, 93, 240, 0.3)",
+                    }}
+                    transition="all 0.3s ease"
+                    boxShadow={
+                      isActive ? "0 4px 12px rgba(98, 93, 240, 0.3)" : "none"
+                    }
+                    position="relative"
+                    fontWeight={isActive ? "600" : "500"}
+                  >
+                    <Icon
+                      as={item.icon}
+                      boxSize={5}
+                      color={isActive ? "white" : "gray.600"}
+                      _hover={{
+                        color: "white",
+                      }}
+                      sx={{
+                        ".chakra-link:hover &": {
+                          color: "white !important",
+                        },
+                      }}
+                    />
+                    {(isMobile || isMenuOpen) && (
+                      <Text
+                        ml={3}
+                        fontSize="sm"
+                        fontWeight="inherit"
+                        _hover={{
+                          color: "white",
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                    )}
+                  </Link>
+                </Tooltip>
+              );
+            })}
           </VStack>
+
+          {/* User Info Footer */}
+          {(isMobile || isMenuOpen) && storedUser && (
+            <Box
+              mt={6}
+              p={3}
+              borderRadius="lg"
+              bg="gray.50"
+              border="1px solid"
+              borderColor="gray.200"
+            >
+              <Text fontSize="sm" fontWeight="600" color="gray.700">
+                {storedUser.name || storedUser.email}
+              </Text>
+              <Text fontSize="xs" color="gray.500" textTransform="capitalize">
+                {storedUser.role}
+              </Text>
+            </Box>
+          )}
         </Flex>
       </Box>
 
       {/* Main Content */}
-      <Box flex="1" transition="margin-left 0.3s ease" overflowY="auto">
+      <Box
+        flex="1"
+        transition="all 0.3s ease"
+        overflowY="auto"
+        ml={isMobile ? 0 : isMenuOpen ? "280px" : "80px"}
+        w={isMobile ? "100%" : `calc(100% - ${isMenuOpen ? "280px" : "80px"})`}
+      >
         <Header />
-        <Outlet />
+        <Box p={6}>
+          <Outlet />
+        </Box>
       </Box>
+
+      {/* Mobile Overlay */}
+      {isMobile && isMobileMenuOpen && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          w="100vw"
+          h="100vh"
+          bg="blackAlpha.600"
+          zIndex="overlay"
+          onClick={toggleMobileMenu}
+        />
+      )}
     </Flex>
   );
 };
