@@ -75,7 +75,7 @@ const LeftMenu = () => {
         className={`sidebar ${!isMenuOpen ? "collapsed" : ""} ${
           isMobile && isMobileMenuOpen ? "open" : ""
         }`}
-        w={isMobile ? "250px" : isMenuOpen ? "220px" : "70px"}
+        w={isMobile ? "250px" : isMenuOpen ? "200px" : "70px"}
         position={isMobile ? "fixed" : "relative"}
       >
         <Flex direction="column" h="full">

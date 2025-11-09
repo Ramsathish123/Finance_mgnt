@@ -552,10 +552,15 @@ const Stock = () => {
               </Stack>
             </ModalBody>
             <ModalFooter className="modal-footer">
-              <Button variant="ghost" className="btn-cancel" onClick={onClose}>
+              <Button
+                variant="ghost"
+                className="btn-cancel"
+                size="sm"
+                onClick={onClose}
+              >
                 Cancel
               </Button>
-              <Button className="btn-primary" onClick={handleSave}>
+              <Button className="btn-primary" size="sm" onClick={handleSave}>
                 {isEditing ? "Update" : "Save"}
               </Button>
             </ModalFooter>
@@ -576,11 +581,13 @@ const Stock = () => {
                 variant="ghost"
                 className="btn-cancel"
                 onClick={onDeleteClose}
+                size="sm"
               >
                 Cancel
               </Button>
               <Button
                 className="btn-danger"
+                size="sm"
                 onClick={() => {
                   handleDelete(deleteItemId);
                   onDeleteClose();
@@ -644,6 +651,7 @@ const Stock = () => {
             <ModalFooter className="modal-footer">
               <Button
                 className="btn-primary"
+                size="sm"
                 onClick={() => setIsHistoryOpen(false)}
               >
                 Close

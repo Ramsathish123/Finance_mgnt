@@ -1,6 +1,3 @@
-/* ============================================================
-   HEADER (Top Navigation)
-   ============================================================ */
 .app-header {
   background-color: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
@@ -16,14 +13,13 @@
   transition: var(--transition-base);
 }
 
-/* Universal Icon Button (used in header + sidebar close) */
 .icon-btn {
   background: transparent !important;
   border: 1px solid transparent;
   color: var(--color-text-light);
   border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 3px 5px; /* compact */
+  padding: 3px 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,7 +34,6 @@
 }
 
 .icon-btn:hover {
-  /* border-color: var(--color-brand-primary); */
   color: var(--color-brand-primary);
   background: rgba(98, 93, 240, 0.08);
   transform: scale(1.02);
@@ -50,15 +45,14 @@
 
 .icon-btn:focus {
   outline: none;
-  /* border-color: var(--color-brand-primary); */
 }
 
-/* Search Bar */
 .header-search {
   flex: 1;
   max-width: 300px;
   margin: 0 0.75rem;
 }
+
 .header-search input {
   width: 100%;
   background: var(--color-brand-light);
@@ -69,17 +63,18 @@
   color: var(--color-text);
   transition: var(--transition-base);
 }
+
 .header-search input:hover {
   border-color: var(--color-brand-primary);
   box-shadow: 0 0 0 1px var(--color-brand-primary);
 }
+
 .header-search input:focus {
   border-color: var(--color-brand-primary);
   box-shadow: 0 0 0 2px rgba(98, 93, 240, 0.2);
   outline: none;
 }
 
-/* Profile Button */
 .profile-menu-btn {
   display: flex;
   align-items: center;
@@ -91,6 +86,7 @@
   transition: var(--transition-base);
   font-size: 0.8rem;
 }
+
 .profile-menu-btn:hover {
   border-color: var(--color-brand-primary);
   color: var(--color-brand-primary);
@@ -99,7 +95,6 @@
   transform: scale(1.03);
 }
 
-/* Profile Dropdown */
 .profile-dropdown {
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -119,6 +114,7 @@
   color: white;
   position: relative;
 }
+
 .profile-dropdown-header::after {
   content: "";
   position: absolute;
@@ -127,7 +123,6 @@
   opacity: 0.1;
 }
 
-/* Profile Menu Item */
 .menu-item {
   color: var(--color-text);
   font-weight: 500;
@@ -139,24 +134,24 @@
   gap: 0.4rem;
   transition: var(--transition-base);
 }
+
 .menu-item:hover {
   background: #f8faff;
   color: var(--color-brand-primary);
   transform: translateX(3px);
   border-left: 2px solid var(--color-brand-primary);
 }
+
 .menu-item.logout {
   color: #e53e3e;
 }
+
 .menu-item.logout:hover {
   background: #fff5f5;
   color: #c53030;
   border-left: 2px solid #e53e3e;
 }
 
-/* ============================================================
-   SIDEBAR (Left Navigation)
-   ============================================================ */
 .sidebar {
   background-color: var(--color-card-bg);
   border-right: 1px solid var(--color-border);
@@ -169,39 +164,40 @@
   z-index: 100;
 }
 
-/* Logo Section */
 .sidebar-logo {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   gap: 0.5rem;
   transition: all 0.3s ease;
 }
+
 .sidebar-logo img {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
+
 .sidebar-logo-text {
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 800;
+  font-size: 1.2rem;
   color: var(--color-brand-primary);
+  font-family: var(--font-body);
 }
+
 .sidebar-logo-sub {
   font-size: 0.65rem;
   color: var(--color-text-muted);
 }
 
-/* Menu Section */
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  padding: 0.75rem;
+  padding: 0.95rem;
   flex: 1;
 }
 
-/* Sidebar Link */
 .menu-link {
   display: flex;
   align-items: center;
@@ -217,17 +213,20 @@
   height: 40px;
   width: 100%;
 }
+
 .menu-link:hover,
 .menu-link:focus,
 .menu-link:active {
   text-decoration: none !important;
 }
+
 .menu-link:hover {
   background-color: var(--color-brand-primary);
   color: white;
   transform: translateX(4px);
   box-shadow: 0 4px 10px rgba(98, 93, 240, 0.3);
 }
+
 .menu-link.active {
   background-color: var(--color-brand-primary);
   color: white;
@@ -235,18 +234,17 @@
   box-shadow: 0 4px 10px rgba(98, 93, 240, 0.3);
 }
 
-/* Icon */
 .menu-icon {
   font-size: 1rem;
   color: inherit;
   flex-shrink: 0;
   transition: color 0.2s ease;
 }
+
 .menu-link:hover .menu-icon {
   color: white;
 }
 
-/* Collapsed State */
 .sidebar.collapsed .menu-link {
   justify-content: center;
   padding: 0;
@@ -255,14 +253,17 @@
   width: 100%;
   transform: none;
 }
+
 .sidebar.collapsed .menu-icon {
   margin: 0;
 }
+
 .sidebar.collapsed .menu-link:hover {
   background-color: var(--color-brand-primary);
   color: white;
   box-shadow: 0 4px 10px rgba(98, 93, 240, 0.3);
 }
+
 .sidebar.collapsed .menu-link span,
 .sidebar.collapsed .menu-link .chakra-text {
   display: none;
@@ -271,7 +272,6 @@
   transition: opacity 0.2s ease;
 }
 
-/* Footer User Info */
 .sidebar-user {
   background: var(--color-brand-light);
   border: 1px solid var(--color-border);
@@ -279,30 +279,31 @@
   margin: 0.75rem 1rem;
   padding: 0.5rem 0.75rem;
 }
+
 .sidebar-user-name {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-text);
 }
+
 .sidebar-user-role {
   font-size: 0.7rem;
   color: var(--color-text-muted);
   text-transform: capitalize;
 }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
 @media (max-width: 768px) {
   .app-header {
     flex-wrap: wrap;
     height: auto;
     padding: 0.4rem 0.5rem;
   }
+
   .header-search {
     max-width: 100%;
     margin: 0.25rem 0;
   }
+
   .profile-menu-btn span {
     display: none;
   }
@@ -316,12 +317,11 @@
     z-index: 999;
     transform: translateX(-100%);
   }
+
   .sidebar.open {
     transform: translateX(0);
   }
 }
-
-/* ===== GLOBAL LOADING OVERLAY ===== */
 
 .loading-overlay {
   position: fixed;
@@ -331,17 +331,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1200; /* same as Chakra modal level */
+  z-index: 1200;
 }
 
 .loading-text {
   font-family: "Inter", sans-serif;
   font-size: 0.875rem;
-  color: #4a5568; /* gray.600 */
+  color: #4a5568;
   margin-top: 0.5rem;
 }
-
-/* ===== GLOBAL PAGE HEADER ===== */
 
 .page-header {
   display: flex;
@@ -353,42 +351,66 @@
   padding: 0.4rem 0;
 }
 
-/* Page Title */
 .page-title {
   font-family: "Poppins", sans-serif;
-  font-size: 20px; /* smaller like your original */
+  font-size: 20px;
   font-weight: 600;
   color: #625df0;
   margin: 0;
 }
 
-/* Primary Action Button */
 .btn-primary {
   background-color: #625df0 !important;
   color: #ffffff !important;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  border-radius: 5px !important;
-  transition: all 0.3s ease !important;
-  box-shadow: none !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border-radius: 0.45rem !important;
+  padding: 0.35rem 0.75rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 3px 10px rgba(98, 93, 240, 0.15);
 }
 
 .btn-primary:hover {
   background-color: #5854d4 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(98, 93, 240, 0.3) !important;
+  transform: translateY(-1px);
 }
 
-.btn-primary:active {
-  background-color: #4f4bc0 !important;
-  transform: translateY(0);
+.btn-cancel {
+  background: transparent !important;
+  color: #4a4a6f !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  border: 1px solid rgba(74, 74, 111, 0.1) !important;
+  border-radius: 0.45rem !important;
+  padding: 0.35rem 0.7rem !important;
+  transition: all 0.2s ease !important;
 }
 
-/* ===== Table Card ===== */
+.btn-cancel:hover {
+  background-color: #f6f7ff !important;
+}
+
+.btn-danger {
+  background-color: #e53e3e !important;
+  color: #fff !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  border-radius: 0.45rem !important;
+  padding: 0.35rem 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-danger:hover {
+  background-color: #c53030 !important;
+  transform: translateY(-1px);
+}
+
 .table-card {
   border-radius: 0.75rem;
   background: #ffffff;
-  box-shadow: 0 4px 20px rgba(98, 93, 240, 0.12); /* deeper but soft */
+  box-shadow: 0 4px 20px rgba(98, 93, 240, 0.12);
   border: none;
   overflow: hidden;
   height: calc(100% - 180px);
@@ -396,14 +418,12 @@
   flex-direction: column;
 }
 
-/* ===== Scroll Only Table Body ===== */
 .table-scroll {
   overflow-y: auto;
   overflow-x: auto;
   max-height: calc(100vh - 180px);
 }
 
-/* ===== Table ===== */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -411,9 +431,8 @@
   font-size: 0.75rem;
 }
 
-/* ===== Table Header ===== */
 .table thead {
-  background-color: #dee1ff; /* deeper blue background */
+  background-color: #dee1ff;
   position: sticky;
   top: 0;
   z-index: 5;
@@ -425,10 +444,9 @@
   padding: 0.75rem 0.5rem;
   text-align: left;
   font-size: 0.75rem;
-  background: #dee1ff; /* uniform header bg */
+  background: #dee1ff;
 }
 
-/* ===== Table Rows & Data Cells ===== */
 .table td {
   color: #4a4a6f;
   border-bottom: 1px solid #b4bcf9;
@@ -440,12 +458,10 @@
   transition: background-color 0.2s ease;
 }
 
-/* ===== Hover effect ===== */
 .table tbody tr:hover td {
-  background-color: #eef0ff; /* light bluish hover */
+  background-color: #eef0ff;
 }
 
-/* ===== Clickable Product ID ===== */
 .table td.clickable-id {
   color: #625df0;
   font-weight: 400;
@@ -458,7 +474,6 @@
   color: #4f4bc0;
 }
 
-/* ===== Action Buttons ===== */
 .table-action-btn {
   background: transparent !important;
   border: 1px solid transparent !important;
@@ -486,7 +501,6 @@
   transform: scale(1.05);
 }
 
-/* ===== Pagination Footer ===== */
 .pagination-footer {
   display: flex;
   justify-content: space-between;
@@ -524,111 +538,6 @@
   color: white !important;
 }
 
-/* ============================================================
-   GLOBAL MODAL STYLING
-   ============================================================ */
-
-.modal-box {
-  border-radius: 1rem !important;
-  border: 1px solid #e2e6ff !important;
-  box-shadow: 0 10px 40px rgba(98, 93, 240, 0.2) !important;
-  background-color: #fff !important;
-  overflow: hidden !important;
-}
-
-.modal-header {
-  font-family: "Poppins", sans-serif !important;
-  font-weight: 600 !important;
-  color: #33386f !important;
-  border-bottom: 1px solid #dfe3ff !important;
-  background: #f3f4ff !important;
-  font-size: 0.95rem !important;
-  padding: 0.9rem 1.2rem !important;
-}
-
-.modal-body {
-  font-family: "Inter", sans-serif !important;
-  font-size: 0.8rem !important;
-  color: #4a4a6f !important;
-  padding: 1rem 1.25rem !important;
-}
-
-.modal-footer {
-  border-top: 1px solid #dfe3ff !important;
-  padding: 0.75rem 1.25rem !important;
-  background: #fafbff !important;
-}
-
-/* ============================================================
-   BUTTONS (REUSABLE)
-   ============================================================ */
-.btn-primary {
-  background-color: #625df0 !important;
-  color: #fff !important;
-  font-family: "Inter", sans-serif !important;
-  font-weight: 500 !important;
-  border-radius: 0.5rem !important;
-  transition: all 0.25s ease !important;
-}
-
-.btn-primary:hover {
-  background-color: #5854d4 !important;
-  transform: translateY(-1px);
-}
-
-.btn-cancel {
-  color: #4a4a6f !important;
-  font-weight: 500 !important;
-  border-radius: 0.5rem !important;
-  transition: all 0.25s ease !important;
-}
-
-.btn-cancel:hover {
-  background-color: #f5f6ff !important;
-}
-
-.btn-danger {
-  background-color: #e53e3e !important;
-  color: #fff !important;
-  font-family: "Inter", sans-serif !important;
-  font-weight: 500 !important;
-  border-radius: 0.5rem !important;
-  transition: all 0.25s ease !important;
-}
-
-.btn-danger:hover {
-  background-color: #c53030 !important;
-  transform: translateY(-1px);
-}
-
-/* ============================================================
-   TABLE INSIDE MODALS
-   ============================================================ */
-.table th,
-.table td {
-  border-bottom: 1px solid #b4bcf9 !important;
-  font-size: 0.7rem !important;
-}
-
-.table .added {
-  color: #625df0 !important;
-  font-weight: 600 !important;
-}
-
-.empty-text {
-  text-align: center;
-  padding: 2rem 0;
-  color: #8082b0;
-  font-size: 0.8rem;
-  font-family: "Inter", sans-serif;
-}
-
-/* ============================================================
-   🌐 GLOBAL MODAL, BUTTON & TABLE STYLES (Minimal + Consistent)
-   Fonts: Inter + Poppins | Color: #625DF0
-   ============================================================ */
-
-/* -------- Modal Container -------- */
 .modal-box {
   border-radius: 0.9rem !important;
   background-color: #ffffff !important;
@@ -637,27 +546,24 @@
   overflow: hidden !important;
 }
 
-/* -------- Modal Header -------- */
 .modal-header {
   font-family: "Poppins", sans-serif !important;
   font-weight: 600 !important;
   font-size: 0.85rem !important;
-  color: #2f2f46 !important;
+  color: black !important;
   background: linear-gradient(180deg, #f4f5ff 0%, #ebedff 100%) !important;
   border-bottom: 1px solid rgba(98, 93, 240, 0.15) !important;
   padding: 0.7rem 1rem !important;
 }
 
-/* -------- Modal Body -------- */
 .modal-body {
   font-family: "Inter", sans-serif !important;
-  color: #4a4a6f !important;
+  color: black !important;
   font-size: 0.75rem !important;
   line-height: 1.4 !important;
   padding: 0.9rem 1rem !important;
 }
 
-/* -------- Modal Footer -------- */
 .modal-footer {
   display: flex !important;
   justify-content: flex-end !important;
@@ -668,89 +574,25 @@
   gap: 0.5rem !important;
 }
 
-/* ============================================================
-   🎨 BUTTONS (REUSABLE)
-   ============================================================ */
-
-/* Primary Action (Save / Update / Close) */
-.btn-primary {
-  background-color: #625df0 !important;
-  color: #ffffff !important;
-  font-family: "Inter", sans-serif !important;
-  font-size: 0.75rem !important;
-  font-weight: 500 !important;
-  border-radius: 0.45rem !important;
-  padding: 0.35rem 0.75rem !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 3px 10px rgba(98, 93, 240, 0.15);
-}
-.btn-primary:hover {
-  background-color: #5854d4 !important;
-  transform: translateY(-1px);
-}
-
-/* Neutral / Cancel Button */
-.btn-cancel {
-  background: transparent !important;
-  color: #4a4a6f !important;
-  font-family: "Inter", sans-serif !important;
-  font-size: 0.75rem !important;
-  border: 1px solid rgba(74, 74, 111, 0.1) !important;
-  border-radius: 0.45rem !important;
-  padding: 0.35rem 0.7rem !important;
-  transition: all 0.2s ease !important;
-}
-.btn-cancel:hover {
-  background-color: #f6f7ff !important;
-}
-
-/* Danger / Delete Button */
-.btn-danger {
-  background-color: #e53e3e !important;
-  color: #fff !important;
-  font-family: "Inter", sans-serif !important;
-  font-size: 0.75rem !important;
-  font-weight: 500 !important;
-  border-radius: 0.45rem !important;
-  padding: 0.35rem 0.75rem !important;
-  transition: all 0.2s ease !important;
-}
-.btn-danger:hover {
-  background-color: #c53030 !important;
-  transform: translateY(-1px);
-}
-
-
-
-/* ============================================================
-   🧾 GLOBAL FORM STYLING (Compact, Clean, Inter + Poppins)
-   ============================================================ */
-
-/* ============================================================
-   🧾 GLOBAL FORM STYLING (Extra Compact for Modals)
-   ============================================================ */
-
 .modal-form {
   font-family: "Inter", sans-serif;
 }
 
-/* Label styling */
 .modal-form .chakra-form__label {
   font-family: "Inter", sans-serif !important;
   font-weight: 500 !important;
-  color: #4a4a6f !important;
-  font-size: 0.68rem !important; /* slightly smaller */
+  color: black !important;
+  font-size: 0.68rem !important;
   margin-bottom: 0.2rem !important;
 }
 
-/* Input fields — reduced size */
 .modal-form .chakra-input {
   font-family: "Inter", sans-serif !important;
   font-size: 0.72rem !important;
-  height: 26px !important; /* smaller height */
+  height: 26px !important;
   border-radius: 0.35rem !important;
   border: 1px solid #cdd1f5 !important;
-  padding: 0.2rem 0.45rem !important; /* compact padding */
+  padding: 0.2rem 0.45rem !important;
   transition: all 0.2s ease !important;
 }
 
@@ -763,12 +605,10 @@
   box-shadow: 0 0 0 1px #625df0 !important;
 }
 
-/* Stack spacing between form fields */
 .modal-form .chakra-stack > .chakra-form-control {
   margin-bottom: 0.4rem !important;
 }
 
-/* Placeholder style */
 .modal-form .chakra-input::placeholder {
   color: #9a9cc0 !important;
   font-size: 0.7rem !important;
