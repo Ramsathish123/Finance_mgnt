@@ -30,6 +30,7 @@ import {
   HStack,
   Tooltip,
   CardBody,
+  Text,
 } from "@chakra-ui/react";
 import { FiTrash2, FiPlus, FiSearch } from "react-icons/fi";
 import { useState, useEffect } from "react";
@@ -104,7 +105,9 @@ const Expense = () => {
 
   const fetchExpenses = async (page = 1) => {
     try {
-      const response = await fetch(`http://localhost:9988/expense?page=${page}&limit=10`);
+      const response = await fetch(
+        `http://localhost:9988/expense?page=${page}&limit=10`
+      );
       const data = await response.json();
       setExpenses(data.data);
       setTotalPages(data.totalPages);
@@ -116,7 +119,9 @@ const Expense = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:9988/expense/${id}`);
+      const response = await axios.delete(
+        `http://localhost:9988/expense/${id}`
+      );
 
       toast({
         title: "Success",
@@ -172,17 +177,10 @@ const Expense = () => {
   const tableBg = useColorModeValue("white", "gray.800");
 
   return (
-    <Box p={{ base: 4, md: 8 }} minH="100vh" bg={useColorModeValue("gray.50", "gray.900")}>
-      {/* Header and Add Button */}
-      <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4}>
-        <Heading
-          fontSize={{ base: "2xl", md: "2xl" }}
-          fontWeight="semibold"
-          color="blue.600"
-          fontFamily="Orbitron, Segoe UI, sans-serif"
-        >
-          Expense Tracker
-        </Heading>
+    <Box overflow="hidden">
+      {/* Page Header */}
+      <Flex className="page-header">
+        <Text className="page-title">Expense Tracker</Text>
 
         <HStack>
           <Input
@@ -200,103 +198,125 @@ const Expense = () => {
             placeholder="End Date"
           />
           <Button
-            leftIcon={<FiSearch />}
-            colorScheme="blue"
             onClick={handleSearch}
             size="sm"
-            variant="solid"
-            px={6}
-          ></Button>
+            className="btn-primary"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: "28px",
+              height: "28px",
+            }}
+          >
+            <FiSearch style={{ width: "35px", height: "35px" }} />
+          </Button>
         </HStack>
       </Flex>
-      <Card bg={tableBg} borderRadius="xl" boxShadow="sm" borderWidth="1px" borderColor={borderColor} overflow="hidden">
-        <CardHeader borderBottomWidth="1px" borderColor={borderColor}>
-          <Flex justify="space-between" align="center">
-            <Heading size="md" fontFamily="Orbitron, Segoe UI, sans-serif" fontWeight="semibold">
-              Expense details
-            </Heading>
-            <Button colorScheme="blue" onClick={onOpen}>
-              Add
-            </Button>
-          </Flex>
+      <Card className="table-card">
+        <CardHeader className="page-header">
+          <Text color={"black"} fontWeight={"500"}>
+            Expense Details
+          </Text>
+
+          <Button className="btn-primary" size="sm" onClick={onOpen}>
+            + Add
+          </Button>
         </CardHeader>
 
         <CardBody px={0}>
-          <Table variant="simple" size="md">
-            <Thead bg={useColorModeValue("blue.50", "blue.900")}>
-              <Tr>
-                <Th>Invoice No</Th>
-                <Th>Description</Th>
-                <Th isNumeric>Amount (₹)</Th>
-                <Th>Date</Th>
-                <Th textAlign="center">Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {expenses.map((item) => (
-                <Tr key={item.id} _hover={{ bg: useColorModeValue("gray.50", "gray.700") }}>
-                  <Td>{item.invoice_no}</Td>
-                  <Td>{item.detail}</Td>
-                  <Td isNumeric>₹{item.amount}</Td>
-                  <Td>{item.created_at}</Td>
-                  <Td textAlign="center">
-                    <Tooltip label="Delete Item" placement="right" hasArrow>
-                      <IconButton
-                        icon={<FiTrash2 />}
-                        aria-label="Delete"
-                        colorScheme="red"
-                        size="sm"
-                        onClick={() => handleDelete(item.eid)}
-                      />
-                    </Tooltip>
-                  </Td>
+          <Box className="table-scroll">
+            <Table className="table" size="sm" variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Invoice No</Th>
+                  <Th>Description</Th>
+                  <Th className="text-right">Amount (₹)</Th>
+                  <Th>Date</Th>
+                  <Th textAlign="center">Action</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
 
-          <Flex justify="center" mt={4} gap={2}>
-            <Button
-              size="sm"
-              onClick={() => {
-                const newPage = Math.max(currentPage - 1, 1);
-                setCurrentPage(newPage);
-                fetchExpenses(newPage);
-              }}
-              isDisabled={currentPage === 1}
-            >
-              Prev
-            </Button>
+              <Tbody>
+                {expenses.map((item) => (
+                  <Tr key={item.id}>
+                    <Td>{item.invoice_no}</Td>
+                    <Td>{item.detail}</Td>
+                    <Td className="text-right">₹{item.amount}</Td>
+                    <Td>{item.created_at}</Td>
 
-            {Array.from({ length: totalPages }, (_, i) => (
+                    <Td>
+                      <Flex justify="center">
+                        <Tooltip label="Delete Item" bg="#625DF0" color="white">
+                          <IconButton
+                            icon={<FiTrash2 />}
+                            aria-label="Delete"
+                            size="xs"
+                            className="table-action-btn delete"
+                            onClick={() => handleDelete(item.eid)}
+                          />
+                        </Tooltip>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+
+          {/* Pagination */}
+          <Flex className="pagination-footer">
+            <Text className="pagination-text">
+              Showing {expenses.length} items
+            </Text>
+
+            <HStack spacing={2}>
               <Button
-                key={i}
-                size="sm"
-                variant={currentPage === i + 1 ? "solid" : "outline"}
-                colorScheme="blue"
+                size="xs"
+                className="pagination-btn"
                 onClick={() => {
-                  setCurrentPage(i + 1);
-                  fetchExpenses(i + 1);
+                  const newPage = Math.max(currentPage - 1, 1);
+                  setCurrentPage(newPage);
+                  fetchExpenses(newPage);
                 }}
+                isDisabled={currentPage === 1}
               >
-                {i + 1}
+                Prev
               </Button>
-            ))}
 
-            <Button
-              size="sm"
-              onClick={() => {
-                const newPage = Math.min(currentPage + 1, totalPages);
-                setCurrentPage(newPage);
-                fetchExpenses(newPage);
-              }}
-              isDisabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <Button
+                  key={i}
+                  size="xs"
+                  className={`pagination-btn ${
+                    currentPage === i + 1 ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentPage(i + 1);
+                    fetchExpenses(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </Button>
+              ))}
+
+              <Button
+                size="xs"
+                className="pagination-btn"
+                onClick={() => {
+                  const newPage = Math.min(currentPage + 1, totalPages);
+                  setCurrentPage(newPage);
+                  fetchExpenses(newPage);
+                }}
+                isDisabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </HStack>
           </Flex>
         </CardBody>
       </Card>
+
       {expenses.length === 0 && (
         <Box textAlign="center" py={6} fontStyle="italic" color="gray.500">
           No expenses recorded.
@@ -321,7 +341,11 @@ const Expense = () => {
               </FormControl>
               <FormControl>
                 <FormLabel>Detail</FormLabel>
-                <Input value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Enter description" />
+                <Input
+                  value={detail}
+                  onChange={(e) => setDetail(e.target.value)}
+                  placeholder="Enter description"
+                />
               </FormControl>
               <FormControl>
                 <FormLabel>Amount (₹)</FormLabel>

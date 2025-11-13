@@ -26,6 +26,8 @@ import {
   CardHeader,
   CardBody,
   Badge,
+  HStack,
+  Tooltip,
   Avatar,
   Text,
   Tag,
@@ -39,7 +41,14 @@ import {
   Spinner, // <-- Added Spinner import
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { FiPlus, FiPhone, FiUser, FiSmartphone, FiAlertCircle, FiPrinter } from "react-icons/fi";
+import {
+  FiPlus,
+  FiPhone,
+  FiUser,
+  FiSmartphone,
+  FiAlertCircle,
+  FiPrinter,
+} from "react-icons/fi";
 import axios from "axios";
 
 const Service = () => {
@@ -52,7 +61,7 @@ const Service = () => {
     mobileModel: "",
     issue: "",
     status: "Received",
-    advance: "" || 0.00,
+    advance: "" || 0.0,
   });
   const [services, setServices] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,8 +79,16 @@ const Service = () => {
     balCost: "",
   });
   const [loading, setLoading] = useState(false); // <-- Added loading state
-  const { isOpen: isAddServiceOpen, onOpen: onAddserviceOpen, onClose: onAddServiceClose } = useDisclosure();
-  const { isOpen: isServicePrintOpen, onOpen: onServicePrintOpen, onClose: onServicePrintClose } = useDisclosure();
+  const {
+    isOpen: isAddServiceOpen,
+    onOpen: onAddserviceOpen,
+    onClose: onAddServiceClose,
+  } = useDisclosure();
+  const {
+    isOpen: isServicePrintOpen,
+    onOpen: onServicePrintOpen,
+    onClose: onServicePrintClose,
+  } = useDisclosure();
   const handleCostChange = () => {
     const advance = parseFloat(formState.advanceCost) || 0;
     const balance = parseFloat(formState.balCost) || 0;
@@ -115,7 +132,12 @@ const Service = () => {
 
   const handleAddService = async () => {
     try {
-      if (!formData.customerName || !formData.mobileNumber || !formData.mobileModel || !formData.issue) {
+      if (
+        !formData.customerName ||
+        !formData.mobileNumber ||
+        !formData.mobileModel ||
+        !formData.issue
+      ) {
         throw new Error("Please fill all required fields");
       }
       const payload = {
@@ -208,7 +230,9 @@ const Service = () => {
           mobileNumber: item.mob_no,
           issue: item.issue_details,
           status: item.status,
-          date: item.received_date ? new Date(item.received_date).toLocaleDateString("en-IN") : "N/A",
+          date: item.received_date
+            ? new Date(item.received_date).toLocaleDateString("en-IN")
+            : "N/A",
         }));
         setServices(formatted);
         setCurrentPage(json.currentPage);
@@ -288,7 +312,9 @@ const Service = () => {
     return `${dd}-${mm}-${yyyy}`;
   }
   const handlePrint = async (id) => {
-    const updatedData = await fetch(`http://localhost:9988/get_service_by_id/${id}`);
+    const updatedData = await fetch(
+      `http://localhost:9988/get_service_by_id/${id}`
+    );
     const serviceData = await updatedData.json();
 
     // Format for printReceipt
@@ -330,10 +356,22 @@ const Service = () => {
   const printReceipt = (data) => {
     const receiptWindow = window.open("", "PRINT", "height=600,width=800");
 
-    const { service_no, customerName, mobileNumber, product, issue, amount, advance, status, address, delivery_date } =
-      data;
+    const {
+      service_no,
+      customerName,
+      mobileNumber,
+      product,
+      issue,
+      amount,
+      advance,
+      status,
+      address,
+      delivery_date,
+    } = data;
 
-    const balance = (parseFloat(amount || 0) - parseFloat(advance || 0)).toFixed(2);
+    const balance = (
+      parseFloat(amount || 0) - parseFloat(advance || 0)
+    ).toFixed(2);
 
     const receiptHTML = `
     <html>
@@ -483,70 +521,73 @@ const Service = () => {
   // }, [formState.advanceCost, formState.balCost]);
 
   return (
-    <Box p={{ base: 4, md: 6 }} bg={useColorModeValue("gray.50", "gray.900")} minH="100vh">
-      <Flex justify="space-between" align="center" mb={8}>
-        <Heading
-          fontSize={{ base: "2xl", md: "2xl" }}
-          fontFamily="Orbitron, Segoe UI, sans-serif"
-          fontWeight="semibold"
-          color="blue.600"
-        >
-          Device Services
-        </Heading>
+    <Box overflow="hidden">
+      {/* Page Header */}
+      <Flex className="page-header">
+        <Text className="page-title">Device Services</Text>
         <Button
           leftIcon={<FiPlus />}
-          colorScheme="blue"
+          className="btn-primary"
           onClick={() => {
             onAddserviceOpen();
             onOpen();
           }}
-          size="md"
-          variant="solid"
-          px={6}
+          size="sm"
         >
           New Service
         </Button>
       </Flex>
 
-      {/* Stats Cards */}
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5} mb={8}>
-        <Card bg={cardBg} borderRadius="xl" boxShadow="sm" borderWidth="1px" borderColor={borderColor}>
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={8}>
+        <Card className="stat-card ">
           <CardBody>
             <Flex align="center">
-              <Avatar icon={<FiPhone />} bg="blue.100" color="blue.600" mr={4} />
+              <Avatar
+                icon={<FiPhone />}
+                className="stat-icon icon-blue"
+                mr={4}
+              />
               <Box>
-                <Text color="gray.500" fontSize="sm">
-                  Total Services
-                </Text>
-                <Heading size="lg">{serviceCount?.[0]?.total_service ?? 0}</Heading>
+                <Text className="stat-label">Total Services</Text>
+                <Heading className="stat-value">
+                  {serviceCount?.[0]?.total_service ?? 0}
+                </Heading>
               </Box>
             </Flex>
           </CardBody>
         </Card>
 
-        <Card bg={cardBg} borderRadius="xl" boxShadow="sm" borderWidth="1px" borderColor={borderColor}>
+        <Card className="stat-card">
           <CardBody>
             <Flex align="center">
-              <Avatar icon={<FiAlertCircle />} bg="orange.100" color="orange.600" mr={4} />
+              <Avatar
+                icon={<FiAlertCircle />}
+                className="stat-icon icon-orange"
+                mr={4}
+              />
               <Box>
-                <Text color="gray.500" fontSize="sm">
-                  Received
-                </Text>
-                <Heading size="lg">{serviceCount?.[0]?.received ?? 0}</Heading>
+                <Text className="stat-label">Received</Text>
+                <Heading className="stat-value">
+                  {serviceCount?.[0]?.received ?? 0}
+                </Heading>
               </Box>
             </Flex>
           </CardBody>
         </Card>
 
-        <Card bg={cardBg} borderRadius="xl" boxShadow="sm" borderWidth="1px" borderColor={borderColor}>
+        <Card className="stat-card ">
           <CardBody>
             <Flex align="center">
-              <Avatar icon={<FiSmartphone />} bg="green.100" color="green.600" mr={4} />
+              <Avatar
+                icon={<FiSmartphone />}
+                className="stat-icon icon-green"
+                mr={4}
+              />
               <Box>
-                <Text color="gray.500" fontSize="sm">
-                  Delivered
-                </Text>
-                <Heading size="lg">{serviceCount?.[0]?.delivered ?? 0}</Heading>
+                <Text className="stat-label">Delivered</Text>
+                <Heading className="stat-value">
+                  {serviceCount?.[0]?.delivered ?? 0}
+                </Heading>
               </Box>
             </Flex>
           </CardBody>
@@ -554,37 +595,36 @@ const Service = () => {
       </SimpleGrid>
 
       {/* Services Table */}
-      <Card bg={tableBg} borderRadius="xl" boxShadow="sm" borderWidth="1px" borderColor={borderColor} overflow="hidden">
-        <CardHeader borderBottomWidth="1px" borderColor={borderColor}>
-          <Flex justify="space-between" align="center">
-            <Heading size="md" fontFamily="Orbitron, Segoe UI, sans-serif" fontWeight="semibold">
-              Recent Service Requests
-            </Heading>
-            <Input
-              type="date"
-              size="sm"
-              onChange={(e) => {
-                const selected = e.target.value;
-                setSearchDate(selected);
-                setCurrentPage(1); // reset to first page
-                fetchServices(1, selected); // fetch filtered
-              }}
-              placeholder="Start Date"
-              maxW="200px" // optional, adjust width
-            />
-          </Flex>
+      <Card className="table-card">
+        <CardHeader className="page-header">
+          <Text color={"black"} fontWeight={"500"}>
+            Recent Service Requests
+          </Text>
+
+          <Input
+            type="date"
+            size="sm"
+            className="input-primary input-small"
+            onChange={(e) => {
+              const selected = e.target.value;
+              setSearchDate(selected);
+              setCurrentPage(1);
+              fetchServices(1, selected);
+            }}
+          />
         </CardHeader>
 
         <CardBody px={0}>
           {loading ? (
             <Flex justify="center" align="center" minH="200px">
-              <Spinner size="xl" color="blue.500" thickness="4px" />
+              <Spinner size="xl" color="#625DF0" thickness="4px" />
             </Flex>
           ) : (
             <>
-              <Box overflowX="auto">
-                <Table variant="simple" size="md">
-                  <Thead bg={useColorModeValue("blue.50", "blue.900")}>
+              {/* Scrollable wrapper */}
+              <Box className="table-scroll">
+                <Table className="table" size="sm">
+                  <Thead>
                     <Tr>
                       <Th>Service No</Th>
                       <Th>Customer</Th>
@@ -593,94 +633,113 @@ const Service = () => {
                       <Th>Issue</Th>
                       <Th>Status</Th>
                       <Th>Date</Th>
-                      <Th>Action</Th>
+                      <Th textAlign="center">Action</Th>
                     </Tr>
                   </Thead>
+
                   <Tbody>
                     {services.map((service) => (
-                      <Tr
-                        key={service.id}
-                        _hover={{
-                          bg: useColorModeValue("gray.50", "gray.700"),
-                        }}
-                      >
-                        <Td fontWeight="600">{service.serviceNo}</Td>
-                        <Td>
-                          <Flex
-                            align="center"
-                            variant="link"
-                            color="blue"
-                            textDecoration={"underline"}
-                            onClick={() => handleEdit(service.service_id)}
-                          >
-                            {service.customerName}
-                          </Flex>
+                      <Tr key={service.id}>
+                        <Td className="clickable-id">{service.serviceNo}</Td>
+
+                        <Td
+                          className="clickable-id"
+                          onClick={() => handleEdit(service.service_id)}
+                        >
+                          {service.customerName}
                         </Td>
+
                         <Td>{service.mobileModel}</Td>
                         <Td>{service.mobileNumber}</Td>
-                        <Td maxW="200px" isTruncated>
-                          {service.issue}
-                        </Td>
+
+                        <Td className="text-left">{service.issue}</Td>
+
                         <Td>
-                          <Tag colorScheme={getStatusColor(service.status)} size="md" borderRadius="full">
+                          <Tag
+                            colorScheme={getStatusColor(service.status)}
+                            size="sm"
+                            borderRadius="full"
+                          >
                             <TagLabel>{service.status}</TagLabel>
                           </Tag>
                         </Td>
+
                         <Td>{service.date}</Td>
+
                         <Td textAlign="center">
-                          <IconButton
-                            icon={<FiPrinter />}
-                            aria-label="Print"
-                            colorScheme="red"
-                            size="sm"
-                            onClick={() => handlePrint(service.service_id)}
-                          />
+                          <Tooltip label="Print" bg="#625DF0" color="white">
+                            <IconButton
+                              icon={<FiPrinter />}
+                              aria-label="Print"
+                              size="xs"
+                              className="table-action-btn view"
+                              onClick={() => handlePrint(service.service_id)}
+                            />
+                          </Tooltip>
                         </Td>
                       </Tr>
                     ))}
+
+                    {services.length === 0 && (
+                      <Tr>
+                        <Td colSpan="8" textAlign="center" color="#666">
+                          No recent services found
+                        </Td>
+                      </Tr>
+                    )}
                   </Tbody>
                 </Table>
               </Box>
 
-              <Flex justify="center" mt={4} gap={2}>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const newPage = Math.max(currentPage - 1, 1);
-                    setCurrentPage(newPage);
-                    fetchServices(newPage, searchdate);
-                  }}
-                  isDisabled={currentPage === 1}
-                >
-                  Prev
-                </Button>
+              {/* Pagination Footer */}
+              <Flex className="pagination-footer">
+                <Text className="pagination-text">
+                  Showing {services.length} items
+                </Text>
 
-                {Array.from({ length: totalPages }, (_, i) => (
+                <HStack spacing={2}>
                   <Button
-                    key={i}
-                    size="sm"
-                    variant={currentPage === i + 1 ? "solid" : "outline"}
-                    colorScheme="blue"
+                    size="xs"
+                    className="pagination-btn"
                     onClick={() => {
-                      setCurrentPage(i + 1);
-                      fetchServices(i + 1, searchdate);
+                      const newPage = Math.max(currentPage - 1, 1);
+                      setCurrentPage(newPage);
+                      fetchServices(newPage, searchdate);
                     }}
+                    isDisabled={currentPage === 1}
                   >
-                    {i + 1}
+                    Prev
                   </Button>
-                ))}
 
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const newPage = Math.min(currentPage + 1, totalPages);
-                    setCurrentPage(newPage);
-                    fetchServices(newPage, searchdate);
-                  }}
-                  isDisabled={currentPage === totalPages}
-                >
-                  Next
-                </Button>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <Button
+                      key={i}
+                      size="xs"
+                      className={`pagination-btn ${
+                        currentPage === i + 1 ? "active" : ""
+                      }`}
+                      onClick={() => {
+                        setCurrentPage(i + 1);
+                        fetchServices(i + 1, searchdate);
+                      }}
+                    >
+                      {i + 1}
+                    </Button>
+                  ))}
+
+                  <Button
+                    size="xs"
+                    className="pagination-btn"
+                    onClick={() => {
+                      const newPage = Math.min(currentPage + 1, totalPages);
+                      setCurrentPage(newPage);
+                      fetchServices(newPage, searchdate);
+                    }}
+                    isDisabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </HStack>
               </Flex>
             </>
           )}
@@ -688,20 +747,27 @@ const Service = () => {
       </Card>
 
       {/* Add Service Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
+      <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
         <ModalOverlay bg="blackAlpha.600" />
-        <ModalContent borderRadius="xl" borderWidth="1px" borderColor={borderColor}>
-          <ModalHeader borderBottomWidth="1px" borderColor={borderColor}>
-            <Flex align="center">
-              <Avatar icon={<FiPlus />} bg="blue.100" color="blue.600" mr={3} size="sm" />
-              <Heading size="md">New Service Request</Heading>
+        <ModalContent className="modal-box">
+          <ModalHeader className="modal-header">
+            <Flex align="center" gap={2}>
+              <Avatar
+                icon={<FiPlus />}
+                bg="blue.100"
+                color="blue.600"
+                size="sm"
+              />
+              New Service Request
             </Flex>
           </ModalHeader>
+
           <ModalCloseButton />
-          <ModalBody py={6}>
-            <Stack spacing={5}>
+
+          <ModalBody className="modal-body">
+            <Stack spacing={3} className="modal-form">
               {/* Customer Info */}
-              <Flex gap={4}>
+              <Flex gap={3} flexWrap="wrap">
                 <FormControl>
                   <FormLabel>Customer Name</FormLabel>
                   <Input
@@ -709,18 +775,17 @@ const Service = () => {
                     value={formData.customerName}
                     onChange={handleInputChange}
                     placeholder="Enter name"
-                    borderRadius="lg"
                   />
                 </FormControl>
+
                 <FormControl>
                   <FormLabel>Mobile Number</FormLabel>
                   <Input
-                    name="mobileNumber"
                     type="number"
+                    name="mobileNumber"
                     value={formData.mobileNumber}
                     onChange={handleInputChange}
                     placeholder="Enter number"
-                    borderRadius="lg"
                   />
                 </FormControl>
               </Flex>
@@ -733,12 +798,11 @@ const Service = () => {
                   value={formData.address || ""}
                   onChange={handleInputChange}
                   placeholder="Enter customer address"
-                  borderRadius="lg"
                 />
               </FormControl>
 
               {/* Device Info */}
-              <Flex gap={4}>
+              <Flex gap={3} flexWrap="wrap">
                 <FormControl>
                   <FormLabel>Mobile Model</FormLabel>
                   <Input
@@ -746,34 +810,31 @@ const Service = () => {
                     value={formData.mobileModel}
                     onChange={handleInputChange}
                     placeholder="Model"
-                    borderRadius="lg"
                   />
                 </FormControl>
 
                 <FormControl>
                   <FormLabel>Total Amount</FormLabel>
                   <Input
-                    name="actual_cost"
                     type="number"
+                    name="actual_cost"
                     value={formData.actual_cost || ""}
                     onChange={handleInputChange}
                     placeholder="Enter total"
-                    borderRadius="lg"
                   />
                 </FormControl>
               </Flex>
 
-              {/* Payment Info */}
-              <Flex gap={4}>
+              {/* Payment */}
+              <Flex gap={3} flexWrap="wrap">
                 <FormControl>
                   <FormLabel>Advance</FormLabel>
                   <Input
-                    name="advance"
                     type="number"
+                    name="advance"
                     value={formData.advance || ""}
                     onChange={handleInputChange}
                     placeholder="Enter advance"
-                    borderRadius="lg"
                   />
                 </FormControl>
 
@@ -781,13 +842,15 @@ const Service = () => {
                   <FormLabel>Balance (auto)</FormLabel>
                   <Input
                     isReadOnly
-                    borderRadius="lg"
-                    value={(parseFloat(formData.actual_cost || 0) - parseFloat(formData.advance || 0)).toFixed(2)}
+                    value={(
+                      Number(formData.actual_cost || 0) -
+                      Number(formData.advance || 0)
+                    ).toFixed(2)}
                   />
                 </FormControl>
               </Flex>
 
-              {/* Issue */}
+              {/* Complaint */}
               <FormControl>
                 <FormLabel>Complaint</FormLabel>
                 <Textarea
@@ -795,39 +858,52 @@ const Service = () => {
                   value={formData.issue}
                   onChange={handleInputChange}
                   placeholder="Describe the issue..."
-                  borderRadius="lg"
                 />
               </FormControl>
             </Stack>
           </ModalBody>
-          <ModalFooter borderTopWidth="1px" borderColor={borderColor}>
-            <Button variant="outline" mr={3} onClick={onClose} borderRadius="lg">
+
+          <ModalFooter className="modal-footer">
+            <Button className="btn-cancel" size="sm" onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue" onClick={handleAddService} borderRadius="lg">
+            <Button
+              className="btn-primary"
+              size="sm"
+              onClick={handleAddService}
+            >
               Create Service
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isServicePrintOpen} onClose={onServicePrintClose} size="lg">
+      <Modal
+        isOpen={isServicePrintOpen}
+        onClose={onServicePrintClose}
+        size="md"
+        isCentered
+      >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Update Service </ModalHeader>
+        <ModalContent className="modal-box">
+          <ModalHeader className="modal-header">Update Service</ModalHeader>
+
           <ModalCloseButton />
-          <ModalBody>
-            <Stack spacing={4}>
+
+          <ModalBody className="modal-body">
+            <Stack spacing={3} className="modal-form">
               <FormControl>
                 <FormLabel>Issue Details</FormLabel>
                 <Textarea
                   value={formState.issueDetails}
-                  onChange={(e) => setFormState({ ...formState, issueDetails: e.target.value })}
+                  onChange={(e) =>
+                    setFormState({ ...formState, issueDetails: e.target.value })
+                  }
                 />
               </FormControl>
 
-              <Flex gap={4}>
-                <FormControl flex="1">
+              <Flex gap={3} flexWrap="wrap">
+                <FormControl>
                   <FormLabel>Advance</FormLabel>
                   <Input
                     type="number"
@@ -842,32 +918,37 @@ const Service = () => {
                 </FormControl>
               </Flex>
 
-              <Flex gap={4}>
-                <FormControl flex="1">
+              <Flex gap={3} flexWrap="wrap">
+                <FormControl>
                   <FormLabel>Balance</FormLabel>
-                  <Input
-                    type="number"
-                    value={formState.balanceCost}
-                    // onChange={(e) => setFormState({ ...formState, balCost: e.target.value })}
-                  />
+                  <Input type="number" value={formState.balanceCost} readOnly />
                 </FormControl>
 
-                <FormControl flex="1">
+                <FormControl>
                   <FormLabel>Total</FormLabel>
-                  <Input type="number" value={formState.actualCost} />
+                  <Input type="number" value={formState.actualCost} readOnly />
                 </FormControl>
               </Flex>
             </Stack>
           </ModalBody>
-          {console.log("formstate", formState.status)}
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleUpdate} isDisabled={formState.status === "Delivered"}>
+
+          <ModalFooter className="modal-footer">
+            <Button
+              className="btn-primary"
+              size="sm"
+              mr={2}
+              onClick={handleUpdate}
+              isDisabled={formState.status === "Delivered"}
+            >
               Update
             </Button>
 
             <Button
+              className="btn-cancel"
+              size="sm"
               onClick={() => {
-                onServicePrintClose(), setSelectedService("");
+                onServicePrintClose();
+                setSelectedService("");
               }}
             >
               Cancel
@@ -877,22 +958,10 @@ const Service = () => {
       </Modal>
 
       {loading && (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          w="100vw"
-          h="100vh"
-          bg="white"
-          zIndex={9999}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Spinner size="xl" color="blue.500" thickness="4px" mb={6} />
-          <Text fontSize="xl" color="black.100" fontWeight="normal">
-            Retrieving records, this may take a moment…{" "}
+        <Box className="loading-overlay">
+          <Spinner size="xl" color="#625DF0" thickness="4px" mb={2} />
+          <Text className="loading-text">
+            Retrieving records, please wait...
           </Text>
         </Box>
       )}

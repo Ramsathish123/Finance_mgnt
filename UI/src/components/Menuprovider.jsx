@@ -5,29 +5,46 @@ const MenuContext = createContext();
 
 export const MenuProvider = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const { isOpen: isMobileMenuOpen, onToggle: toggleMobileMenu } = useDisclosure();
+
+  // Mobile menu
+  const {
+    isOpen: isMobileMenuOpen,
+    onOpen: openMobileMenu,
+    onClose: closeMobileMenu,
+    onToggle: toggleMobileMenu,
+  } = useDisclosure();
+
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const toggleMenu = () => {
-    if (isMobile) toggleMobileMenu();
-    else setIsMenuOpen(!isMenuOpen);
+    if (isMobile) {
+      toggleMobileMenu();
+    } else {
+      setIsMenuOpen((prev) => !prev);
+    }
   };
 
+  // Collapse desktop menu initially
   useEffect(() => {
     setIsMenuOpen(false);
   }, []);
 
   return (
-    <MenuContext.Provider value={{ isMenuOpen, toggleMenu, isMobileMenuOpen }}>
+    <MenuContext.Provider
+      value={{
+        isMenuOpen,
+        toggleMenu,
+        isMobileMenuOpen,
+
+        // expose these so LeftMenu can close mobile menu
+        openMobileMenu,
+        closeMobileMenu,
+        toggleMobileMenu,
+      }}
+    >
       {children}
     </MenuContext.Provider>
   );
 };
 
-export const useMenu = () => {
-  const context = useContext(MenuContext);
-  if (context === undefined) {
-    throw new Error('useMenu must be used within a MenuProvider');
-  }
-  return context;
-};
+export const useMenu = () => useContext(MenuContext);

@@ -10,19 +10,7 @@ import {
   Tooltip,
   Icon,
 } from "@chakra-ui/react";
-import {
-  FiMenu,
-  FiX,
-  FiHome,
-  FiFileText,
-  FiTool,
-  FiBox,
-  FiDollarSign,
-  FiBarChart2,
-  FiLogIn,
-  FiAtSign,
-  FiUserPlus,
-} from "react-icons/fi";
+import { FiMenu, FiX, FiHome, FiBox } from "react-icons/fi";
 import {
   RiBillLine,
   RiMoneyDollarCircleLine,
@@ -40,8 +28,15 @@ import "../../index.css";
 const LeftMenu = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const location = useLocation();
-  const { isMenuOpen, toggleMenu, isMobileMenuOpen, toggleMobileMenu } =
-    useMenu();
+
+  const {
+    isMenuOpen,
+    toggleMenu,
+    isMobileMenuOpen,
+    toggleMobileMenu,
+    closeMobileMenu,
+  } = useMenu();
+
   const storedUser = getLocalStorageItem("user");
 
   const menuItems =
@@ -60,20 +55,28 @@ const LeftMenu = () => {
           { icon: RiUserAddLine, label: "Register", href: "/register" },
         ];
 
-  useEffect(() => {
-    console.log("User from localStorage:", storedUser);
-  }, []);
+  const showText = isMobile ? isMobileMenuOpen : isMenuOpen;
 
   const isActiveLink = (href) =>
     location.pathname === href || location.pathname.startsWith(href + "/");
+
+  useEffect(() => {
+    if (isMobile) closeMobileMenu();
+  }, [location.pathname]);
 
   return (
     <Flex h="100vh" overflow="hidden" bg="gray.50">
       {/* Sidebar */}
       <Box
         as="nav"
-        className={`sidebar ${!isMenuOpen ? "collapsed" : ""} ${
-          isMobile && isMobileMenuOpen ? "open" : ""
+        className={`sidebar ${
+          isMobile
+            ? isMobileMenuOpen
+              ? "open"
+              : "collapsed"
+            : isMenuOpen
+            ? "open"
+            : "collapsed"
         }`}
         w={isMobile ? "250px" : isMenuOpen ? "200px" : "70px"}
         position={isMobile ? "fixed" : "relative"}
@@ -82,10 +85,10 @@ const LeftMenu = () => {
           {/* Logo */}
           <Flex
             className="sidebar-logo"
-            justify={isMenuOpen || isMobile ? "flex-start" : "center"}
+            justify={showText ? "flex-start" : "center"}
           >
             <img src="/logo.png" alt="TechAppzy Logo" />
-            {(isMenuOpen || isMobile) && (
+            {showText && (
               <Box>
                 <Text className="sidebar-logo-text">TechAppzy</Text>
                 <Text className="sidebar-logo-sub">Business Suite</Text>
@@ -100,7 +103,7 @@ const LeftMenu = () => {
                 icon={<FiX />}
                 aria-label="Close menu"
                 className="icon-btn"
-                onClick={toggleMobileMenu}
+                onClick={closeMobileMenu}
               />
             </Flex>
           )}
@@ -109,13 +112,14 @@ const LeftMenu = () => {
           <VStack className="sidebar-menu" align="stretch">
             {menuItems.map((item, i) => {
               const active = isActiveLink(item.href);
+
               return (
                 <Tooltip
                   key={i}
                   label={item.label}
                   placement="right"
                   hasArrow
-                  isDisabled={isMenuOpen || isMobile}
+                  isDisabled={showText}
                   openDelay={300}
                   bg="var(--color-brand-primary)"
                   color="white"
@@ -123,10 +127,11 @@ const LeftMenu = () => {
                   <Link
                     as={RouterLink}
                     to={item.href}
+                    onClick={() => isMobile && closeMobileMenu()}
                     className={`menu-link ${active ? "active" : ""}`}
                   >
                     <Icon as={item.icon} className="menu-icon" />
-                    {(isMenuOpen || isMobile) && <Text>{item.label}</Text>}
+                    {showText && <Text>{item.label}</Text>}
                   </Link>
                 </Tooltip>
               );
@@ -134,7 +139,7 @@ const LeftMenu = () => {
           </VStack>
 
           {/* User Info */}
-          {(isMenuOpen || isMobile) && storedUser && (
+          {showText && storedUser && (
             <Box className="sidebar-user">
               <Text className="sidebar-user-name">
                 {storedUser.name || storedUser.email}
@@ -152,20 +157,6 @@ const LeftMenu = () => {
           <Outlet />
         </Box>
       </Box>
-
-      {/* Mobile Overlay */}
-      {isMobile && isMobileMenuOpen && (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          w="100vw"
-          h="100vh"
-          bg="blackAlpha.600"
-          zIndex="overlay"
-          onClick={toggleMobileMenu}
-        />
-      )}
     </Flex>
   );
 };

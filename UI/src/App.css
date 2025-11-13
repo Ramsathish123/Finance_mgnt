@@ -613,3 +613,139 @@
   color: #9a9cc0 !important;
   font-size: 0.7rem !important;
 }
+
+/* ONE-ROW NO-WRAP INPUT BAR  invoice */
+.invoice-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap !important;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Common Chakra input unify (your style preserved) */
+.input-primary {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  height: 28px !important;
+  transition: var(--transition-base);
+}
+
+.input-primary:hover {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 1px var(--color-brand-primary);
+}
+
+.input-primary:focus {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 2px rgba(98, 93, 240, 0.2);
+  outline: none;
+}
+
+/* Large inputs — Customer Name, Mobile Number */
+.input-large {
+  width: 230px !important;
+  min-width: 230px !important;
+}
+
+/* Small inputs — Qty, Invoice No */
+.input-small {
+  width: 80px !important;
+  min-width: 80px !important;
+  text-align: center;
+}
+
+.footer-card {
+  background: #ffffff;
+  border: 1px solid #cdd1f5;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.45rem;
+  box-shadow: 0 2px 6px rgba(98, 93, 240, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.footer-label {
+  font-family: "Inter", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4a4a6f;
+}
+
+.footer-value {
+  font-family: "Inter", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #625df0;
+}
+
+/* #nrw */
+
+/* BASE CARD */
+.stat-card {
+  border-radius: 1.1rem !important;
+
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(98, 93, 240, 0.08) !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* HOVER EFFECT */
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(98, 93, 240, 0.18) !important;
+}
+
+/* TEXT */
+.stat-label {
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.75rem !important;
+  opacity: 0.8 !important;
+}
+
+.stat-value {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: #2a2d4e !important;
+  margin-top: 2px;
+}
+
+/* ICON CORE */
+.stat-icon {
+  width: 50px !important;
+  height: 50px !important;
+  font-size: 22px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ICON COLOR THEMES WITH GLOW */
+.icon-blue {
+  background: #e8e8ff !important;
+  color: #625df0 !important;
+  box-shadow: 0 4px 12px rgba(98, 93, 240, 0.4) !important;
+}
+
+.icon-orange {
+  background: #fff0e0 !important;
+  color: #ff7a3d !important;
+  box-shadow: 0 4px 12px rgba(255, 122, 61, 0.35) !important;
+}
+
+.icon-green {
+  background: #e5faef !important;
+  color: #2eb872 !important;
+  box-shadow: 0 4px 12px rgba(46, 184, 114, 0.35) !important;
+}

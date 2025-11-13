@@ -43,8 +43,16 @@ import axios from "axios";
 
 const Report = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
-  const { isOpen: isReportOpen, onOpen: onReportOpen, onClose: onReportClose } = useDisclosure();
+  const {
+    isOpen: isAlertOpen,
+    onOpen: onAlertOpen,
+    onClose: onAlertClose,
+  } = useDisclosure();
+  const {
+    isOpen: isReportOpen,
+    onOpen: onReportOpen,
+    onClose: onReportClose,
+  } = useDisclosure();
 
   const cancelRef = useRef();
   const toast = useToast();
@@ -152,11 +160,14 @@ const Report = () => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams();
-      if (formData.startDate) queryParams.append("startDate", formData.startDate);
+      if (formData.startDate)
+        queryParams.append("startDate", formData.startDate);
       if (formData.endDate) queryParams.append("endDate", formData.endDate);
 
       const endpoint =
-        formData.type === "service" ? "http://localhost:9988/service_filter" : "http://localhost:9988/invoice_filter";
+        formData.type === "service"
+          ? "http://localhost:9988/service_filter"
+          : "http://localhost:9988/invoice_filter";
 
       const response = await fetch(`${endpoint}?${queryParams.toString()}`);
       const data = await response.json();
@@ -210,7 +221,9 @@ const Report = () => {
       const currentDate = `${yyyy}-${mm}-${dd}`;
 
       // Fetch daily report with current date
-      const response = await fetch(`http://localhost:9988/daily_report?startDate=${currentDate}`);
+      const response = await fetch(
+        `http://localhost:9988/daily_report?startDate=${currentDate}`
+      );
       const data = await response.json();
 
       setReport(data);
@@ -225,7 +238,9 @@ const Report = () => {
   const handleView = async (invoiceNo) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:9988/invoice-rep/${invoiceNo}`);
+      const response = await axios.get(
+        `http://localhost:9988/invoice-rep/${invoiceNo}`
+      );
       if (response.data.length === 0) {
         setInvoiceItems([]);
         setInvoiceDiscount(0);
@@ -251,7 +266,10 @@ const Report = () => {
   // Helper function to calculate subtotal
   const calculateSubtotal = () => {
     // Sum the 'amount' field from all items, converting to number
-    return invoiceItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+    return invoiceItems.reduce(
+      (sum, item) => sum + (parseFloat(item.amount) || 0),
+      0
+    );
   };
 
   const subtotal = calculateSubtotal();
@@ -262,37 +280,18 @@ const Report = () => {
   return (
     <>
       {loading ? (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          w="100vw"
-          h="100vh"
-          bg="white"
-          zIndex={9999}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Spinner size="xl" color="blue.500" thickness="4px" mb={6} />
-          <Text fontSize="xl" color="black.600" fontWeight="normal">
-            Retriving records, this may take a moment… {""}
+        <Box className="loading-overlay">
+          <Spinner size="xl" color="#625DF0" thickness="4px" mb={2} />
+          <Text className="loading-text">
+            Retrieving records, please wait...
           </Text>
         </Box>
       ) : (
-        <Box p={{ base: 4, md: 6 }} bg={useColorModeValue("gray.50", "gray.900")} minH="100vh">
+        <Box overflow="hidden">
           {/* Page Header */}
-          <Flex justify="space-between" align="center" mb={4}>
-            <Heading
-              fontSize={{ base: "2xl", md: "2xl" }}
-              fontFamily="Orbitron, Segoe UI, sans-serif"
-              fontWeight="semibold"
-              color="blue.600"
-            >
-              Report
-            </Heading>
-            <Button colorScheme="blue" onClick={handleOpen}>
+          <Flex className="page-header">
+            <Text className="page-title">Report</Text>
+            <Button className="btn-primary" size="sm" onClick={handleOpen}>
               Daily Report
             </Button>
           </Flex>
@@ -307,32 +306,52 @@ const Report = () => {
             mb={6}
           >
             <CardBody>
-              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing={4}>
+              <SimpleGrid
+                columns={{ base: 1, sm: 2, md: 3, lg: 5 }}
+                spacing={4}
+              >
                 <Input
                   type="date"
                   size="sm"
                   value={formData.startDate || ""}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, startDate: e.target.value })
+                  }
                   placeholder="Start Date"
                 />
                 <Input
                   type="date"
                   size="sm"
                   value={formData.endDate || ""}
-                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, endDate: e.target.value })
+                  }
                   placeholder="End Date"
                 />
                 <Select
                   placeholder="Select Type"
                   size="sm"
                   value={formData.type || ""}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, type: e.target.value })
+                  }
                 >
                   <option value="invoice">Invoice</option>
                   <option value="service">Service</option>
                 </Select>
-                <Input isReadOnly size="sm" value={services} placeholder="Total Amount" />
-                <Button leftIcon={<FiSearch />} colorScheme="blue" onClick={handeleSearch} size="sm" width="100%">
+                <Input
+                  isReadOnly
+                  size="sm"
+                  value={services}
+                  placeholder="Total Amount"
+                />
+                <Button
+                  leftIcon={<FiSearch />}
+                  onClick={handeleSearch}
+                  className="btn-primary"
+                  size="sm"
+                  gap={5}
+                >
                   Search
                 </Button>
               </SimpleGrid>
@@ -340,30 +359,27 @@ const Report = () => {
           </Card>
 
           {/* Table card */}
-          <Card
-            bg={tableBg}
-            borderRadius="xl"
-            boxShadow="sm"
-            borderWidth="1px"
-            borderColor={borderColor}
-            overflow="hidden"
-          >
+          <Card className="table-card">
             <CardHeader borderBottomWidth="1px" borderColor={borderColor}>
-              <Heading size="md" fontFamily="Orbitron, Segoe UI, sans-serif" fontWeight="semibold">
-                {formData.type === "service" ? "Recent Services" : "Recent Invoices"}
-              </Heading>
+              <Flex justify="space-between" align="center">
+                <Text color={"black"} fontWeight={500}>
+                  {formData.type === "service"
+                    ? "Recent Services"
+                    : "Recent Invoices"}
+                </Text>
+              </Flex>
             </CardHeader>
 
-            <CardBody px={0}>
-              <Box overflowX="auto">
-                <Table variant="simple" size="md">
-                  <Thead bg={useColorModeValue("blue.50", "blue.900")}>
+            <CardBody px={0} pb={0}>
+              <Box className="table-scroll">
+                <Table className="table" size="sm">
+                  <Thead>
                     {formData.type === "service" ? (
                       <Tr>
                         <Th>Service No</Th>
-                        <Th>Customer Name</Th>
+                        <Th>Customer</Th>
                         <Th>Issue</Th>
-                        <Th>Amount</Th>
+                        <Th className="text-right">Amount</Th>
                         <Th>Date</Th>
                       </Tr>
                     ) : (
@@ -371,58 +387,70 @@ const Report = () => {
                         <Th>Invoice No</Th>
                         <Th>Name</Th>
                         <Th>Mobile</Th>
-                        <Th>Amount</Th>
-                        <Th>Discount</Th>
-                        <Th>Received Amt</Th>
+                        <Th className="text-right">Amount</Th>
+                        <Th className="text-right">Discount</Th>
+                        <Th className="text-right">Received</Th>
                         <Th>Date</Th>
-                        <Th>Action</Th>
+                        <Th textAlign="center">Action</Th>
                       </Tr>
                     )}
                   </Thead>
+
                   <Tbody>
-                    {(formData.type === "service" ? serviceData : invoiceData).map((item, idx) => (
-                      <Tr key={idx} _hover={{ bg: useColorModeValue("gray.50", "gray.700") }}>
+                    {(formData.type === "service"
+                      ? serviceData
+                      : invoiceData
+                    ).map((item, idx) => (
+                      <Tr key={idx}>
                         {formData.type === "service" ? (
                           <>
                             <Td>{item.service_no}</Td>
                             <Td>{item.customer_name}</Td>
-                            <Td>{item.issue_details}</Td>
-                            <Td>{item.amount}</Td>
-
+                            <Td maxW="200px" isTruncated>
+                              {item.issue_details}
+                            </Td>
+                            <Td className="text-right">₹{item.amount}</Td>
                             <Td>{item.delivery_date}</Td>
                           </>
                         ) : (
                           <>
                             <Td>{item.invoiceNo}</Td>
-                            <Td>
-                              <Flex align="center">
-                                {/* <Avatar name={item.customerName} size="sm" mr={2} /> */}
-                                {item.customerName}
-                              </Flex>
-                            </Td>
+                            <Td>{item.customerName}</Td>
                             <Td>{item.mobileNumber}</Td>
-                            <Td>{item.amount}</Td>
-                            <Td>{item.discount}</Td>
-                            <Td>{item.total}</Td>
+                            <Td className="text-right">₹{item.amount}</Td>
+                            <Td className="text-right">{item.discount}</Td>
+                            <Td className="text-right">{item.total}</Td>
                             <Td>{item.cre_date}</Td>
+
                             <Td textAlign="center">
-                              <Flex justify="" gap={2}>
-                                <Tooltip label="Preview" placement="top" hasArrow>
+                              <Flex justify="center" gap={2}>
+                                <Tooltip
+                                  label="Preview"
+                                  bg="#625DF0"
+                                  color="white"
+                                >
                                   <IconButton
                                     icon={<FiEye />}
                                     aria-label="View"
-                                    colorScheme="blue"
-                                    size="sm"
+                                    size="xs"
+                                    className="table-action-btn view"
                                     onClick={() => handleView(item.invoiceNo)}
                                   />
                                 </Tooltip>
-                                <Tooltip label="Delete Row" placement="top" hasArrow>
+
+                                <Tooltip
+                                  label="Delete"
+                                  bg="#625DF0"
+                                  color="white"
+                                >
                                   <IconButton
                                     icon={<FiTrash2 />}
                                     aria-label="Delete"
-                                    colorScheme="red"
-                                    size="sm"
-                                    onClick={() => confirmDelete(item.invoiceNo)}
+                                    size="xs"
+                                    className="table-action-btn delete"
+                                    onClick={() =>
+                                      confirmDelete(item.invoiceNo)
+                                    }
                                   />
                                 </Tooltip>
                               </Flex>
@@ -490,86 +518,126 @@ const Report = () => {
           </Modal>
 
           {/* Confirm Delete AlertDialog */}
-          <AlertDialog isOpen={isAlertOpen} leastDestructiveRef={cancelRef} onClose={onAlertClose}>
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete Invoice
-                </AlertDialogHeader>
+          {/* Delete Invoice Modal */}
+          <Modal isOpen={isAlertOpen} onClose={onAlertClose} isCentered>
+            <ModalOverlay />
+            <ModalContent className="modal-box">
+              <ModalHeader className="modal-header">Delete Invoice</ModalHeader>
+              <ModalCloseButton />
 
-                <AlertDialogBody>
-                  Are you sure you want to delete this invoice? This action cannot be undone.
-                </AlertDialogBody>
+              <ModalBody className="modal-body">
+                <Text>
+                  Are you sure you want to delete this invoice? This action
+                  cannot be undone.
+                </Text>
+              </ModalBody>
 
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onAlertClose}>
-                    Cancel
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => {
-                      handleDelete(selectedInvoiceNo);
-                      onAlertClose();
-                    }}
-                    ml={3}
-                  >
-                    Delete
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
+              <ModalFooter className="modal-footer">
+                <Button
+                  className="btn-cancel"
+                  variant="ghost"
+                  size="sm"
+                  onClick={onAlertClose}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  className="btn-danger"
+                  size="sm"
+                  onClick={() => {
+                    handleDelete(selectedInvoiceNo);
+                    onAlertClose();
+                  }}
+                >
+                  Delete
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
 
           {/* Invoice Details Modal */}
-          <Modal isOpen={isReportOpen} onClose={onReportClose} size="xl">
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Invoice Details</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Table variant="striped" colorScheme="gray">
-                  <Thead>
-                    <Tr>
-                      <Th>Product</Th>
-                      <Th isNumeric>Qty</Th>
-                      <Th isNumeric>Rate</Th>
-                      <Th isNumeric>Amount</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {invoiceItems.map((item, index) => (
-                      <Tr key={index}>
-                        <Td>{item.product_name}</Td>
-                        <Td isNumeric>{item.quantity}</Td>
-                        <Td isNumeric>{formatCurrency(item.rate)}</Td>
-                        <Td isNumeric>{formatCurrency(item.amount)}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
 
-                {/* Clear Totals Section */}
-                <Flex direction="column" align="flex-end" mt={6} pr={4}>
-                  <Flex justify="space-between" width="300px" mb={1}>
-                    <Text fontWeight="normal">Subtotal:</Text>
-                    <Text fontWeight="normal">{formatCurrency(subtotal)}</Text>
+          <Modal
+            isOpen={isReportOpen}
+            onClose={onReportClose}
+            size="lg"
+            isCentered
+          >
+            <ModalOverlay />
+            <ModalContent className="modal-box">
+              <ModalHeader className="modal-header">
+                Invoice Details
+              </ModalHeader>
+              <ModalCloseButton />
+
+              <ModalBody className="modal-body">
+                <Box className="table-card">
+                  <Box className="table-scroll">
+                    <Table className="table">
+                      <Thead>
+                        <Tr>
+                          <Th>Product</Th>
+                          <Th className="text-right">Qty</Th>
+                          <Th className="text-right">Rate</Th>
+                          <Th className="text-right">Amount</Th>
+                        </Tr>
+                      </Thead>
+
+                      <Tbody>
+                        {invoiceItems.map((item, index) => (
+                          <Tr key={index}>
+                            <Td>{item.product_name}</Td>
+                            <Td className="text-right">{item.quantity}</Td>
+                            <Td className="text-right">
+                              {formatCurrency(item.rate)}
+                            </Td>
+                            <Td className="text-right">
+                              {formatCurrency(item.amount)}
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </Box>
+                </Box>
+
+                {/* Totals Section */}
+                <Flex direction="column" align="flex-end" mt={4} pr={2} gap={1}>
+                  <Flex justify="space-between" width="260px">
+                    <Text>Subtotal:</Text>
+                    <Text>{formatCurrency(subtotal)}</Text>
                   </Flex>
-                  <Flex justify="space-between" width="300px" mb={1}>
-                    <Text fontWeight="normal">Discount:</Text>
-                    <Text fontWeight="normal" color="red.500">
+
+                  <Flex justify="space-between" width="260px">
+                    <Text>Discount:</Text>
+                    <Text style={{ color: "#E53E3E" }}>
                       - {formatCurrency(invoiceDiscount)}
                     </Text>
                   </Flex>
-                  <Box borderTop="2px solid" borderColor="gray.300" pt={2} width="300px">
-                    <Flex justify="space-between" fontWeight="bold" fontSize="lg">
+
+                  <Box
+                    width="260px"
+                    borderTop="2px solid #cdd1f5"
+                    pt={2}
+                    mt={1}
+                  >
+                    <Flex justify="space-between" fontWeight="600">
                       <Text>Total Amount:</Text>
                       <Text>{formatCurrency(invoiceTotal)}</Text>
                     </Flex>
                   </Box>
                 </Flex>
               </ModalBody>
-              <ModalFooter>
-                <Button onClick={onReportClose}>Close</Button>
+
+              <ModalFooter className="modal-footer">
+                <Button
+                  className="btn-primary"
+                  size="sm"
+                  onClick={onReportClose}
+                >
+                  Close
+                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>

@@ -16,7 +16,11 @@ import {
   Card,
   useColorModeValue,
   IconButton,
+  Tooltip,
+  InputGroup,
+  InputLeftElement,
 } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
 import axios from "axios";
@@ -40,7 +44,10 @@ const Invoice = () => {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const totalAmount = rows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const totalAmount = rows.reduce(
+    (sum, row) => sum + Number(row.amount || 0),
+    0
+  );
   const netAmount = totalAmount - (Number(discount) || 0);
 
   useEffect(() => {
@@ -86,7 +93,9 @@ const Invoice = () => {
       setFilteredList(productList);
       return;
     }
-    const filtered = productList.filter((p) => p.productName.toLowerCase().includes(value.toLowerCase()));
+    const filtered = productList.filter((p) =>
+      p.productName.toLowerCase().includes(value.toLowerCase())
+    );
     setFilteredList(filtered);
   };
 
@@ -174,7 +183,11 @@ const Invoice = () => {
         setDiscount("");
         handleGetInvoiceNo();
       } else {
-        toast({ title: "Save failed", description: data.error, status: "error" });
+        toast({
+          title: "Save failed",
+          description: data.error,
+          status: "error",
+        });
       }
     } catch (err) {
       toast({ title: "Error", description: err.message, status: "error" });
@@ -182,7 +195,16 @@ const Invoice = () => {
   };
 
   const printReceipt = (data) => {
-    const { customerName, mobileNumber, items, billTotal, total, discount, billNo, date } = data;
+    const {
+      customerName,
+      mobileNumber,
+      items,
+      billTotal,
+      total,
+      discount,
+      billNo,
+      date,
+    } = data;
     const html = `
       <html><head><style>
       body{font-family:monospace;font-size:13px;margin:0;padding:0}
@@ -212,16 +234,22 @@ const Invoice = () => {
       ${items
         .map(
           (i, index) =>
-            `<tr><td>${index + 1}</td><td>${i.productName}</td><td>${Number(i.rate).toFixed(2)}</td><td>${
-              i.quantity
-            }</td><td>${Number(i.amount).toFixed(2)}</td></tr>`
+            `<tr><td>${index + 1}</td><td>${i.productName}</td><td>${Number(
+              i.rate
+            ).toFixed(2)}</td><td>${i.quantity}</td><td>${Number(
+              i.amount
+            ).toFixed(2)}</td></tr>`
         )
         .join("")}
       </table>
       <div class="line"></div>
       <div style="text-align:right">Total: ₹${Number(total).toFixed(2)}</div>
-      <div style="text-align:right">Discount: ₹${Number(discount || 0).toFixed(2)}</div>
-      <div style="text-align:right;font-weight:bold">Net: ₹${Number(billTotal).toFixed(2)}</div>
+      <div style="text-align:right">Discount: ₹${Number(discount || 0).toFixed(
+        2
+      )}</div>
+      <div style="text-align:right;font-weight:bold">Net: ₹${Number(
+        billTotal
+      ).toFixed(2)}</div>
       <div class="line"></div>
       <div class="conditions">
         <b>நிபந்தனைகள்:</b><br>
@@ -247,27 +275,48 @@ const Invoice = () => {
   };
 
   return (
-    <Box p={6} minH="100vh" bg={useColorModeValue("gray.50", "gray.900")} pb="120px">
-      <Flex justify="space-between" align="center" mb={8}>
-        <Text fontSize="2xl" fontWeight="bold" color={headerColor}>
-          Create Invoice
-        </Text>
+    <Box overflow="hidden">
+      <Flex className="page-header">
+        <Text className="page-title">Create Invoice</Text>
       </Flex>
 
       {/* Unified Input Row */}
-      <Card p={3} mb={4} borderWidth="1px" borderColor={borderColor} shadow="sm">
-        <Flex align="center" gap={3} flexWrap="wrap">
-          {/* Product Search */}
+      <Box
+        p={3}
+        mb={4}
+        borderWidth="1px"
+        borderColor={borderColor}
+        shadow="sm"
+        bg="transparent"
+        borderRadius="md"
+      >
+        {/* SINGLE ALWAYS-HORIZONTAL ROW */}
+        <Flex className="invoice-input-row">
+          {/* Search Box */}
           <Box position="relative" w={{ base: "100%", md: "300px" }}>
-            <Input
-              placeholder="Search or select product..."
-              value={query}
-              onChange={(e) => handleSearch(e.target.value)}
-              onFocus={() => setIsOpen(true)}
-              onBlur={() => setTimeout(() => setIsOpen(false), 150)}
-              size="sm"
-              bg="white"
-            />
+            <InputGroup alignItems="center">
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%" // keeps icon centered vertically
+                display="flex"
+                alignItems="center"
+              >
+                <SearchIcon color="var(--color-brand-primary)" boxSize={3.5} />
+              </InputLeftElement>
+
+              <Input
+                placeholder="Search or select product..."
+                value={query}
+                onChange={(e) => handleSearch(e.target.value)}
+                onFocus={() => setIsOpen(true)}
+                onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+                size="sm"
+                className="input-primary"
+                pl="30px"
+              />
+            </InputGroup>
+
+            {/* Dropdown */}
             {isOpen && (
               <Box
                 position="absolute"
@@ -286,7 +335,8 @@ const Invoice = () => {
               >
                 {isLoading ? (
                   <Flex align="center" justify="center" p={3}>
-                    <Spinner size="sm" mr={2} /> <Text>Loading...</Text>
+                    <Spinner size="sm" mr={2} />
+                    <Text>Loading...</Text>
                   </Flex>
                 ) : filteredList.length > 0 ? (
                   filteredList.map((p) => (
@@ -317,18 +367,20 @@ const Invoice = () => {
             )}
           </Box>
 
-          {/* Qty + Add Button */}
+          {/* Qty Input (SMALL WIDTH) */}
           <Input
-            w="80px"
-            size="sm"
             type="number"
             min={1}
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
+            size="sm"
+            className="input-primary input-small"
           />
+
+          {/* Add Button */}
           <Button
             leftIcon={<FiPlus />}
-            colorScheme="blue"
+            className="btn-primary"
             size="sm"
             onClick={handleAddProduct}
             isDisabled={!selectedProduct}
@@ -336,28 +388,37 @@ const Invoice = () => {
             Add
           </Button>
 
-          {/* Customer Info */}
+          {/* Customer Name */}
           <Input
             placeholder="Customer Name"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             size="sm"
-            w={{ base: "100%", md: "180px" }}
+            className="input-primary input-large"
           />
+
+          {/* Mobile Number */}
           <Input
             placeholder="Mobile Number"
+            type="number"
             value={mobileNumber}
             onChange={(e) => setMobileNumber(e.target.value)}
             size="sm"
-            type="number"
-            w={{ base: "100%", md: "160px" }}
+            className="input-primary input-large"
           />
-          <Input placeholder="Invoice No" value={invoiceNo} isReadOnly size="sm" w={{ base: "100%", md: "100px" }} />
-          <Button
-            color="white"
+
+          {/* Invoice No */}
+          <Input
+            placeholder="Invoice No"
+            value={invoiceNo}
+            isReadOnly
             size="sm"
-            bgColor={"blue.600"}
-            variant="outline"
+            className="input-primary input-small"
+          />
+
+          <Button
+            className="btn-primary"
+            size="sm"
             onClick={() => {
               setCustomerName("");
               setMobileNumber("");
@@ -367,48 +428,61 @@ const Invoice = () => {
             New Invoice
           </Button>
         </Flex>
-      </Card>
+      </Box>
 
       {/* Table Section */}
-      <Card bg={tableBg} borderWidth="1px" borderColor={borderColor} shadow="sm">
-        <Table size="sm">
-          <Thead bg={useColorModeValue("blue.50", "blue.900")}>
-            <Tr>
-              <Th>Product</Th>
-              <Th isNumeric>Rate</Th>
-              <Th isNumeric>Qty</Th>
-              <Th isNumeric>Amount</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {rows.map((row, i) => (
-              <Tr key={i}>
-                <Td>{row.productName}</Td>
-                <Td isNumeric>{Number(row.rate).toFixed(2)}</Td>
-                <Td isNumeric>{row.quantity}</Td>
-                <Td isNumeric>{Number(row.amount).toFixed(2)}</Td>
-                <Td>
-                  <IconButton
-                    icon={<FiTrash2 />}
-                    size="sm"
-                    colorScheme="red"
-                    variant="ghost"
-                    onClick={() => handleRemove(row.productId)}
-                    aria-label="Remove"
-                  />
-                </Td>
-              </Tr>
-            ))}
-            {rows.length === 0 && (
+      <Card className="table-card">
+        <Box className="table-scroll">
+          <Table className="table" variant="simple" size="sm">
+            <Thead>
               <Tr>
-                <Td colSpan="5" textAlign="center" color="gray.500">
-                  No products added
-                </Td>
+                <Th>Product</Th>
+                <Th className="text-right">Rate</Th>
+                <Th className="text-right">Qty</Th>
+                <Th className="text-right">Amount</Th>
+                <Th textAlign="center">Action</Th>
               </Tr>
-            )}
-          </Tbody>
-        </Table>
+            </Thead>
+
+            <Tbody>
+              {rows.map((row, i) => (
+                <Tr key={i}>
+                  <Td>{row.productName}</Td>
+
+                  <Td className="text-right">{Number(row.rate).toFixed(2)}</Td>
+
+                  <Td className="text-right">{row.quantity}</Td>
+
+                  <Td className="text-right">
+                    {Number(row.amount).toFixed(2)}
+                  </Td>
+
+                  <Td textAlign="center">
+                    <Flex justify="center" align="center" gap="6px">
+                      <Tooltip label="Remove Item" bg="#625DF0" color="white">
+                        <IconButton
+                          icon={<FiTrash2 />}
+                          aria-label="Remove"
+                          size="xs"
+                          className="table-action-btn delete"
+                          onClick={() => handleRemove(row.productId)}
+                        />
+                      </Tooltip>
+                    </Flex>
+                  </Td>
+                </Tr>
+              ))}
+
+              {rows.length === 0 && (
+                <Tr>
+                  <Td colSpan="5" textAlign="center" color="gray.500" py={6}>
+                    No products added
+                  </Td>
+                </Tr>
+              )}
+            </Tbody>
+          </Table>
+        </Box>
       </Card>
 
       {/* Sticky Footer */}
@@ -417,33 +491,51 @@ const Invoice = () => {
         bottom="0"
         left="0"
         w="100%"
-        bg={useColorModeValue("gray.100", "gray.800")}
+        bg="white"
         py={3}
         px={6}
-        borderTop="1px solid"
-        borderColor={borderColor}
+        borderTop="1px solid #dfe3ff"
+        boxShadow="0 -2px 10px rgba(98, 93, 240, 0.08)"
         zIndex={100}
       >
         <Flex justify="flex-end" align="center" gap={4} wrap="wrap">
-          <Box bg="white" px={6} py={3} borderRadius="md" shadow="sm">
-            <Text fontWeight="bold" color="blue.600">
-              Total: ₹{Number(totalAmount).toFixed(2)}
+          {/* Total */}
+          <Box className="footer-card">
+            <Text className="footer-label">Total:</Text>
+            <Text className="footer-value">
+              ₹{Number(totalAmount).toFixed(2)}
             </Text>
           </Box>
-          <Box bg="white" px={6} py={3} borderRadius="md" shadow="sm">
+
+          {/* Discount */}
+          <Box className="footer-card">
             <Flex align="center" gap={2}>
-              <Text fontWeight="bold" color="orange.500">
-                Discount:
-              </Text>
-              <Input size="sm" w="80px" type="number" value={discount} onChange={(e) => setDiscount(e.target.value)} />
+              <Text className="footer-label">Discount:</Text>
+              <Input
+                size="sm"
+                className="input-primary input-small"
+                value={discount}
+                type="number"
+                onChange={(e) => setDiscount(e.target.value)}
+              />
             </Flex>
           </Box>
-          <Box bg="white" px={6} py={3} borderRadius="md" shadow="sm">
-            <Text fontWeight="bold" color="green.600">
-              Net: ₹{Number(netAmount).toFixed(2)}
+
+          {/* Net */}
+          <Box className="footer-card">
+            <Text className="footer-label">Net:</Text>
+            <Text className="footer-value">
+              ₹{Number(netAmount).toFixed(2)}
             </Text>
           </Box>
-          <Button colorScheme="blue" onClick={handleSave} size="md" isDisabled={rows.length === 0}>
+
+          {/* Print Button */}
+          <Button
+            className="btn-primary"
+            size="sm"
+            onClick={handleSave}
+            isDisabled={rows.length === 0}
+          >
             Print Invoice
           </Button>
         </Flex>
