@@ -326,11 +326,11 @@ const Expense = () => {
       {/* Add Expense Modal */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="md">
         <ModalOverlay />
-        <ModalContent borderRadius="lg">
-          <ModalHeader>Add New Expense</ModalHeader>
+        <ModalContent className="modal-box">
+          <ModalHeader className="modal-header">Add New Expense</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Stack spacing={4}>
+          <ModalBody className="modal-body">
+            <Stack spacing={4} className="modal-form">
               <FormControl>
                 <FormLabel>Invoice No</FormLabel>
                 <Input
@@ -358,11 +358,20 @@ const Expense = () => {
               </FormControl>
             </Stack>
           </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+          <ModalFooter className="modal-footer">
+            <Button
+              variant="ghost"
+              className="btn-cancel"
+              size="sm"
+              onClick={onClose}
+            >
               Cancel
             </Button>
-            <Button colorScheme="blue" onClick={handleAddExpense}>
+            <Button
+              className="btn-primary"
+              size="sm"
+              onClick={handleAddExpense}
+            >
               Save
             </Button>
           </ModalFooter>

@@ -466,15 +466,15 @@ const Report = () => {
           </Card>
 
           {/* Daily Report Modal */}
-          <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+          <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
             <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Daily Report</ModalHeader>
+            <ModalContent className="modal-box">
+              <ModalHeader className="modal-header">Daily Report</ModalHeader>
               <ModalCloseButton />
-              <ModalBody>
+              <ModalBody className="modal-body">
                 {report ? (
-                  <Table variant="simple" size="sm">
-                    <Thead bg={useColorModeValue("blue.50", "blue.900")}>
+                  <Table className="table" border="2px solid #dee1ff">
+                    <Thead>
                       <Tr>
                         <Th>Metric</Th>
                         <Th isNumeric>Value</Th>
@@ -511,8 +511,10 @@ const Report = () => {
                   <p>Loading...</p>
                 )}
               </ModalBody>
-              <ModalFooter>
-                <Button onClick={onClose}>Close</Button>
+              <ModalFooter className="modal-footer">
+                <Button className="btn-primary" size="sm" onClick={onClose}>
+                  Close
+                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>

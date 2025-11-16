@@ -224,8 +224,6 @@ export default function LoginForm() {
               </Select>
             </FormControl>
 
-         
-
             <Button
               type="submit"
               colorScheme="blue"
@@ -247,8 +245,6 @@ export default function LoginForm() {
             </Button>
           </Stack>
         </form>
-
-      
       </Box>
     </Flex>
   );

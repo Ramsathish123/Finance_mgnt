@@ -36,12 +36,6 @@ import { useMenu } from "../../components/Menuprovider";
 import "../../App.css";
 import "../../index.css";
 
-/**
- * Robust Header:
- * - Reads user info from context
- * - Falls back to localStorage keys if context is empty
- * - Normalizes displayName, uname, email
- */
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
