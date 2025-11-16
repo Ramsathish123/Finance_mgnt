@@ -34,7 +34,7 @@ import {
 import { FiTrash2, FiPlus, FiEye, FiTrash } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { showToast } from "../../utils/toast";
 const Stock = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [stockItems, setStockItems] = useState([]);
@@ -87,12 +87,10 @@ const Stock = () => {
       setStockItems(response.data.data || response.data);
       setTotalPages(response.data.totalPages || 1);
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: "Failed to load stock items",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     } finally {
       setLoading(false);
@@ -108,12 +106,10 @@ const Stock = () => {
       setHistoryData(response.data);
       setIsHistoryOpen(true);
     } catch {
-      toast({
+      showToast({
         title: "Error",
         description: "Failed to load stock history",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };
@@ -121,21 +117,17 @@ const Stock = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:9988/stock/${id}`);
-      toast({
+      showToast({
         title: "Success",
         description: response.data.message || "Item deleted successfully",
         status: "success",
-        duration: 3000,
-        isClosable: true,
       });
       fetchStockItems(currentPage);
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: error.response?.data?.error || "Failed to delete item",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };
@@ -158,12 +150,10 @@ const Stock = () => {
       setEditingId(id);
       onOpen();
     } catch {
-      toast({
+      showToast({
         title: "Error",
         description: "Failed to fetch item",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };
@@ -194,21 +184,17 @@ const Stock = () => {
 
       if (isEditing) {
         await axios.put(`http://localhost:9988/stock/${editingId}`, itemToSend);
-        toast({
+        showToast({
           title: "Updated",
           description: "Stock updated successfully",
           status: "success",
-          duration: 3000,
-          isClosable: true,
         });
       } else {
         await axios.post(`http://localhost:9988/stock`, itemToSend);
-        toast({
+        showToast({
           title: "Added",
           description: "New stock item added",
           status: "success",
-          duration: 3000,
-          isClosable: true,
         });
       }
 
@@ -216,12 +202,10 @@ const Stock = () => {
       resetForm();
       fetchStockItems(currentPage);
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: error.response?.data?.message || error.message,
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };

@@ -50,7 +50,7 @@ import {
   FiPrinter,
 } from "react-icons/fi";
 import axios from "axios";
-
+import { showToast } from "../../utils/toast";
 const Service = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -162,11 +162,10 @@ const Service = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast({
+        showToast({
           title: "Added!",
           description: "Service created successfully!",
           status: "success",
-          duration: 4000,
         });
         setFormData({
           customerName: "",
@@ -177,20 +176,19 @@ const Service = () => {
         });
         onClose();
       } else {
-        toast({
+        showToast({
           title: "Failed!",
           description: "Failed to create service.",
           status: "error",
-          duration: 4000,
+      
         });
       }
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: error.response?.data?.message || error.message,
         status: "error",
-        duration: 9988,
-        isClosable: true,
+    
       });
       //console.error("Add service error:", error);
     } finally {
@@ -285,21 +283,21 @@ const Service = () => {
     });
 
     if (response.ok) {
-      toast({
+      showToast({
         title: "Updated!",
         description: "Service updated successfully.",
         status: "success",
-        duration: 4000,
+     
       });
       await fetchServices();
       await fetchServiceCount();
       onServicePrintClose();
     } else {
-      toast({
+      showToast({
         title: "Error",
         description: "Failed to update service.",
         status: "error",
-        duration: 4000,
+      
       });
     }
   };

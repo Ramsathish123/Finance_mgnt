@@ -35,7 +35,7 @@ import {
 import { FiTrash2, FiPlus, FiSearch } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { showToast } from "../../utils/toast";
 const Expense = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [invoiceNo, setInvoiceNo] = useState("");
@@ -71,12 +71,10 @@ const Expense = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast({
+        showToast({
           title: "Success",
           description: data.message,
           status: "success",
-          duration: 3000,
-          isClosable: true,
         });
         fetchExpenses();
         setInvoiceNo("");
@@ -89,12 +87,10 @@ const Expense = () => {
         alert(data.message || "Failed to add expense");
       }
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: error.response?.data?.message || error.message,
         status: "error",
-        duration: 9988,
-        isClosable: true,
       });
     }
   };
@@ -123,22 +119,18 @@ const Expense = () => {
         `http://localhost:9988/expense/${id}`
       );
 
-      toast({
+      showToast({
         title: "Success",
         description: response.data.message || "Item deleted successfully",
         status: "success",
-        duration: 3000,
-        isClosable: true,
       });
 
       fetchExpenses();
     } catch (error) {
-      toast({
+      showToast({
         title: "Error",
         description: error.response?.data?.error || "Failed to delete item",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
       console.error("Delete error:", error);
     }
@@ -147,12 +139,10 @@ const Expense = () => {
   const handleSearch = async () => {
     try {
       if (!fromDate) {
-        toast({
+        showToast({
           title: "Date Required",
           description: "Please select both From and To dates",
           status: "warning",
-          duration: 3000,
-          isClosable: true,
         });
         return;
       }
@@ -164,12 +154,10 @@ const Expense = () => {
       setExpenses(response.data); // update the state
     } catch (error) {
       console.error("Search error:", error);
-      toast({
+      showToast({
         title: "Error",
         description: "Failed to fetch filtered expenses",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };

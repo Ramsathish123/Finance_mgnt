@@ -40,7 +40,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { FiEye, FiTrash2, FiSearch } from "react-icons/fi";
 import axios from "axios";
-
+import { showToast } from "../../utils/toast";
 const Report = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -125,31 +125,25 @@ const Report = () => {
 
       const data = await response.json();
       if (response.ok) {
-        toast({
+        showToast({
           title: "Deleted",
           description: data.message,
           status: "success",
-          duration: 3000,
-          isClosable: true,
         });
         fetchInvoices(); // refresh list
       } else {
-        toast({
+        showToast({
           title: "Delete failed",
           description: data.message,
           status: "error",
-          duration: 3000,
-          isClosable: true,
         });
       }
     } catch (error) {
       console.error("Delete error:", error);
-      toast({
+      showToast({
         title: "Error",
         description: "An error occurred while deleting invoice",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     } finally {
       setLoading(false);

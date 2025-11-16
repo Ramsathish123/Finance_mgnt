@@ -35,7 +35,7 @@ import { clearAllLocalStorage } from "../../utils/localStoragesHelper";
 import { useMenu } from "../../components/Menuprovider";
 import "../../App.css";
 import "../../index.css";
-
+import { showToast } from "../../utils/toast";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -85,18 +85,20 @@ const Header = () => {
     try {
       if (setUsers) setUsers({});
     } catch (e) {
-      // ignore
+      showToast({
+        title: "Signed out",
+        description: "something went wrong.",
+        status: "error",
+      });
+    } finally {
+      showToast({
+        title: "Signed out",
+        description: "You have been signed out successfully.",
+        status: "success",
+      });
+      onClose();
+      window.location.href = "/";
     }
-    toast({
-      title: "Signed out",
-      description: "You have been signed out successfully.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
-    onClose();
-    window.location.href = "/";
   };
 
   // If no user data at all, show a small skeleton for avatar/text to avoid layout jump

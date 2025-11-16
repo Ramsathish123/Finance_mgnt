@@ -24,7 +24,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
 import axios from "axios";
-
+import { showToast } from "../../utils/toast";
 const Invoice = () => {
   const [customerName, setCustomerName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -66,11 +66,10 @@ const Invoice = () => {
       setProductList(normalized);
       setFilteredList(normalized);
     } catch {
-      toast({
+      showToast({
         title: "Error fetching products",
         description: "Check server connection.",
         status: "error",
-        duration: 4000,
       });
     } finally {
       setIsLoading(false);
@@ -107,21 +106,21 @@ const Invoice = () => {
 
   const handleAddProduct = () => {
     if (!selectedProduct) {
-      toast({ title: "Select a product", status: "warning" });
+      showToast({ title: "Select a product", status: "warning" });
       return;
     }
 
     const rate = Number(selectedProduct.rate || 0);
     const qty = Number(quantity || 0);
     if (qty <= 0) {
-      toast({ title: "Enter a valid quantity", status: "warning" });
+      showToast({ title: "Enter a valid quantity", status: "warning" });
       return;
     }
 
     const amount = rate * qty;
     const already = rows.find((r) => r.productId === selectedProduct.productId);
     if (already) {
-      toast({ title: "Product already added", status: "info" });
+      showToast({ title: "Product already added", status: "info" });
       return;
     }
 
@@ -144,7 +143,7 @@ const Invoice = () => {
 
   const handleSave = async () => {
     if (rows.length === 0) {
-      toast({ title: "Add at least one product", status: "warning" });
+      showToast({ title: "Add at least one product", status: "warning" });
       return;
     }
 
@@ -170,7 +169,7 @@ const Invoice = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        toast({ title: "Invoice Saved!", status: "success" });
+        showToast({ title: "Invoice Saved!", status: "success" });
         printReceipt({
           ...payload,
           billNo: data.invoiceId,
@@ -183,14 +182,14 @@ const Invoice = () => {
         setDiscount("");
         handleGetInvoiceNo();
       } else {
-        toast({
+        showToast({
           title: "Save failed",
           description: data.error,
           status: "error",
         });
       }
     } catch (err) {
-      toast({ title: "Error", description: err.message, status: "error" });
+      showToast({ title: "Error", description: err.message, status: "error" });
     }
   };
 

@@ -21,7 +21,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useFileContext } from "../../context/Filecontext";
 import { setLocalStorageItem } from "../../utils/localStoragesHelper";
-
+import { showToast } from "../../utils/toast";
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -48,29 +48,21 @@ export default function LoginForm() {
       await setUsers(data.user);
       await setLocalStorageItem("user", data.user);
       if (!res.ok) {
-        toast({
+        showToast({
           title: "Login failed",
           description: data.message || "Invalid email or password",
           status: "error",
           duration: 9988,
-          isClosable: true,
-          position: "top", // changed from "top-right" to "top"
         });
         setIsLoading(false);
         return;
       }
 
-      //   // Save user data/token if needed
-      //   // localStorage.setItem("user", JSON.stringify(data.user));
-      //   // localStorage.setItem("token", data.token);
-
-      toast({
+      showToast({
         title: "Login successful",
         description: "Redirecting to your dashboard...",
         status: "success",
         duration: 3000,
-        isClosable: true,
-        position: "top", // changed from "top-right" to "top"
       });
       console.log(users);
       //   setTimeout(() => {
@@ -78,13 +70,10 @@ export default function LoginForm() {
       //   }, 1000);
     } catch (error) {
       console.error("Login error:", error);
-      toast({
+      showToast({
         title: "Connection error",
         description: "Could not connect to the server. Please try again later.",
         status: "error",
-        duration: 9988,
-        isClosable: true,
-        position: "top", // changed from "top-right" to "top"
       });
       setIsLoading(false);
     }
