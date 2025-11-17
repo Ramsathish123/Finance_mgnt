@@ -1,20 +1,16 @@
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
-  Link,
   Stack,
-  Text,
-  useColorModeValue,
   Image,
-  useToast,
   Select,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -22,16 +18,16 @@ import { useNavigate } from "react-router-dom";
 import { useFileContext } from "../../context/Filecontext";
 import { setLocalStorageItem } from "../../utils/localStoragesHelper";
 import { showToast } from "../../utils/toast";
+
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState("");
+
   const navigate = useNavigate();
-  const toast = useToast();
-  const { users, setUsers } = useFileContext();
+  const { setUsers } = useFileContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,139 +48,69 @@ export default function LoginForm() {
           title: "Login failed",
           description: data.message || "Invalid email or password",
           status: "error",
-          duration: 9988,
         });
         setIsLoading(false);
         return;
       }
 
+      await setUsers(data.user);
+      await setLocalStorageItem("user", data.user);
+
       showToast({
         title: "Login successful",
         description: "Redirecting to your dashboard...",
         status: "success",
-        duration: 3000,
       });
-      console.log(users);
-      //   setTimeout(() => {
+
       navigate("/dashboard");
-      //   }, 1000);
     } catch (error) {
-      console.error("Login error:", error);
       showToast({
         title: "Connection error",
-        description: "Could not connect to the server. Please try again later.",
+        description: "Could not connect to server.",
         status: "error",
       });
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      px={2}
-      position="relative"
-      _before={{
-        content: '""',
-        position: "fixed",
-        top: 0,
-        left: 0,
-        w: "100vw",
-        h: "100vh",
-        zIndex: 0,
-        bgImage: "url('/bglogin.avif')",
-        bgSize: "cover",
-        bgPosition: "center",
-        filter: "blur(2px) brightness(0.7)",
-      }}
-    >
-      <Box
-        w={{ base: "100%", sm: "400px", md: "420px", lg: "430px" }}
-        p={{ base: 4, sm: 8 }}
-        bg={useColorModeValue("rgba(255,255,255,0.95)", "rgba(26,32,44,0.95)")}
-        boxShadow="2xl"
-        borderRadius="2xl"
-        zIndex={1}
-        backdropFilter="auto"
-        backdropBlur="8px"
-        border="1px solid"
-        borderColor={useColorModeValue("gray.200", "gray.700")}
-        transition="all 0.3s"
-      >
-        <Stack spacing={6} align="center" mb={6}>
-          <Image
-            boxSize="70px"
-            src="/logo.jpg"
-            alt="ClaudeBox Logo"
-            objectFit="contain"
-            borderRadius="full"
-            border="2px solid"
-            borderColor="blue.400"
-            bg="white"
-            shadow="md"
-          />
-          <Heading
-            fontSize={{ base: "2xl", sm: "2.5xl" }}
-            textAlign="center"
-            color={useColorModeValue("blue.700", "blue.200")}
-            fontWeight="extrabold"
-            letterSpacing="tight"
-          >
+    <Flex className="login-wrapper">
+      <Box className="login-card">
+        <Stack spacing={5} align="center" mb={4}>
+          <Image src="/logo.jpg" alt="Logo" className="login-logo" />
+
+          <Text className="login-title" fontFamily={"inter"}>
             Welcome Back to TechAppzy
-          </Heading>
-          {/* <Text
-            fontSize={{ base: "md", sm: "lg" }}
-            color={useColorModeValue("gray.600", "gray.300")}
-            textAlign="center"
-          >
-            Please sign in to access your billing dashboard
-          </Text> */}
+          </Text>
         </Stack>
 
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={5}>
-            <FormControl id="email" isRequired>
+        <form onSubmit={handleSubmit} className="login-form">
+          <Stack spacing={4}>
+            <FormControl isRequired>
               <Input
+                className="input-primary"
                 type="email"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                bg={useColorModeValue("gray.50", "gray.700")}
-                borderColor={useColorModeValue("blue.100", "blue.700")}
-                _focus={{
-                  borderColor: "blue.400",
-                  boxShadow: "0 0 0 1px #4299e1",
-                }}
-                size="lg"
-                fontSize="md"
               />
             </FormControl>
 
-            <FormControl id="password" isRequired>
+            <FormControl isRequired>
               <InputGroup>
                 <Input
+                  className="input-primary"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  bg={useColorModeValue("gray.50", "gray.700")}
-                  borderColor={useColorModeValue("blue.100", "blue.700")}
-                  _focus={{
-                    borderColor: "blue.400",
-                    boxShadow: "0 0 0 1px #4299e1",
-                  }}
-                  size="lg"
-                  fontSize="md"
                 />
-                <InputRightElement h="full">
+
+                <InputRightElement>
                   <Button
-                    variant="ghost"
+                    className="icon-btn"
                     onClick={() => setShowPassword(!showPassword)}
-                    color={useColorModeValue("blue.500", "blue.200")}
-                    _hover={{ bg: "transparent" }}
-                    size="sm"
                     tabIndex={-1}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -193,19 +119,12 @@ export default function LoginForm() {
               </InputGroup>
             </FormControl>
 
-            <FormControl id="role" isRequired>
+            <FormControl isRequired>
               <Select
+                className="input-primary"
                 placeholder="Select role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                bg={useColorModeValue("gray.50", "gray.700")}
-                borderColor={useColorModeValue("blue.100", "blue.700")}
-                _focus={{
-                  borderColor: "blue.400",
-                  boxShadow: "0 0 0 1px #4299e1",
-                }}
-                size="lg"
-                fontSize="md"
               >
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
@@ -215,18 +134,8 @@ export default function LoginForm() {
 
             <Button
               type="submit"
-              colorScheme="blue"
-              size="lg"
-              fontWeight="bold"
-              w="full"
-              borderRadius="full"
-              shadow="md"
-              _hover={{
-                bg: "blue.600",
-                transform: "translateY(-2px) scale(1.03)",
-                boxShadow: "lg",
-              }}
-              transition="all 0.2s"
+              className="btn-primary"
+              size={"sm"}
               isLoading={isLoading}
               loadingText="Signing in..."
             >

@@ -773,14 +773,6 @@
   --chart-bg-card: #ffffff;
 }
 
-/* Container */
-.dashboard-container {
-  padding: 1.25rem;
-  background: var(--color-bg, #f8faff);
-  min-height: 100vh;
-  font-family: var(--font-body, "Inter", sans-serif);
-}
-
 /* Header with left accent (choice C) */
 .dashboard-header {
   margin-bottom: 1rem;
@@ -998,4 +990,89 @@
     padding-left: 8px;
     border-left-width: 3px;
   }
+}
+
+/* ======================
+      LOGIN / REGISTER PAGE
+======================= */
+
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem;
+  position: relative;
+}
+
+.login-wrapper::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("/bglogin.avif");
+  background-size: cover;
+  background-position: center;
+  filter: blur(3px) brightness(0.65);
+  z-index: 0;
+}
+
+/* Card */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  padding: 2rem;
+  z-index: 1;
+}
+
+/* Logo */
+.login-logo {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--color-brand-primary);
+  background: white;
+}
+
+/* Title */
+.login-title {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--color-brand-primary);
+  text-align: center;
+}
+
+/* Inputs */
+.input-primary {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: "Inter", sans-serif !important;
+  font-size: 0.78rem !important;
+  padding: 0.55rem 0.75rem !important;
+  height: 34px !important;
+  transition: var(--transition-base);
+}
+
+.input-primary:focus {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 2px rgba(98, 93, 240, 0.22);
+}
+
+/* Icon buttons (password eye) */
+.icon-btn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--color-text-light);
+  width: 32px !important;
+  height: 32px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

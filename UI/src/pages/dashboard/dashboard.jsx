@@ -225,7 +225,7 @@ export default function Dashboard() {
   };
 
   return (
-    <Box className="dashboard-container">
+    <Box overflow="hidden">
       {/* header with left accent — choice C */}
       <Flex className="page-header">
         <Text className="page-title">Shop Analytics</Text>

@@ -10,7 +10,6 @@ import {
   InputRightElement,
   Stack,
   Text,
-  useColorModeValue,
   Image,
   Link,
   Select,
@@ -29,7 +28,7 @@ export default function Register() {
     address: "",
     uname: "",
     password: "",
-    role: "User", // default role
+    role: "User",
   });
 
   const navigate = useNavigate();
@@ -43,193 +42,105 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { first, email, mobile, address, uname, password, role } = formData;
-
-    if (!first || !email || !mobile || !address || !uname || !password || !role) {
-      alert("Please fill all required fields.");
-      return;
-    }
-
     try {
-      const response = await axios.post("http://localhost:9988/register", {
-        first,
-        email,
-        mobile,
-        address,
-        uname,
-        password,
-        role, // ✅ send role in payload
-      });
-
-      alert(response.data.message || "Registered successfully!");
+      const res = await axios.post("http://localhost:9988/register", formData);
+      alert(res.data.message || "Registered successfully!");
       navigate("/");
     } catch (error) {
-      console.error("Registration error:", error);
       alert(error.response?.data?.message || "Registration failed");
     }
   };
 
-  const inputStyles = {
-    bg: useColorModeValue("gray.50", "gray.700"),
-    borderColor: useColorModeValue("blue.100", "blue.700"),
-    _focus: {
-      borderColor: "blue.400",
-      boxShadow: "0 0 0 1px #4299e1",
-    },
-    size: "lg",
-    fontSize: "md",
-  };
-
   return (
-    <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      px={2}
-      position="relative"
-      _before={{
-        content: '""',
-        position: "fixed",
-        top: 0,
-        left: 0,
-        w: "100vw",
-        h: "100vh",
-        zIndex: 0,
-        bgImage: "url('/bglogin.avif')",
-        bgSize: "cover",
-        bgPosition: "center",
-        filter: "blur(2px) brightness(0.7)",
-      }}
-    >
-      <Box
-        w={{ base: "100%", sm: "440px", md: "460px", lg: "480px" }}
-        p={{ base: 4, sm: 8 }}
-        bg={useColorModeValue("rgba(255,255,255,0.95)", "rgba(26,32,44,0.95)")}
-        boxShadow="2xl"
-        borderRadius="2xl"
-        zIndex={1}
-        backdropFilter="auto"
-        backdropBlur="8px"
-        border="1px solid"
-        borderColor={useColorModeValue("gray.200", "gray.700")}
-        transition="all 0.3s"
-      >
-        <Stack spacing={6} align="center" mb={6}>
-          <Image
-            boxSize="70px"
-            src="/logo.jpg"
-            alt="ClaudeBox Logo"
-            objectFit="contain"
-            borderRadius="full"
-            border="2px solid"
-            borderColor="blue.400"
-            bg="white"
-            shadow="md"
-          />
-          <Heading
-            fontSize={{ base: "2xl", sm: "2.5xl" }}
-            textAlign="center"
-            color={useColorModeValue("blue.700", "blue.200")}
-            fontWeight="extrabold"
-          >
-            Create Your ClaudeBox Account
-          </Heading>
+    <Flex className="login-wrapper">
+      <Box className="login-card">
+        <Stack spacing={5} align="center" mb={4}>
+          <Image src="/logo.jpg" alt="Logo" className="login-logo" />
+
+          <Text className="login-title">Create Your Account</Text>
         </Stack>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="login-form">
           <Stack spacing={4}>
-            <FormControl id="first" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>Name</FormLabel>
+            <FormControl isRequired>
               <Input
+                className="input-primary"
                 name="first"
-                placeholder="Enter Your Name"
+                placeholder="Full Name"
                 value={formData.first}
                 onChange={handleChange}
-                {...inputStyles}
               />
             </FormControl>
 
-            <FormControl id="email" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>Email address</FormLabel>
+            <FormControl isRequired>
               <Input
+                className="input-primary"
                 type="email"
                 name="email"
-                placeholder="you@example.com"
+                placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
-                {...inputStyles}
               />
             </FormControl>
 
-            <FormControl id="mobile" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>Mobile No.</FormLabel>
+            <FormControl isRequired>
               <Input
+                className="input-primary"
                 type="tel"
                 name="mobile"
-                placeholder="+91-9999999999"
+                placeholder="Mobile Number"
                 value={formData.mobile}
                 onChange={handleChange}
-                {...inputStyles}
               />
             </FormControl>
 
-            <FormControl id="address" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>Address</FormLabel>
+            <FormControl isRequired>
               <Input
+                className="input-primary"
                 name="address"
-                placeholder="Street, City, Zip"
+                placeholder="Address"
                 value={formData.address}
                 onChange={handleChange}
-                {...inputStyles}
               />
             </FormControl>
 
-            <FormControl id="uname" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>User Name</FormLabel>
+            <FormControl isRequired>
               <Input
+                className="input-primary"
                 name="uname"
-                placeholder="Enter User Name"
+                placeholder="Username"
                 value={formData.uname}
                 onChange={handleChange}
-                {...inputStyles}
               />
             </FormControl>
 
-            {/* ✅ Role Dropdown */}
-            <FormControl id="role" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>Role</FormLabel>
+            <FormControl isRequired>
               <Select
+                className="input-primary"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                {...inputStyles}
               >
                 <option value="Admin">Admin</option>
                 <option value="User">User</option>
               </Select>
             </FormControl>
 
-            {/* Password Field */}
-            <FormControl id="password" isRequired>
-              <FormLabel color={useColorModeValue("blue.700", "blue.200")}>Password</FormLabel>
+            <FormControl isRequired>
               <InputGroup>
                 <Input
-                  name="password"
+                  className="input-primary"
                   type={showPassword ? "text" : "password"}
+                  name="password"
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  {...inputStyles}
                 />
                 <InputRightElement>
                   <Button
-                    variant="ghost"
+                    className="icon-btn"
                     onClick={() => setShowPassword(!showPassword)}
-                    size="sm"
                     tabIndex={-1}
-                    color={useColorModeValue("blue.500", "blue.200")}
-                    _hover={{ bg: "transparent" }}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </Button>
@@ -237,34 +148,15 @@ export default function Register() {
               </InputGroup>
             </FormControl>
 
-            <Button
-              type="submit"
-              colorScheme="blue"
-              size="lg"
-              fontWeight="bold"
-              w="full"
-              borderRadius="full"
-              shadow="md"
-              _hover={{
-                bg: "blue.600",
-                transform: "translateY(-2px) scale(1.03)",
-                boxShadow: "lg",
-              }}
-              transition="all 0.2s"
-            >
+            <Button type="submit" className="btn-primary" size={"sm"}>
               Create Account
             </Button>
           </Stack>
         </form>
 
-        <Text fontSize="sm" textAlign="center" mt={6} color={useColorModeValue("gray.600", "gray.400")}>
+        <Text fontSize="sm" textAlign="center" mt={6}>
           Already have an account?{" "}
-          <Link
-            color="blue.400"
-            fontWeight="bold"
-            onClick={() => navigate("/")}
-            _hover={{ textDecoration: "underline" }}
-          >
+          <Link color="blue.400" onClick={() => navigate("/")}>
             Sign in
           </Link>
         </Text>
