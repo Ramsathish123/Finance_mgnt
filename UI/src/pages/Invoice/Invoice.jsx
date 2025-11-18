@@ -292,46 +292,29 @@ const Invoice = () => {
         {/* SINGLE ALWAYS-HORIZONTAL ROW */}
         <Flex className="invoice-input-row">
           {/* Search Box */}
-          <Box position="relative" w={{ base: "100%", md: "300px" }}>
-            <InputGroup alignItems="center">
-              <InputLeftElement
-                pointerEvents="none"
-                height="100%" // keeps icon centered vertically
-                display="flex"
-                alignItems="center"
-              >
-                <SearchIcon color="var(--color-brand-primary)" boxSize={3.5} />
+          <Box position="relative" className="search-wrapper">
+            <InputGroup>
+              <InputLeftElement className="search-icon-wrapper">
+                <SearchIcon
+                  className="search-icon"
+                  color="var(--color-brand-primary)"
+                  boxSize={3.5}
+                />
               </InputLeftElement>
 
               <Input
-                placeholder="Search or select product..."
+                placeholder="Search product..."
                 value={query}
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => setIsOpen(true)}
                 onBlur={() => setTimeout(() => setIsOpen(false), 150)}
                 size="sm"
-                className="input-primary"
-                pl="30px"
+                className="input-primary search-input"
               />
             </InputGroup>
 
-            {/* Dropdown */}
             {isOpen && (
-              <Box
-                position="absolute"
-                top="100%"
-                left="0"
-                w="100%"
-                bg="white"
-                border="1px solid"
-                borderColor={borderColor}
-                mt="2"
-                borderRadius="md"
-                boxShadow="xl"
-                zIndex={10}
-                maxH="180px"
-                overflowY="auto"
-              >
+              <Box className="dropdown-box">
                 {isLoading ? (
                   <Flex align="center" justify="center" p={3}>
                     <Spinner size="sm" mr={2} />
@@ -341,26 +324,17 @@ const Invoice = () => {
                   filteredList.map((p) => (
                     <Flex
                       key={p.productId}
-                      px={3}
-                      py={1}
-                      align="center"
-                      justify="space-between"
-                      _hover={{ bg: "blue.50" }}
-                      cursor="pointer"
+                      className="dropdown-item"
                       onMouseDown={() => handleSelectProduct(p)}
                     >
-                      <Text fontSize="sm" fontWeight="500">
-                        {p.productName}
-                      </Text>
-                      <Text fontSize="sm" color="blue.500">
+                      <Text className="dropdown-name">{p.productName}</Text>
+                      <Text className="dropdown-rate">
                         ₹{Number(p.rate).toFixed(2)}
                       </Text>
                     </Flex>
                   ))
                 ) : (
-                  <Text textAlign="center" p={3} color="gray.500" fontSize="sm">
-                    No matching products
-                  </Text>
+                  <Text className="dropdown-empty">No matching products</Text>
                 )}
               </Box>
             )}

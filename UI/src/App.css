@@ -619,7 +619,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   width: 100%;
   justify-content: center;
 }
@@ -1075,4 +1075,80 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* wrapper */
+.search-wrapper {
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+}
+
+/* icon container — non-hoverable */
+.search-icon-wrapper {
+  height: 100%;
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: none !important;
+}
+
+/* icon itself */
+.search-icon {
+  color: var(--color-brand-primary);
+  width: 14px;
+  height: 14px;
+  pointer-events: none !important;
+}
+
+/* fix overlap — consistent left padding */
+.search-input {
+  padding-left: 30px !important;
+}
+
+/* dropdown box */
+.dropdown-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: 4px;
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* individual item */
+.dropdown-item {
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: var(--color-brand-primary-light);
+}
+
+/* name + rate text */
+.dropdown-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dropdown-rate {
+  font-size: 0.75rem;
+  color: var(--color-brand-primary);
+}
+
+/* empty message */
+.dropdown-empty {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.75rem;
+  color: gray;
 }
