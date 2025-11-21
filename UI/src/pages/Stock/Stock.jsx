@@ -57,6 +57,7 @@ const Stock = () => {
   const [newItem, setNewItem] = useState({
     productId: "",
     name: "",
+    purchase_rate: "",
     rate: "",
     qty: "",
     gst: "",
@@ -145,6 +146,7 @@ const Stock = () => {
       setNewItem({
         productId: data.product_id || "",
         name: data.product_name || "",
+        purchase_rate: data.purchase_rate || "",
         rate: data.rate || "",
         qty: data.quantity || "",
         gst: data.gst || "",
@@ -173,13 +175,15 @@ const Stock = () => {
         !newItem.productId ||
         !newItem.name ||
         !newItem.rate ||
-        !newItem.qty
+        !newItem.qty ||
+        !newItem.purchase_rate
       ) {
         throw new Error("Please fill all required fields");
       }
 
       const itemToSend = {
         ...newItem,
+        purchase_rate: parseFloat(newItem.purchase_rate),
         rate: parseFloat(newItem.rate),
         gst: newItem.gst ? parseFloat(newItem.gst) : 0,
         qty: parseInt(newItem.qty),
@@ -224,6 +228,7 @@ const Stock = () => {
     setNewItem({
       productId: "",
       name: "",
+      purchase_rate: "",
       rate: "",
       qty: "",
       gst: "",
@@ -268,6 +273,7 @@ const Stock = () => {
                 <Tr>
                   <Th>ID</Th>
                   <Th>Product Name</Th>
+                  <Th className="text-right">Purchase Rate (₹)</Th>
                   <Th className="text-right">Rate (₹)</Th>
                   <Th className="text-right">Total Qty</Th>
                   <Th className="text-right">Available Qty</Th>
@@ -284,6 +290,7 @@ const Stock = () => {
                       {item.id}
                     </Td>
                     <Td>{item.name}</Td>
+                    <Td className="text-right">₹{item.purchase_rate}</Td>
                     <Td className="text-right">₹{item.rate}</Td>
                     <Td className="text-right">{item.quantity}</Td>
                     <Td className="text-right">{item.availableQty}</Td>
@@ -417,6 +424,34 @@ const Stock = () => {
                     value={newItem.name}
                     onChange={handleChange}
                     placeholder="Enter product name"
+                    isDisabled={isEditing}
+                    fontFamily="Inter, sans-serif"
+                    borderRadius="lg"
+                    borderColor="gray.300"
+                    _hover={{
+                      borderColor: "#625DF0",
+                    }}
+                    _focus={{
+                      borderColor: "#625DF0",
+                      boxShadow: "0 0 0 1px #625DF0",
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel
+                    fontFamily="Inter, sans-serif"
+                    fontWeight="500"
+                    color="gray.700"
+                    fontSize="sm"
+                  >
+                    Purchase Rate (₹)
+                  </FormLabel>
+                  <Input
+                    type="number"
+                    name="purchase_rate"
+                    value={newItem.purchase_rate}
+                    onChange={handleChange}
+                    placeholder="Enter rate"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"

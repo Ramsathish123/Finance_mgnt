@@ -50,6 +50,7 @@ const LeftMenu = () => {
           { icon: RiBillLine, label: "Invoice", href: "/invoice" },
           { icon: RiToolsLine, label: "Service", href: "/service" },
           { icon: FiBox, label: "Stock", href: "/stock" },
+          { icon: FiBox, label: "Supplier", href: "/supplier" },
           { icon: RiMoneyDollarCircleLine, label: "Expense", href: "/expense" },
           { icon: RiPieChartLine, label: "Report", href: "/report" },
           { icon: RiUserAddLine, label: "Register", href: "/register" },

@@ -14,6 +14,7 @@ import Report from "./pages/Invoice/Report";
 import PrivateRoute from "../src/components/Route/PrivateRoute";
 import { MenuProvider } from "./components/Menuprovider";
 import LeftMenu from "./components/Menu/LeftMenu";
+import Supplier from "./pages/Supplier/Supplier";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<LeftMenu />}>
                 <Route path="stock" element={<Stock />} />
+                <Route path="supplier" element={<Supplier />} />
                 <Route path="expense" element={<Expense />} />
                 <Route path="service" element={<Service />} />
                 <Route path="dashboard" element={<Dashboard />} />

@@ -36,7 +36,7 @@ db.connect((err) => {
 // ----------------------------------
 // REGISTER USER
 // ----------------------------------
-pp.post("/register", async (req, res) => {
+app.post("/register", async (req, res) => {
   try {
     const { first, email, mobile, address, uname, password, role } = req.body;
 
@@ -115,24 +115,25 @@ app.post("/login", (req, res) => {
 
 app.post("/stock", (req, res) => {
   try {
-    const { productId, name, rate, qty, gst } = req.body;
+    const { productId, name, purchase_rate, rate, qty, gst } = req.body;
 
-    if (!productId || !name || !rate || !qty) {
+    if (!productId || !name || !rate || !qty || !purchase_rate) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     db.query(
       `INSERT INTO stock
-         (product_id, product_name, rate, quantity, available_qty, gst)
-       VALUES (?, ?, ?, ?, ?, ?)
+         (product_id, product_name, purchase_rate, rate, quantity, available_qty, gst)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          product_name = VALUES(product_name),
+         purchase_rate = VALUES(purchase_rate),
          rate = VALUES(rate),
          quantity = VALUES(quantity), -- Update total quantity to the new value
          available_qty = available_qty + (VALUES(quantity) - quantity), -- Adjust available_qty by the difference
          gst = VALUES(gst),
          updated_at = CURRENT_TIMESTAMP`,
-      [productId, name, rate, qty, qty, gst || 0], // Parameters for the INSERT part
+      [productId, name, purchase_rate, rate, qty, qty, gst || 0], // Parameters for the INSERT part
       (error, result) => {
         if (error) {
           console.error("Database error:", error);
@@ -166,9 +167,17 @@ app.post("/stock", (req, res) => {
 app.put("/stock/:id", (req, res) => {
   try {
     const stockId = req.params.id;
-    const { productId, name, rate, qty, gst, addQty = 0 } = req.body;
+    const {
+      productId,
+      name,
+      purchase_rate,
+      rate,
+      qty,
+      gst,
+      addQty = 0,
+    } = req.body;
 
-    if (!productId || !name || !rate || !qty) {
+    if (!productId || !name || !rate || !qty || !purchase_rate) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -179,6 +188,7 @@ app.put("/stock/:id", (req, res) => {
       SET
         product_id = ?,
         product_name = ?,
+        purchase_rate = ?,
         rate = ?,
         quantity = ?,
         available_qty = available_qty + ?,
@@ -189,7 +199,16 @@ app.put("/stock/:id", (req, res) => {
 
     db.query(
       updateQuery,
-      [productId, name, rate, newTotalQty, addQty, gst || 0, stockId],
+      [
+        productId,
+        name,
+        purchase_rate,
+        rate,
+        newTotalQty,
+        addQty,
+        gst || 0,
+        stockId,
+      ],
       (error, result) => {
         if (error) {
           console.error("Error updating stock:", error);
@@ -393,6 +412,7 @@ app.get("/stock", (req, res) => {
     SELECT sid,
       product_id AS id,
       product_name AS name,
+      purchase_rate,
       rate,
       quantity,
       available_qty AS availableQty
@@ -486,7 +506,7 @@ app.get("/get_service_count", (req, res) => {
 
 app.get("/api/products/all", (req, res) => {
   const query = `
-    SELECT product_id AS productId, product_name AS productName, rate
+    SELECT product_id AS productId, product_name AS productName, purchase_rate, rate
     FROM stock
     ORDER BY product_name ASC
   `;
@@ -1188,6 +1208,122 @@ app.get("/stock_select/:id", (req, res) => {
     }
 
     res.json(results[0]); // return the first match
+  });
+});
+
+//supplier crud operations
+app.post("/supplier", (req, res) => {
+  const { supplier_name, mobile, address, gst_number } = req.body;
+
+  if (!supplier_name) {
+    return res.status(400).json({ message: "Supplier name is required" });
+  }
+
+  const sql = `
+    INSERT INTO supplier (supplier_name, mobile, address, gst_number)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.query(sql, [supplier_name, mobile, address, gst_number], (err, result) => {
+    if (err) {
+      console.error("Supplier Insert Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    res.status(201).json({
+      message: "Supplier added successfully",
+      supplierId: result.insertId,
+    });
+  });
+});
+
+app.get("/supplier", (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  const countQuery = `SELECT COUNT(*) AS total FROM supplier`;
+
+  const dataQuery = `
+    SELECT supplier_id, supplier_name, mobile, address, gst_number, created_at, updated_at
+    FROM supplier
+    ORDER BY supplier_id DESC
+    LIMIT ? OFFSET ?
+  `;
+
+  // First fetch total count
+  db.query(countQuery, (err, countResult) => {
+    if (err) {
+      console.error("Supplier Count Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    const total = countResult[0].total;
+
+    // Then fetch paginated data
+    db.query(dataQuery, [limit, offset], (err, results) => {
+      if (err) {
+        console.error("Supplier Fetch Error:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      res.json({
+        data: results,
+        total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+      });
+    });
+  });
+});
+
+app.put("/supplier/:id", (req, res) => {
+  const sid = req.params.id;
+  const { supplier_name, mobile, address, gst_number } = req.body;
+
+  const sql = `
+    UPDATE supplier
+    SET supplier_name = ?, mobile = ?, address = ?, gst_number = ?, updated_at = NOW()
+    WHERE supplier_id = ?
+  `;
+
+  db.query(
+    sql,
+    [supplier_name, mobile, address, gst_number, sid],
+    (err, result) => {
+      if (err) {
+        console.error("Supplier Update Error:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Supplier not found" });
+      }
+
+      res.json({ message: "Supplier updated successfully" });
+    }
+  );
+});
+
+app.delete("/supplier/:id", (req, res) => {
+  const sid = req.params.id;
+
+  const sql = `DELETE FROM supplier WHERE supplier_id = ?`;
+
+  db.query(sql, [sid], (err, result) => {
+    if (err) {
+      console.error("Supplier Delete Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    res.json({
+      message: "Supplier deleted successfully",
+      deletedId: sid,
+    });
   });
 });
 
