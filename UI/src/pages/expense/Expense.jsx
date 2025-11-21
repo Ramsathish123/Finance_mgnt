@@ -56,17 +56,20 @@ const Expense = () => {
       if (!invoiceNo || !detail || !amount) {
         throw new Error("Please fill all required fields");
       }
-      const response = await fetch("http://localhost:9988/expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          invoiceNo,
-          detail,
-          amount: parseFloat(amount),
-        }),
-      });
+      const response = await fetch(
+        "https://project1-template-1.onrender.com/expense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            invoiceNo,
+            detail,
+            amount: parseFloat(amount),
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -102,7 +105,7 @@ const Expense = () => {
   const fetchExpenses = async (page = 1) => {
     try {
       const response = await fetch(
-        `http://localhost:9988/expense?page=${page}&limit=10`
+        `https://project1-template-1.onrender.com/expense?page=${page}&limit=10`
       );
       const data = await response.json();
       setExpenses(data.data);
@@ -116,7 +119,7 @@ const Expense = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:9988/expense/${id}`
+        `https://project1-template-1.onrender.com/expense/${id}`
       );
 
       showToast({
@@ -147,9 +150,12 @@ const Expense = () => {
         return;
       }
 
-      const response = await axios.get(`http://localhost:9988/expense/search`, {
-        params: { startDate: fromDate, endDate: toDate },
-      });
+      const response = await axios.get(
+        `https://project1-template-1.onrender.com/expense/search`,
+        {
+          params: { startDate: fromDate, endDate: toDate },
+        }
+      );
 
       setExpenses(response.data); // update the state
     } catch (error) {

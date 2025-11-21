@@ -58,7 +58,9 @@ const Invoice = () => {
   const handleFetchProducts = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://localhost:9988/api/products/all");
+      const res = await axios.get(
+        "https://project1-template-1.onrender.com/api/products/all"
+      );
       const normalized = (res.data || []).map((p) => ({
         ...p,
         rate: Number(p.rate) || 0,
@@ -78,7 +80,9 @@ const Invoice = () => {
 
   const handleGetInvoiceNo = async () => {
     try {
-      const res = await axios.post("http://localhost:9988/invoiceNo/");
+      const res = await axios.post(
+        "https://project1-template-1.onrender.com/invoiceNo/"
+      );
       setInvoiceNo(res.data.invoiceNo);
     } catch (err) {
       console.error(err);
@@ -162,11 +166,14 @@ const Invoice = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:9988/invoice", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        "https://project1-template-1.onrender.com/invoice",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
       const data = await res.json();
       if (res.ok) {
         showToast({ title: "Invoice Saved!", status: "success" });

@@ -151,13 +151,16 @@ const Service = () => {
         advance: formData.advance,
       };
 
-      const response = await fetch("http://localhost:9988/mobile_service", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "https://project1-template-1.onrender.com/mobile_service",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await response.json();
 
@@ -180,7 +183,6 @@ const Service = () => {
           title: "Failed!",
           description: "Failed to create service.",
           status: "error",
-      
         });
       }
     } catch (error) {
@@ -188,7 +190,6 @@ const Service = () => {
         title: "Error",
         description: error.response?.data?.message || error.message,
         status: "error",
-    
       });
       //console.error("Add service error:", error);
     } finally {
@@ -210,7 +211,7 @@ const Service = () => {
 
   const fetchServices = async (page = 1, date = "") => {
     setLoading(true); // <-- Set loading true
-    const url = new URL("http://localhost:9988/get_service");
+    const url = new URL("https://project1-template-1.onrender.com/get_service");
     url.searchParams.append("page", page);
     url.searchParams.append("limit", itemsPerPage);
     if (date) url.searchParams.append("date", date); // only attach if date selected
@@ -252,7 +253,9 @@ const Service = () => {
   const fetchServiceCount = async () => {
     setLoading(true); // <-- Set loading true
     try {
-      const response = await fetch("http://localhost:9988/get_service_count");
+      const response = await fetch(
+        "https://project1-template-1.onrender.com/get_service_count"
+      );
       const data = await response.json();
       if (response.ok) {
         setServiceCount(data);
@@ -276,18 +279,20 @@ const Service = () => {
       advance: parseFloat(formState.advanceCost),
     };
 
-    const response = await fetch("http://localhost:9988/update_service", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      "https://project1-template-1.onrender.com/update_service",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
 
     if (response.ok) {
       showToast({
         title: "Updated!",
         description: "Service updated successfully.",
         status: "success",
-     
       });
       await fetchServices();
       await fetchServiceCount();
@@ -297,7 +302,6 @@ const Service = () => {
         title: "Error",
         description: "Failed to update service.",
         status: "error",
-      
       });
     }
   };
@@ -311,7 +315,7 @@ const Service = () => {
   }
   const handlePrint = async (id) => {
     const updatedData = await fetch(
-      `http://localhost:9988/get_service_by_id/${id}`
+      `https://project1-template-1.onrender.com/get_service_by_id/${id}`
     );
     const serviceData = await updatedData.json();
 
@@ -334,7 +338,9 @@ const Service = () => {
 
   const handleEdit = async (id) => {
     try {
-      const response = await axios.post(`http://localhost:9988/services/${id}`);
+      const response = await axios.post(
+        `https://project1-template-1.onrender.com/services/${id}`
+      );
       const data = response.data;
       setFormState({
         service_id: data.service_id,

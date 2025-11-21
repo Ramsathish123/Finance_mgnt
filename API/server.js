@@ -1,3 +1,5 @@
+require("dotenv").config();
+const fs = require("fs");
 const express = require("express");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
@@ -8,16 +10,33 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// MySQL connection
+// ----------------------------------
+// MYSQL CONNECTION (AIVEN SSL)
+// ----------------------------------
 const db = mysql.createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  password: "SQL#Preethi*&^%$#@!",
-  database: "mobile",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: fs.readFileSync(process.env.DB_SSL_CA),
+  },
 });
 
-// Register endpoint
-app.post("/register", async (req, res) => {
+db.connect((err) => {
+  if (err) {
+    console.log("❌ DB ERROR:", err);
+  } else {
+    console.log("✅ DB CONNECTED SUCCESSFULLY!");
+  }
+});
+
+// ----------------------------------
+// REGISTER USER
+// ----------------------------------
+pp.post("/register", async (req, res) => {
   try {
     const { first, email, mobile, address, uname, password, role } = req.body;
 
@@ -1172,5 +1191,9 @@ app.get("/stock_select/:id", (req, res) => {
   });
 });
 
-const PORT = 9988;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ----------------------------------
+// START SERVER
+// ----------------------------------
+app.listen(process.env.PORT, () =>
+  console.log(`🚀 Server running on port ${process.env.PORT}`)
+);

@@ -1,4 +1,13 @@
-import { Box, Input, Flex, Button, Spinner, Text, useColorModeValue, Card } from "@chakra-ui/react";
+import {
+  Box,
+  Input,
+  Flex,
+  Button,
+  Spinner,
+  Text,
+  useColorModeValue,
+  Card,
+} from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { FiPlus } from "react-icons/fi";
 import axios from "axios";
@@ -23,7 +32,9 @@ const ProductSelector = ({ onAdd }) => {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://localhost:9988/api/products/all");
+      const res = await axios.get(
+        "https://project1-template-1.onrender.com/api/products/all"
+      );
       setProductList(res.data || []);
       setFilteredList(res.data || []);
     } catch (err) {
@@ -42,7 +53,9 @@ const ProductSelector = ({ onAdd }) => {
       return;
     }
 
-    const filtered = productList.filter((p) => p.productName.toLowerCase().includes(value.toLowerCase()));
+    const filtered = productList.filter((p) =>
+      p.productName.toLowerCase().includes(value.toLowerCase())
+    );
     setFilteredList(filtered);
   };
 

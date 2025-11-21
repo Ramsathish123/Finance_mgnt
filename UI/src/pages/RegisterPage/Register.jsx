@@ -43,7 +43,10 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:9988/register", formData);
+      const res = await axios.post(
+        "https://project1-template-1.onrender.com/register",
+        formData
+      );
       alert(res.data.message || "Registered successfully!");
       navigate("/");
     } catch (error) {

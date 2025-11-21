@@ -85,7 +85,9 @@ const Report = () => {
   const fetchInvoices = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:9988/get_invoice");
+      const response = await fetch(
+        "https://project1-template-1.onrender.com/get_invoice"
+      );
       const data = await response.json();
       if (response.ok) {
         const formatted = data.map((item, index) => ({
@@ -117,11 +119,14 @@ const Report = () => {
   const handleDelete = async (invoiceNo) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:9988/delete_invoice", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ invoiceNo }),
-      });
+      const response = await fetch(
+        "https://project1-template-1.onrender.com/delete_invoice",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ invoiceNo }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -160,8 +165,8 @@ const Report = () => {
 
       const endpoint =
         formData.type === "service"
-          ? "http://localhost:9988/service_filter"
-          : "http://localhost:9988/invoice_filter";
+          ? "https://project1-template-1.onrender.com/service_filter"
+          : "https://project1-template-1.onrender.com/invoice_filter";
 
       const response = await fetch(`${endpoint}?${queryParams.toString()}`);
       const data = await response.json();
@@ -216,7 +221,7 @@ const Report = () => {
 
       // Fetch daily report with current date
       const response = await fetch(
-        `http://localhost:9988/daily_report?startDate=${currentDate}`
+        `https://project1-template-1.onrender.com/daily_report?startDate=${currentDate}`
       );
       const data = await response.json();
 
@@ -233,7 +238,7 @@ const Report = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:9988/invoice-rep/${invoiceNo}`
+        `https://project1-template-1.onrender.com/invoice-rep/${invoiceNo}`
       );
       if (response.data.length === 0) {
         setInvoiceItems([]);

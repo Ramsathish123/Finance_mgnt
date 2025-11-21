@@ -82,7 +82,7 @@ const Stock = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:9988/stock?page=${page}&limit=${itemsPerPage}`
+        `https://project1-template-1.onrender.com/stock?page=${page}&limit=${itemsPerPage}`
       );
       setStockItems(response.data.data || response.data);
       setTotalPages(response.data.totalPages || 1);
@@ -101,7 +101,7 @@ const Stock = () => {
     try {
       setSelectedStock(name);
       const response = await axios.get(
-        `http://localhost:9988/stock/${id}/history`
+        `https://project1-template-1.onrender.com/stock/${id}/history`
       );
       setHistoryData(response.data);
       setIsHistoryOpen(true);
@@ -116,7 +116,9 @@ const Stock = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:9988/stock/${id}`);
+      const response = await axios.delete(
+        `https://project1-template-1.onrender.com/stock/${id}`
+      );
       showToast({
         title: "Success",
         description: response.data.message || "Item deleted successfully",
@@ -135,7 +137,7 @@ const Stock = () => {
   const handleEdit = async (id) => {
     try {
       const response = await axios.get(
-        `http://localhost:9988/stock_select/${id}`
+        `https://project1-template-1.onrender.com/stock_select/${id}`
       );
       const data = response.data;
       setNewItem({
@@ -183,14 +185,20 @@ const Stock = () => {
       };
 
       if (isEditing) {
-        await axios.put(`http://localhost:9988/stock/${editingId}`, itemToSend);
+        await axios.put(
+          `https://project1-template-1.onrender.com/stock/${editingId}`,
+          itemToSend
+        );
         showToast({
           title: "Updated",
           description: "Stock updated successfully",
           status: "success",
         });
       } else {
-        await axios.post(`http://localhost:9988/stock`, itemToSend);
+        await axios.post(
+          `https://project1-template-1.onrender.com/stock`,
+          itemToSend
+        );
         showToast({
           title: "Added",
           description: "New stock item added",
