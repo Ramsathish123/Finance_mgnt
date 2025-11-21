@@ -82,7 +82,9 @@ const Stock = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://project1-template-1.onrender.com/stock?page=${page}&limit=${itemsPerPage}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/stock?page=${page}&limit=${itemsPerPage}`
       );
       setStockItems(response.data.data || response.data);
       setTotalPages(response.data.totalPages || 1);
@@ -101,7 +103,7 @@ const Stock = () => {
     try {
       setSelectedStock(name);
       const response = await axios.get(
-        `https://project1-template-1.onrender.com/stock/${id}/history`
+        `${import.meta.env.VITE_API_BASE_URL}/stock/${id}/history`
       );
       setHistoryData(response.data);
       setIsHistoryOpen(true);
@@ -117,7 +119,7 @@ const Stock = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `https://project1-template-1.onrender.com/stock/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/stock/${id}`
       );
       showToast({
         title: "Success",
@@ -137,7 +139,7 @@ const Stock = () => {
   const handleEdit = async (id) => {
     try {
       const response = await axios.get(
-        `https://project1-template-1.onrender.com/stock_select/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/stock_select/${id}`
       );
       const data = response.data;
       setNewItem({
@@ -186,7 +188,7 @@ const Stock = () => {
 
       if (isEditing) {
         await axios.put(
-          `https://project1-template-1.onrender.com/stock/${editingId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/stock/${editingId}`,
           itemToSend
         );
         showToast({
@@ -196,7 +198,7 @@ const Stock = () => {
         });
       } else {
         await axios.post(
-          `https://project1-template-1.onrender.com/stock`,
+          `${import.meta.env.VITE_API_BASE_URL}/stock`,
           itemToSend
         );
         showToast({

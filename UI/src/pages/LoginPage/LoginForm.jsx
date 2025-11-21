@@ -34,14 +34,11 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(
-        "https://project1-template-1.onrender.com/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, role }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role }),
+      });
 
       const data = await res.json();
       await setUsers(data.user);

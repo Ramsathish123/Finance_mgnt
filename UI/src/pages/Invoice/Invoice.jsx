@@ -59,7 +59,7 @@ const Invoice = () => {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        "https://project1-template-1.onrender.com/api/products/all"
+        `${import.meta.env.VITE_API_BASE_URL}/api/products/all`
       );
       const normalized = (res.data || []).map((p) => ({
         ...p,
@@ -81,7 +81,7 @@ const Invoice = () => {
   const handleGetInvoiceNo = async () => {
     try {
       const res = await axios.post(
-        "https://project1-template-1.onrender.com/invoiceNo/"
+        `${import.meta.env.VITE_API_BASE_URL}/invoiceNo/`
       );
       setInvoiceNo(res.data.invoiceNo);
     } catch (err) {
@@ -166,14 +166,11 @@ const Invoice = () => {
     };
 
     try {
-      const res = await fetch(
-        "https://project1-template-1.onrender.com/invoice",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/invoice`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
       const data = await res.json();
       if (res.ok) {
         showToast({ title: "Invoice Saved!", status: "success" });

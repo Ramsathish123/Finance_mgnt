@@ -44,7 +44,7 @@ export default function Register() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://project1-template-1.onrender.com/register",
+        `${import.meta.env.VITE_API_BASE_URL}/register`,
         formData
       );
       alert(res.data.message || "Registered successfully!");

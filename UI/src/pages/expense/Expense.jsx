@@ -57,7 +57,7 @@ const Expense = () => {
         throw new Error("Please fill all required fields");
       }
       const response = await fetch(
-        "https://project1-template-1.onrender.com/expense",
+        `${import.meta.env.VITE_API_BASE_URL}/expense`,
         {
           method: "POST",
           headers: {
@@ -105,7 +105,7 @@ const Expense = () => {
   const fetchExpenses = async (page = 1) => {
     try {
       const response = await fetch(
-        `https://project1-template-1.onrender.com/expense?page=${page}&limit=10`
+        `${import.meta.env.VITE_API_BASE_URL}/expense?page=${page}&limit=10`
       );
       const data = await response.json();
       setExpenses(data.data);
@@ -119,7 +119,7 @@ const Expense = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `https://project1-template-1.onrender.com/expense/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/expense/${id}`
       );
 
       showToast({
@@ -151,7 +151,7 @@ const Expense = () => {
       }
 
       const response = await axios.get(
-        `https://project1-template-1.onrender.com/expense/search`,
+        `${import.meta.env.VITE_API_BASE_URL}/expense/search`,
         {
           params: { startDate: fromDate, endDate: toDate },
         }

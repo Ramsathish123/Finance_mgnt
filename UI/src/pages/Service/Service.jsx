@@ -152,7 +152,7 @@ const Service = () => {
       };
 
       const response = await fetch(
-        "https://project1-template-1.onrender.com/mobile_service",
+        `${import.meta.env.VITE_API_BASE_URL}/mobile_service`,
         {
           method: "POST",
           headers: {
@@ -211,7 +211,7 @@ const Service = () => {
 
   const fetchServices = async (page = 1, date = "") => {
     setLoading(true); // <-- Set loading true
-    const url = new URL("https://project1-template-1.onrender.com/get_service");
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/get_service`);
     url.searchParams.append("page", page);
     url.searchParams.append("limit", itemsPerPage);
     if (date) url.searchParams.append("date", date); // only attach if date selected
@@ -254,7 +254,7 @@ const Service = () => {
     setLoading(true); // <-- Set loading true
     try {
       const response = await fetch(
-        "https://project1-template-1.onrender.com/get_service_count"
+        `${import.meta.env.VITE_API_BASE_URL}/get_service_count`
       );
       const data = await response.json();
       if (response.ok) {
@@ -280,7 +280,7 @@ const Service = () => {
     };
 
     const response = await fetch(
-      "https://project1-template-1.onrender.com/update_service",
+      `${import.meta.env.VITE_API_BASE_URL}/update_service`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -315,7 +315,7 @@ const Service = () => {
   }
   const handlePrint = async (id) => {
     const updatedData = await fetch(
-      `https://project1-template-1.onrender.com/get_service_by_id/${id}`
+      `${import.meta.env.VITE_API_BASE_URL}/get_service_by_id/${id}`
     );
     const serviceData = await updatedData.json();
 
@@ -339,7 +339,7 @@ const Service = () => {
   const handleEdit = async (id) => {
     try {
       const response = await axios.post(
-        `https://project1-template-1.onrender.com/services/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/services/${id}`
       );
       const data = response.data;
       setFormState({

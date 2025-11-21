@@ -85,7 +85,7 @@ export default function Dashboard() {
   useEffect(() => {
     let mounted = true;
     axios
-      .get("https://project1-template-1.onrender.com/sale_service_summary")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/sale_service_summary`)
       .then((res) => {
         if (!mounted) return;
         setSummary(res.data || {});
@@ -100,7 +100,7 @@ export default function Dashboard() {
   useEffect(() => {
     let mounted = true;
     axios
-      .get("https://project1-template-1.onrender.com/monthly_sales_chart")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/monthly_sales_chart`)
       .then((res) => {
         if (!mounted) return;
         const data = res.data || [];
@@ -133,7 +133,7 @@ export default function Dashboard() {
   useEffect(() => {
     let mounted = true;
     axios
-      .get("https://project1-template-1.onrender.com/monthly_service_chart")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/monthly_service_chart`)
       .then((res) => {
         if (!mounted) return;
         const data = res.data || [];
@@ -165,7 +165,7 @@ export default function Dashboard() {
   useEffect(() => {
     let mounted = true;
     axios
-      .get("https://project1-template-1.onrender.com/top-selling-products")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/top-selling-products`)
       .then((res) => {
         if (!mounted) return;
         const data = res.data || [];

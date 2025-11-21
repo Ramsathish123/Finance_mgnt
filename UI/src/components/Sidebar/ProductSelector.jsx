@@ -33,7 +33,7 @@ const ProductSelector = ({ onAdd }) => {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        "https://project1-template-1.onrender.com/api/products/all"
+        `${import.meta.env.VITE_API_BASE_URL}/api/products/all`
       );
       setProductList(res.data || []);
       setFilteredList(res.data || []);
