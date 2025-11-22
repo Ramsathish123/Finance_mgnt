@@ -19,6 +19,7 @@ import {
   Tooltip,
   InputGroup,
   InputLeftElement,
+  Select,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
@@ -43,7 +44,7 @@ const Invoice = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [paymentMode, setPaymentMode] = useState("select");
   const totalAmount = rows.reduce(
     (sum, row) => sum + Number(row.amount || 0),
     0
@@ -279,180 +280,250 @@ const Invoice = () => {
 
   return (
     <Box overflow="hidden">
-      <Flex className="page-header">
-        <Text className="page-title">Create Invoice</Text>
-      </Flex>
-
-      {/* Unified Input Row */}
-      <Box
-        p={3}
-        mb={4}
-        borderWidth="1px"
-        borderColor={borderColor}
-        shadow="sm"
-        bg="transparent"
-        borderRadius="md"
+      <Flex
+        className="page-header"
+        align="center"
+        justify="space-between"
+        mb={8}
+        wrap="wrap"
+        gap={3}
+        w="100%"
       >
-        {/* SINGLE ALWAYS-HORIZONTAL ROW */}
-        <Flex className="invoice-input-row">
-          {/* Search Box */}
-          <Box position="relative" className="search-wrapper">
-            <InputGroup>
-              <InputLeftElement className="search-icon-wrapper">
-                <SearchIcon
-                  className="search-icon"
-                  color="var(--color-brand-primary)"
-                  boxSize={3.5}
-                />
-              </InputLeftElement>
+        {/* Left: Title */}
+        <Text
+          className="page-title"
+          fontSize="2xl"
+          fontWeight="bold"
+          flex="0 0 auto"
+        >
+          Create Invoice
+        </Text>
 
-              <Input
-                placeholder="Search product..."
-                value={query}
-                onChange={(e) => handleSearch(e.target.value)}
-                onFocus={() => setIsOpen(true)}
-                onBlur={() => setTimeout(() => setIsOpen(false), 150)}
-                size="sm"
-                className="input-primary search-input"
-              />
-            </InputGroup>
-
-            {isOpen && (
-              <Box className="dropdown-box">
-                {isLoading ? (
-                  <Flex align="center" justify="center" p={3}>
-                    <Spinner size="sm" mr={2} />
-                    <Text>Loading...</Text>
-                  </Flex>
-                ) : filteredList.length > 0 ? (
-                  filteredList.map((p) => (
-                    <Flex
-                      key={p.productId}
-                      className="dropdown-item"
-                      onMouseDown={() => handleSelectProduct(p)}
-                    >
-                      <Text className="dropdown-name">{p.productName}</Text>
-                      <Text className="dropdown-rate">
-                        ₹{Number(p.rate).toFixed(2)}
-                      </Text>
-                    </Flex>
-                  ))
-                ) : (
-                  <Text className="dropdown-empty">No matching products</Text>
-                )}
-              </Box>
-            )}
-          </Box>
-
-          {/* Qty Input (SMALL WIDTH) */}
-          <Input
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            size="sm"
-            className="input-primary input-small"
-          />
-
-          {/* Add Button */}
-          <Button
-            leftIcon={<FiPlus />}
-            className="btn-primary"
-            size="sm"
-            onClick={handleAddProduct}
-            isDisabled={!selectedProduct}
-          >
-            Add
-          </Button>
-
-          {/* Customer Name */}
+        {/* Right: Inputs - same row */}
+        <Flex
+          className="customer-info-group"
+          gap={3}
+          align="center"
+          justify="flex-end"
+          flex="1"
+          minW="0"
+        >
           <Input
             placeholder="Customer Name"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             size="sm"
-            className="input-primary input-large"
+            className="input-primary customer-input"
+            flex="0 0 25%"
+            minW="160px"
           />
 
-          {/* Mobile Number */}
           <Input
             placeholder="Mobile Number"
-            type="number"
             value={mobileNumber}
             onChange={(e) => setMobileNumber(e.target.value)}
             size="sm"
-            className="input-primary input-large"
+            type="number"
+            className="input-primary customer-input"
+            flex="0 0 20%"
+            minW="140px"
           />
 
-          {/* Invoice No */}
-          <Input
-            placeholder="Invoice No"
-            value={invoiceNo}
-            isReadOnly
+          <Select
             size="sm"
-            className="input-primary input-small"
-          />
-
-          <Button
-            className="btn-primary"
-            size="sm"
-            onClick={() => {
-              setCustomerName("");
-              setMobileNumber("");
-              setRows([]);
-            }}
+            className="input-primary payment-select"
+            value={paymentMode}
+            onChange={(e) => setPaymentMode(e.target.value)}
+            flex="0 0 15%"
+            minW="120px"
           >
-            New Invoice
-          </Button>
+            <option value="Cash">Cash</option>
+            <option value="Gpay">GPay</option>
+          </Select>
         </Flex>
-      </Box>
+      </Flex>
 
       {/* Table Section */}
-      <Card className="table-card">
-        <Box className="table-scroll">
+
+      <Card
+        className="table-card"
+        borderWidth="1px"
+        borderColor={borderColor}
+        shadow="sm"
+        bg={tableBg}
+      >
+        <Box className="table-scroll" minH={"300px"}>
           <Table className="table" variant="simple" size="sm">
-            <Thead>
+            <Thead className="table-header">
               <Tr>
-                <Th>Product</Th>
-                <Th className="text-right">Rate</Th>
+                <Th className="text-left">Product</Th>
                 <Th className="text-right">Qty</Th>
+                <Th className="text-right">Rate</Th>
                 <Th className="text-right">Amount</Th>
                 <Th textAlign="center">Action</Th>
+              </Tr>
+
+              {/* Product Add Row */}
+              <Tr>
+                <Td colSpan="6">
+                  <Flex
+                    gap={3}
+                    align="center"
+                    w="100%"
+                    className="invoice-input-row"
+                    position="relative"
+                  >
+                    <Box
+                      position="relative"
+                      flex="1"
+                      minW="80%"
+                      className="search-wrapper"
+                    >
+                      <InputGroup>
+                        <InputLeftElement className="search-icon-wrapper">
+                          <SearchIcon
+                            className="search-icon"
+                            color="var(--color-brand-primary)"
+                            boxSize={3.5}
+                          />
+                        </InputLeftElement>
+
+                        <Input
+                          placeholder="Search or select product..."
+                          value={query}
+                          onChange={(e) => handleSearch(e.target.value)}
+                          onFocus={() => setIsOpen(true)}
+                          onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+                          size="sm"
+                          className="input-primary search-input"
+                        />
+                      </InputGroup>
+
+                      {isOpen && (
+                        <Box
+                          className="dropdown-box"
+                          position="absolute"
+                          top="100%"
+                          left="0"
+                          right="0"
+                          zIndex="1000"
+                          mt="1"
+                          bg="white"
+                          border="1px solid"
+                          borderColor="gray.200"
+                          borderRadius="md"
+                          boxShadow="lg"
+                          maxH="200px"
+                          overflowY="auto"
+                        >
+                          {isLoading ? (
+                            <Flex align="center" justify="center" p={3}>
+                              <Spinner size="sm" mr={2} />
+                              <Text>Loading...</Text>
+                            </Flex>
+                          ) : filteredList.length > 0 ? (
+                            filteredList.map((p) => (
+                              <Flex
+                                key={p.productId}
+                                className="dropdown-item"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  handleSelectProduct(p);
+                                }}
+                                p={2}
+                                _hover={{ bg: "gray.50" }}
+                                cursor="pointer"
+                                borderBottom="1px solid"
+                                borderColor="gray.100"
+                              >
+                                <Text className="dropdown-name" flex="1">
+                                  {p.productName}
+                                </Text>
+                                <Text
+                                  className="dropdown-rate"
+                                  fontWeight="bold"
+                                >
+                                  ₹{Number(p.rate).toFixed(2)}
+                                </Text>
+                              </Flex>
+                            ))
+                          ) : (
+                            <Text
+                              className="dropdown-empty"
+                              p={3}
+                              textAlign="center"
+                              color="gray.500"
+                            >
+                              No matching products
+                            </Text>
+                          )}
+                        </Box>
+                      )}
+                    </Box>
+
+                    {/* Quantity - 10% width */}
+                    <Input
+                      flex="0 0 10%"
+                      minW="70px"
+                      maxW="90px"
+                      size="sm"
+                      type="number"
+                      min={1}
+                      value={quantity}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
+                      className="input-primary input-small"
+                      placeholder="Qty"
+                    />
+
+                    {/* Add Button - 8% width */}
+                    <Button
+                      flex="0 0 8%"
+                      minW="60px"
+                      maxW="80px"
+                      leftIcon={<FiPlus />}
+                      className="btn-primary"
+                      size="sm"
+                      px={2}
+                      onClick={handleAddProduct}
+                      isDisabled={!selectedProduct}
+                    >
+                      Add
+                    </Button>
+                  </Flex>
+                </Td>
               </Tr>
             </Thead>
 
             <Tbody>
-              {rows.map((row, i) => (
-                <Tr key={i}>
-                  <Td>{row.productName}</Td>
-
-                  <Td className="text-right">{Number(row.rate).toFixed(2)}</Td>
-
-                  <Td className="text-right">{row.quantity}</Td>
-
-                  <Td className="text-right">
-                    {Number(row.amount).toFixed(2)}
-                  </Td>
-
-                  <Td textAlign="center">
-                    <Flex justify="center" align="center" gap="6px">
-                      <Tooltip label="Remove Item" bg="#625DF0" color="white">
-                        <IconButton
-                          icon={<FiTrash2 />}
-                          aria-label="Remove"
-                          size="xs"
-                          className="table-action-btn delete"
-                          onClick={() => handleRemove(row.productId)}
-                        />
-                      </Tooltip>
-                    </Flex>
-                  </Td>
-                </Tr>
-              ))}
-
-              {rows.length === 0 && (
+              {rows.length > 0 ? (
+                rows.map((row, i) => (
+                  <Tr key={i}>
+                    <Td>{row.productName}</Td>
+                    <Td className="text-right">{row.quantity}</Td>
+                    <Td className="text-right">
+                      {Number(row.rate).toFixed(2)}
+                    </Td>
+                    <Td className="text-right">
+                      {Number(row.amount).toFixed(2)}
+                    </Td>
+                    <Td textAlign="center">
+                      <Flex justify="center" align="center" gap="6px">
+                        <Tooltip label="Remove Item" bg="#625DF0" color="white">
+                          <IconButton
+                            icon={<FiTrash2 />}
+                            aria-label="Remove"
+                            size="xs"
+                            className="table-action-btn delete"
+                            onClick={() => handleRemove(row.productId)}
+                          />
+                        </Tooltip>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))
+              ) : (
                 <Tr>
-                  <Td colSpan="5" textAlign="center" color="gray.500" py={6}>
+                  <Td colSpan="6" textAlign="center" color="gray.500" py={6}>
                     No products added
                   </Td>
                 </Tr>
