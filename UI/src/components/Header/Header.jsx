@@ -15,7 +15,6 @@ import {
   useDisclosure,
   Portal,
   Divider,
-  useToast,
   Tooltip,
   Input,
   InputGroup,
@@ -42,7 +41,6 @@ const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const profileRef = useRef(null);
   const { users: contextUsers = {}, setUsers } = useFileContext() || {};
-  const toast = useToast();
   const { toggleMenu } = useMenu();
 
   // fallback: try to read user object from common localStorage keys
@@ -87,7 +85,7 @@ const Header = () => {
     } catch (e) {
       showToast({
         title: "Signed out",
-        description: "something went wrong.",
+        description: "Something went wrong.",
         status: "error",
       });
     } finally {
@@ -101,7 +99,6 @@ const Header = () => {
     }
   };
 
-  // If no user data at all, show a small skeleton for avatar/text to avoid layout jump
   const isEmptyUser = !users || Object.keys(users).length === 0;
 
   return (
@@ -161,8 +158,14 @@ const Header = () => {
             >
               <MenuButton
                 as={Button}
-                rightIcon={<ChevronDownIcon />}
+                rightIcon={
+                  <ChevronDownIcon display={{ base: "none", sm: "inline" }} />
+                }
                 className="profile-menu-btn"
+                p={0}
+                bg="transparent"
+                _hover={{ bg: "transparent" }}
+                _active={{ bg: "transparent" }}
               >
                 <HStack spacing={2}>
                   {isEmptyUser ? (

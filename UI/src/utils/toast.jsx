@@ -23,11 +23,11 @@ export function showToast({
 
     container.style.position = "fixed";
     container.style.top = "20px";
-    container.style.right = "20px"; // FIXED: aligns RIGHT
+    container.style.right = "20px";
     container.style.zIndex = "9999";
     container.style.display = "flex";
     container.style.flexDirection = "column";
-    container.style.alignItems = "flex-end"; // align right
+    container.style.alignItems = "flex-end";
     container.style.gap = "12px";
 
     document.body.appendChild(container);
@@ -46,6 +46,28 @@ export function showToast({
   toast.style.border = `3px solid ${colors[status]}`;
   toast.style.fontFamily = "Inter, sans-serif";
   toast.style.transition = "all 0.3s ease";
+  toast.style.position = "relative";
+
+  // Close Button
+  const closeBtn = document.createElement("button");
+  closeBtn.innerHTML = "&times;";
+  closeBtn.style.position = "absolute";
+  closeBtn.style.top = "6px";
+  closeBtn.style.right = "10px";
+  closeBtn.style.border = "none";
+  closeBtn.style.background = "transparent";
+  closeBtn.style.color = "#666";
+  closeBtn.style.fontSize = "18px";
+  closeBtn.style.cursor = "pointer";
+  closeBtn.style.transition = "color 0.2s";
+  closeBtn.onmouseenter = () => (closeBtn.style.color = "#000");
+  closeBtn.onmouseleave = () => (closeBtn.style.color = "#666");
+
+  closeBtn.onclick = () => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(20px)";
+    setTimeout(() => toast.remove(), 300);
+  };
 
   toast.innerHTML = `
     <div style="font-weight:600; margin-bottom:4px; color:${colors[status]}">
@@ -56,6 +78,7 @@ export function showToast({
     </div>
   `;
 
+  toast.appendChild(closeBtn);
   container.appendChild(toast);
 
   // Auto remove

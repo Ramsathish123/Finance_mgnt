@@ -304,10 +304,6 @@
     margin: 0.25rem 0;
   }
 
-  .profile-menu-btn span {
-    display: none;
-  }
-
   .sidebar {
     width: 250px;
     position: fixed;
