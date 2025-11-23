@@ -30,6 +30,7 @@ import {
   Spinner,
   Text,
   HStack,
+  Select,
 } from "@chakra-ui/react";
 import { FiTrash2, FiPlus, FiEye, FiTrash } from "react-icons/fi";
 import { useState, useEffect } from "react";
@@ -58,6 +59,7 @@ const Stock = () => {
     productId: "",
     name: "",
     purchase_rate: "",
+    supplier_name: "",
     rate: "",
     qty: "",
     gst: "",
@@ -147,6 +149,7 @@ const Stock = () => {
         productId: data.product_id || "",
         name: data.product_name || "",
         purchase_rate: data.purchase_rate || "",
+        supplier_name: data.supplier_name || "N/A",
         rate: data.rate || "",
         qty: data.quantity || "",
         gst: data.gst || "",
@@ -176,7 +179,8 @@ const Stock = () => {
         !newItem.name ||
         !newItem.rate ||
         !newItem.qty ||
-        !newItem.purchase_rate
+        !newItem.purchase_rate ||
+        !newItem.supplier_name
       ) {
         throw new Error("Please fill all required fields");
       }
@@ -184,6 +188,7 @@ const Stock = () => {
       const itemToSend = {
         ...newItem,
         purchase_rate: parseFloat(newItem.purchase_rate),
+        supplier_name: newItem.supplier_name,
         rate: parseFloat(newItem.rate),
         gst: newItem.gst ? parseFloat(newItem.gst) : 0,
         qty: parseInt(newItem.qty),
@@ -229,6 +234,7 @@ const Stock = () => {
       productId: "",
       name: "",
       purchase_rate: "",
+      supplier_name: "",
       rate: "",
       qty: "",
       gst: "",
@@ -237,6 +243,17 @@ const Stock = () => {
     setIsEditing(false);
     setEditingId(null);
   };
+  const [suppliers, setSuppliers] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/supplier`)
+      .then((res) => {
+        const supplierNames = (res.data.data || []).map((s) => s.supplier_name);
+        setSuppliers(supplierNames);
+      })
+      .catch((err) => console.error("Supplier fetch error", err));
+  }, []);
 
   return (
     <>
@@ -286,6 +303,11 @@ const Stock = () => {
                     <Td
                       className="clickable-id"
                       onClick={() => handleEdit(item.sid)}
+                      sx={{
+                        cursor: "pointer !important",
+                        color: "#625DF0 !important",
+                        // textDecoration: "underline !important",
+                      }}
                     >
                       {item.id}
                     </Td>
@@ -465,6 +487,41 @@ const Stock = () => {
                     }}
                   />
                 </FormControl>
+                <FormControl>
+                  <FormLabel
+                    fontFamily="Inter, sans-serif"
+                    fontWeight="500"
+                    color="gray.700"
+                    fontSize="sm"
+                  >
+                    Supplier Name
+                  </FormLabel>
+                  <Select
+                    name="supplier_name"
+                    value={newItem.supplier_name}
+                    onChange={handleChange}
+                    placeholder="Select supplier"
+                    isDisabled={isEditing}
+                    size="sm"
+                    h="1.5rem"
+                    fontFamily="Inter, sans-serif"
+                    borderColor="gray.300"
+                    _hover={{
+                      borderColor: "#625DF0",
+                    }}
+                    _focus={{
+                      borderColor: "#625DF0",
+                      boxShadow: "0 0 0 1px #625DF0",
+                    }}
+                  >
+                    {suppliers?.map((name, index) => (
+                      <option key={index} value={name}>
+                        {name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+
                 <FormControl>
                   <FormLabel
                     fontFamily="Inter, sans-serif"

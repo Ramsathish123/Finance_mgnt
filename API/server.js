@@ -115,25 +115,34 @@ app.post("/login", (req, res) => {
 
 app.post("/stock", (req, res) => {
   try {
-    const { productId, name, purchase_rate, rate, qty, gst } = req.body;
+    const { productId, name, purchase_rate, supplier_name, rate, qty, gst } =
+      req.body;
 
-    if (!productId || !name || !rate || !qty || !purchase_rate) {
+    if (
+      !productId ||
+      !name ||
+      !rate ||
+      !qty ||
+      !purchase_rate ||
+      !supplier_name
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     db.query(
       `INSERT INTO stock
-         (product_id, product_name, purchase_rate, rate, quantity, available_qty, gst)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
+         (product_id, product_name, purchase_rate,supplier_name, rate, quantity, available_qty, gst)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          product_name = VALUES(product_name),
          purchase_rate = VALUES(purchase_rate),
+         supplier_name = VALUES(supplier_name),
          rate = VALUES(rate),
          quantity = VALUES(quantity), -- Update total quantity to the new value
          available_qty = available_qty + (VALUES(quantity) - quantity), -- Adjust available_qty by the difference
          gst = VALUES(gst),
          updated_at = CURRENT_TIMESTAMP`,
-      [productId, name, purchase_rate, rate, qty, qty, gst || 0], // Parameters for the INSERT part
+      [productId, name, purchase_rate, supplier_name, rate, qty, qty, gst || 0], // Parameters for the INSERT part
       (error, result) => {
         if (error) {
           console.error("Database error:", error);
@@ -1276,7 +1285,27 @@ app.get("/supplier", (req, res) => {
     });
   });
 });
+app.get("/supplier/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = `
+    SELECT supplier_id, supplier_name, mobile, address, gst_number, created_at, updated_at
+    FROM supplier
+    WHERE supplier_id = ?
+  `;
 
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error("Supplier Fetch Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    res.json(results[0]);
+  });
+});
 app.put("/supplier/:id", (req, res) => {
   const sid = req.params.id;
   const { supplier_name, mobile, address, gst_number } = req.body;

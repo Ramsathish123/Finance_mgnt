@@ -202,7 +202,7 @@ const Supplier = () => {
                   <Th>ID</Th>
                   <Th>Name</Th>
                   <Th>Mobile</Th>
-                  <Th>GST</Th>
+                  <Th>GST Number</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
@@ -210,8 +210,13 @@ const Supplier = () => {
                 {suppliers.map((s) => (
                   <Tr key={s.supplier_id}>
                     <Td
-                    //   onClick={() => openEdit(s.supplier_id)}
-                    //   className="clickable-id"
+                      onClick={() => openEdit(s.supplier_id)}
+                      className="clickable-id"
+                      sx={{
+                        cursor: "pointer !important",
+                        color: "#625DF0 !important",
+                        // textDecoration: "underline !important",
+                      }}
                     >
                       {s.supplier_id}
                     </Td>
