@@ -7,11 +7,8 @@
   --color-text-muted: #718096;
   --color-text-white: #ffffff;
   --color-bg: #ffffff;
-  --color-bg-dark: #1a202c;
   --color-card-bg: #ffffff;
-  --color-card-bg-dark: #2d3748;
   --color-border: #e2e8f0;
-  --color-border-dark: #4a5568;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 40px rgba(98, 93, 240, 0.2);
@@ -29,11 +26,94 @@
   --transition-base: all 0.3s ease;
 }
 
-[data-theme="dark"] {
-  --color-bg: var(--color-bg-dark);
-  --color-card-bg: var(--color-card-bg-dark);
-  --color-border: var(--color-border-dark);
+/* Fixed dark mode support with proper selector */
+[data-theme="dark"] :root,
+html[data-theme="dark"],
+html.dark,
+body.dark {
+  --color-bg: #1a202c;
+  --color-card-bg: #2d3748;
+  --color-border: #4a5568;
   --color-text: #e2e8f0;
   --color-text-light: #a0aec0;
   --color-text-muted: #cbd5e0;
+  --color-brand-light: #2d3748;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 40px rgba(98, 93, 240, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+p,
+span,
+a,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: inherit;
+}
+/* ===========================
+   CSS Variables & Theme Setup
+   =========================== */
+
+:root {
+  /* Color Palette */
+  --color-bg: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-text: #1e293b;
+  --color-text-light: #4a4a6f;
+  --color-text-muted: #64748b;
+  --color-border: #e9eefc;
+  --color-brand-primary: #625df0;
+  --color-brand-secondary: #5854d4;
+  --color-brand-light: #f6f7ff;
+  --color-brand-primary-light: rgba(98, 93, 240, 0.08);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 40px rgba(98, 93, 240, 0.15);
+
+  /* Transitions */
+  --transition-base: all 0.2s ease;
+
+  /* Border Radius */
+  --radius-md: 0.2rem;
+  --radius-lg: 0.3rem;
+
+  /* Font Families */
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  /* Chart Colors */
+  --chart-purple: #a9a4ff;
+  --chart-blue: #8fbaff;
+  --chart-green: #8fe3c4;
+  --chart-orange: #ffb98a;
+  --chart-yellow: #ffe58f;
+  --chart-red: #ff9aa2;
+  --grid-color: rgba(0, 0, 0, 0.04);
 }

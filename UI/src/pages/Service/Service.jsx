@@ -543,17 +543,32 @@ const Service = () => {
       </Flex>
 
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={8}>
-        <Card className="stat-card ">
+        {/* Total Services */}
+        <Card
+          bg="white"
+          borderRadius="lg"
+          boxShadow="0 4px 12px rgba(98, 93, 240, 0.1)"
+          _hover={{
+            transform: "translateY(-4px)",
+            boxShadow: "0 8px 20px rgba(98, 93, 240, 0.2)",
+          }}
+          transition="all 0.2s ease"
+        >
           <CardBody>
             <Flex align="center">
               <Avatar
-                icon={<FiPhone />}
-                className="stat-icon icon-blue"
+                icon={<FiPhone color="#625DF0" size={20} />}
+                bg="rgba(98, 93, 240, 0.1)"
+                boxShadow="0 4px 12px rgba(98, 93, 240, 0.25)"
                 mr={4}
+                w="50px"
+                h="50px"
               />
               <Box>
-                <Text className="stat-label">Total Services</Text>
-                <Heading className="stat-value">
+                <Text fontSize="0.8rem" color="gray.600" fontWeight="500">
+                  Total Services
+                </Text>
+                <Heading fontSize="1.3rem" color="gray.800">
                   {serviceCount?.[0]?.total_service ?? 0}
                 </Heading>
               </Box>
@@ -561,17 +576,32 @@ const Service = () => {
           </CardBody>
         </Card>
 
-        <Card className="stat-card">
+        {/* Received */}
+        <Card
+          bg="white"
+          borderRadius="lg"
+          boxShadow="0 4px 12px rgba(255, 122, 61, 0.12)"
+          _hover={{
+            transform: "translateY(-4px)",
+            boxShadow: "0 8px 22px rgba(255, 122, 61, 0.25)",
+          }}
+          transition="all 0.2s ease"
+        >
           <CardBody>
             <Flex align="center">
               <Avatar
-                icon={<FiAlertCircle />}
-                className="stat-icon icon-orange"
+                icon={<FiAlertCircle color="#FF7A3D" size={20} />}
+                bg="rgba(255, 122, 61, 0.1)"
+                boxShadow="0 4px 12px rgba(255, 122, 61, 0.25)"
                 mr={4}
+                w="50px"
+                h="50px"
               />
               <Box>
-                <Text className="stat-label">Received</Text>
-                <Heading className="stat-value">
+                <Text fontSize="0.8rem" color="gray.600" fontWeight="500">
+                  Received
+                </Text>
+                <Heading fontSize="1.3rem" color="gray.800">
                   {serviceCount?.[0]?.received ?? 0}
                 </Heading>
               </Box>
@@ -579,17 +609,32 @@ const Service = () => {
           </CardBody>
         </Card>
 
-        <Card className="stat-card ">
+        {/* Delivered */}
+        <Card
+          bg="white"
+          borderRadius="lg"
+          boxShadow="0 4px 12px rgba(46, 184, 114, 0.12)"
+          _hover={{
+            transform: "translateY(-4px)",
+            boxShadow: "0 8px 22px rgba(46, 184, 114, 0.25)",
+          }}
+          transition="all 0.2s ease"
+        >
           <CardBody>
             <Flex align="center">
               <Avatar
-                icon={<FiSmartphone />}
-                className="stat-icon icon-green"
+                icon={<FiSmartphone color="#2EB872" size={20} />}
+                bg="rgba(46, 184, 114, 0.1)"
+                boxShadow="0 4px 12px rgba(46, 184, 114, 0.25)"
                 mr={4}
+                w="50px"
+                h="50px"
               />
               <Box>
-                <Text className="stat-label">Delivered</Text>
-                <Heading className="stat-value">
+                <Text fontSize="0.8rem" color="gray.600" fontWeight="500">
+                  Delivered
+                </Text>
+                <Heading fontSize="1.3rem" color="gray.800">
                   {serviceCount?.[0]?.delivered ?? 0}
                 </Heading>
               </Box>
