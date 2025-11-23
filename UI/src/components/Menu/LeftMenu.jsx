@@ -10,7 +10,7 @@ import {
   Tooltip,
   Icon,
 } from "@chakra-ui/react";
-import { FiMenu, FiX, FiHome, FiBox } from "react-icons/fi";
+import { FiMenu, FiX, FiHome, FiBox, FiTruck } from "react-icons/fi";
 import {
   RiBillLine,
   RiMoneyDollarCircleLine,
@@ -50,7 +50,7 @@ const LeftMenu = () => {
           { icon: RiBillLine, label: "Invoice", href: "/invoice" },
           { icon: RiToolsLine, label: "Service", href: "/service" },
           { icon: FiBox, label: "Stock", href: "/stock" },
-          { icon: FiBox, label: "Supplier", href: "/supplier" },
+          { icon: FiTruck, label: "Supplier", href: "/supplier" },
           { icon: RiMoneyDollarCircleLine, label: "Expense", href: "/expense" },
           { icon: RiPieChartLine, label: "Report", href: "/report" },
           { icon: RiUserAddLine, label: "Register", href: "/register" },
