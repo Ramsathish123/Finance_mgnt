@@ -42,6 +42,16 @@ body.dark {
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 40px rgba(98, 93, 240, 0.4);
 }
+body,
+html,
+#root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #e8eeff 0%, #ffffff 100%);
+  background-attachment: fixed;
+  font-family: "Inter", sans-serif;
+}
 
 * {
   box-sizing: border-box;

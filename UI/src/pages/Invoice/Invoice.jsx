@@ -282,31 +282,28 @@ const Invoice = () => {
     <Box overflow="hidden">
       <Flex
         className="page-header"
-        align="center"
+        align={{ base: "flex-start", md: "center" }}
         justify="space-between"
         mb={8}
         wrap="wrap"
         gap={3}
         w="100%"
+        direction={{ base: "column", md: "row" }}
       >
-        {/* Left: Title */}
-        <Text
-          className="page-title"
-          fontSize="2xl"
-          fontWeight="bold"
-          flex="0 0 auto"
-        >
+        {/* Title */}
+        <Text className="page-title" flex="0 0 auto" mb={{ base: 2, md: 0 }}>
           Create Invoice
         </Text>
 
-        {/* Right: Inputs - same row */}
+        {/* Inputs Group */}
         <Flex
           className="customer-info-group"
           gap={3}
-          align="center"
+          align={{ base: "stretch", md: "center" }}
           justify="flex-end"
           flex="1"
-          minW="0"
+          flexWrap="wrap"
+          w="100%"
         >
           <Input
             placeholder="Customer Name"
@@ -314,8 +311,8 @@ const Invoice = () => {
             onChange={(e) => setCustomerName(e.target.value)}
             size="sm"
             className="input-primary customer-input"
-            flex="0 0 25%"
-            minW="160px"
+            flex={{ base: "1 0 100%", md: "0 0 25%" }}
+            minW={{ base: "100%", md: "160px" }}
           />
 
           <Input
@@ -325,8 +322,8 @@ const Invoice = () => {
             size="sm"
             type="number"
             className="input-primary customer-input"
-            flex="0 0 20%"
-            minW="140px"
+            flex={{ base: "1 0 100%", md: "0 0 20%" }}
+            minW={{ base: "100%", md: "140px" }}
           />
 
           <Select
@@ -334,8 +331,8 @@ const Invoice = () => {
             className="input-primary payment-select"
             value={paymentMode}
             onChange={(e) => setPaymentMode(e.target.value)}
-            flex="0 0 15%"
-            minW="120px"
+            flex={{ base: "1 0 100%", md: "0 0 15%" }}
+            minW={{ base: "100%", md: "120px" }}
           >
             <option value="Cash">Cash</option>
             <option value="Gpay">GPay</option>
@@ -344,7 +341,6 @@ const Invoice = () => {
       </Flex>
 
       {/* Table Section */}
-
       <Card
         className="table-card"
         borderWidth="1px"
@@ -352,31 +348,31 @@ const Invoice = () => {
         shadow="sm"
         bg={tableBg}
       >
-        <Box className="table-scroll" minH={"300px"}>
-          <Table className="table" variant="simple" size="sm">
+        <Box className="table-scroll" minH="300px" overflowX="auto">
+          <Table className="table" variant="simple" size="sm" minW="650px">
             <Thead className="table-header">
               <Tr>
-                <Th className="text-left">Product</Th>
+                <Th>Product</Th>
                 <Th className="text-right">Qty</Th>
                 <Th className="text-right">Rate</Th>
                 <Th className="text-right">Amount</Th>
                 <Th textAlign="center">Action</Th>
               </Tr>
 
-              {/* Product Add Row */}
+              {/* Add Product Row */}
               <Tr>
                 <Td colSpan="6">
                   <Flex
+                    className="invoice-input-row"
                     gap={3}
                     align="center"
                     w="100%"
-                    className="invoice-input-row"
-                    position="relative"
+                    flexWrap={{ base: "wrap", md: "nowrap" }}
                   >
                     <Box
                       position="relative"
                       flex="1"
-                      minW="80%"
+                      minW={{ base: "100%", md: "80%" }}
                       className="search-wrapper"
                     >
                       <InputGroup>
@@ -385,6 +381,7 @@ const Invoice = () => {
                             className="search-icon"
                             color="var(--color-brand-primary)"
                             boxSize={3.5}
+                            mb={2.5}
                           />
                         </InputLeftElement>
 
@@ -435,6 +432,7 @@ const Invoice = () => {
                                 cursor="pointer"
                                 borderBottom="1px solid"
                                 borderColor="gray.100"
+                                justify="space-between"
                               >
                                 <Text className="dropdown-name" flex="1">
                                   {p.productName}
@@ -461,11 +459,9 @@ const Invoice = () => {
                       )}
                     </Box>
 
-                    {/* Quantity - 10% width */}
+                    {/* Quantity */}
                     <Input
-                      flex="0 0 10%"
-                      minW="70px"
-                      maxW="90px"
+                      flex={{ base: "1 0 48%", md: "0 0 10%" }}
                       size="sm"
                       type="number"
                       min={1}
@@ -475,11 +471,9 @@ const Invoice = () => {
                       placeholder="Qty"
                     />
 
-                    {/* Add Button - 8% width */}
+                    {/* Add Button */}
                     <Button
-                      flex="0 0 8%"
-                      minW="60px"
-                      maxW="80px"
+                      flex={{ base: "1 0 48%", md: "0 0 8%" }}
                       leftIcon={<FiPlus />}
                       className="btn-primary"
                       size="sm"
@@ -541,13 +535,12 @@ const Invoice = () => {
         w="100%"
         bg="white"
         py={3}
-        px={6}
+        px={{ base: 3, md: 6 }}
         borderTop="1px solid #dfe3ff"
         boxShadow="0 -2px 10px rgba(98, 93, 240, 0.08)"
-        zIndex={100}
+        zIndex={99}
       >
         <Flex justify="flex-end" align="center" gap={4} wrap="wrap">
-          {/* Total */}
           <Box className="footer-card">
             <Text className="footer-label">Total:</Text>
             <Text className="footer-value">
@@ -555,7 +548,6 @@ const Invoice = () => {
             </Text>
           </Box>
 
-          {/* Discount */}
           <Box className="footer-card">
             <Flex align="center" gap={2}>
               <Text className="footer-label">Discount:</Text>
@@ -569,7 +561,6 @@ const Invoice = () => {
             </Flex>
           </Box>
 
-          {/* Net */}
           <Box className="footer-card">
             <Text className="footer-label">Net:</Text>
             <Text className="footer-value">
@@ -577,7 +568,6 @@ const Invoice = () => {
             </Text>
           </Box>
 
-          {/* Print Button */}
           <Button
             className="btn-primary"
             size="sm"
