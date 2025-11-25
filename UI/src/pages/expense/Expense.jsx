@@ -240,12 +240,12 @@ const Expense = () => {
                     <Td>{item.created_at}</Td>
 
                     <Td>
-                      <Flex justify="center">
+                      <Flex>
                         <Tooltip label="Delete Item" bg="#625DF0" color="white">
                           <IconButton
                             icon={<FiTrash2 />}
                             aria-label="Delete"
-                            size="xs"
+                            size="sm"
                             className="table-action-btn delete"
                             onClick={() => handleDelete(item.eid)}
                           />

@@ -501,12 +501,12 @@ const Invoice = () => {
                       {Number(row.amount).toFixed(2)}
                     </Td>
                     <Td textAlign="center">
-                      <Flex justify="center" align="center" gap="6px">
+                      <Flex gap="6px">
                         <Tooltip label="Remove Item" bg="#625DF0" color="white">
                           <IconButton
                             icon={<FiTrash2 />}
                             aria-label="Remove"
-                            size="xs"
+                            size="sm"
                             className="table-action-btn delete"
                             onClick={() => handleRemove(row.productId)}
                           />

@@ -290,11 +290,11 @@ const Stock = () => {
                 <Tr>
                   <Th>ID</Th>
                   <Th>Product Name</Th>
-                  <Th className="text-right">Purchase Rate (₹)</Th>
-                  <Th className="text-right">Rate (₹)</Th>
-                  <Th className="text-right">Total Qty</Th>
-                  <Th className="text-right">Available Qty</Th>
-                  <Th textAlign="center">Action</Th>
+                  <Th>Purchase Rate (₹)</Th>
+                  <Th>Rate (₹)</Th>
+                  <Th>Total Qty</Th>
+                  <Th>Available Qty</Th>
+                  <Th>Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -312,18 +312,18 @@ const Stock = () => {
                       {item.id}
                     </Td>
                     <Td>{item.name}</Td>
-                    <Td className="text-right">₹{item.purchase_rate}</Td>
-                    <Td className="text-right">₹{item.rate}</Td>
-                    <Td className="text-right">{item.quantity}</Td>
-                    <Td className="text-right">{item.availableQty}</Td>
+                    <Td>₹{item.purchase_rate}</Td>
+                    <Td>₹{item.rate}</Td>
+                    <Td>{item.quantity}</Td>
+                    <Td>{item.availableQty}</Td>
 
                     <Td>
-                      <Flex justify="left" align="left" gap="6px">
+                      <Flex>
                         <Tooltip label="Delete Item" bg="#625DF0" color="white">
                           <IconButton
                             icon={<FiTrash />}
                             aria-label="Delete"
-                            size="xs"
+                            size="sm"
                             className="table-action-btn delete"
                             onClick={() => {
                               setDeleteItemId(item.sid);
@@ -339,7 +339,7 @@ const Stock = () => {
                           <IconButton
                             icon={<FiEye />}
                             aria-label="View History"
-                            size="xs"
+                            size="sm"
                             className="table-action-btn view"
                             onClick={() =>
                               handleViewHistory(item.sid, item.name)
@@ -406,12 +406,7 @@ const Stock = () => {
             <ModalBody className="modal-body">
               <Stack spacing={3} className="modal-form">
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Product ID
                   </FormLabel>
                   <Input
@@ -433,12 +428,7 @@ const Stock = () => {
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Product Name
                   </FormLabel>
                   <Input
@@ -460,12 +450,7 @@ const Stock = () => {
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Purchase Rate (₹)
                   </FormLabel>
                   <Input
@@ -488,12 +473,7 @@ const Stock = () => {
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Supplier Name
                   </FormLabel>
                   <Select
@@ -523,12 +503,7 @@ const Stock = () => {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Rate (₹)
                   </FormLabel>
                   <Input
@@ -551,12 +526,7 @@ const Stock = () => {
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Current Quantity
                   </FormLabel>
                   <Input
@@ -580,12 +550,7 @@ const Stock = () => {
                 </FormControl>
                 {isEditing && (
                   <FormControl>
-                    <FormLabel
-                      fontFamily="Inter, sans-serif"
-                      fontWeight="500"
-                      color="gray.700"
-                      fontSize="sm"
-                    >
+                    <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                       Add Quantity
                     </FormLabel>
                     <Input
@@ -608,12 +573,7 @@ const Stock = () => {
                   </FormControl>
                 )}
                 <FormControl>
-                  <FormLabel
-                    fontFamily="Inter, sans-serif"
-                    fontWeight="500"
-                    color="gray.700"
-                    fontSize="sm"
-                  >
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     GST
                   </FormLabel>
                   <Input
@@ -706,9 +666,9 @@ const Stock = () => {
                       <Thead>
                         <Tr>
                           <Th>Date & Time</Th>
-                          <Th className="text-right">Old Qty</Th>
-                          <Th className="text-right">Added Qty</Th>
-                          <Th className="text-right">New Qty</Th>
+                          <Th>Old Qty</Th>
+                          <Th>Added Qty</Th>
+                          <Th>New Qty</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
@@ -717,11 +677,9 @@ const Stock = () => {
                             <Td>
                               {new Date(record.updated_at).toLocaleString()}
                             </Td>
-                            <Td className="text-right">{record.old_qty}</Td>
-                            <Td className="text-right added">
-                              +{record.added_qty}
-                            </Td>
-                            <Td className="text-right">{record.new_qty}</Td>
+                            <Td>{record.old_qty}</Td>
+                            <Td className="added">+{record.added_qty}</Td>
+                            <Td>{record.new_qty}</Td>
                           </Tr>
                         ))}
                       </Tbody>

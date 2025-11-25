@@ -228,7 +228,7 @@ const Supplier = () => {
                         <Tooltip label="View Details">
                           <IconButton
                             icon={<FiEye />}
-                            size="xs"
+                            size="sm"
                             className="table-action-btn view"
                             onClick={() => openView(s)}
                           />
@@ -237,7 +237,7 @@ const Supplier = () => {
                         <Tooltip label="Delete">
                           <IconButton
                             icon={<FiTrash />}
-                            size="xs"
+                            size="sm"
                             className="table-action-btn delete"
                             onClick={() => {
                               setDeleteId(s.supplier_id);

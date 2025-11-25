@@ -388,11 +388,11 @@ const Report = () => {
                         <Th>Invoice No</Th>
                         <Th>Name</Th>
                         <Th>Mobile</Th>
-                        <Th className="text-right">Amount</Th>
-                        <Th className="text-right">Discount</Th>
-                        <Th className="text-right">Received</Th>
+                        <Th>Amount</Th>
+                        <Th>Discount</Th>
+                        <Th>Received</Th>
                         <Th>Date</Th>
-                        <Th textAlign="center">Action</Th>
+                        <Th>Action</Th>
                       </Tr>
                     )}
                   </Thead>
@@ -410,7 +410,7 @@ const Report = () => {
                             <Td maxW="200px" isTruncated>
                               {item.issue_details}
                             </Td>
-                            <Td className="text-right">₹{item.amount}</Td>
+                            <Td>₹{item.amount}</Td>
                             <Td>{item.delivery_date}</Td>
                           </>
                         ) : (
@@ -418,13 +418,13 @@ const Report = () => {
                             <Td>{item.invoiceNo}</Td>
                             <Td>{item.customerName}</Td>
                             <Td>{item.mobileNumber}</Td>
-                            <Td className="text-right">₹{item.amount}</Td>
-                            <Td className="text-right">{item.discount}</Td>
-                            <Td className="text-right">{item.total}</Td>
+                            <Td>₹{item.amount}</Td>
+                            <Td>{item.discount}</Td>
+                            <Td>{item.total}</Td>
                             <Td>{item.cre_date}</Td>
 
-                            <Td textAlign="center">
-                              <Flex justify="center" gap={2}>
+                            <Td>
+                              <Flex>
                                 <Tooltip
                                   label="Preview"
                                   bg="#625DF0"
@@ -433,7 +433,7 @@ const Report = () => {
                                   <IconButton
                                     icon={<FiEye />}
                                     aria-label="View"
-                                    size="xs"
+                                    size="sm"
                                     className="table-action-btn view"
                                     onClick={() => handleView(item.invoiceNo)}
                                   />
@@ -447,7 +447,7 @@ const Report = () => {
                                   <IconButton
                                     icon={<FiTrash2 />}
                                     aria-label="Delete"
-                                    size="xs"
+                                    size="sm"
                                     className="table-action-btn delete"
                                     onClick={() =>
                                       confirmDelete(item.invoiceNo)

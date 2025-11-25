@@ -302,7 +302,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardBody>
             <Box className="chart-box">
-              <Bar data={salesData} options={chartOptions} />
+              <Bar color="black" data={salesData} options={chartOptions} />
             </Box>
           </CardBody>
         </MotionCard>

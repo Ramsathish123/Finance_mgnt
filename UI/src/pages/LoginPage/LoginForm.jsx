@@ -112,6 +112,7 @@ export default function LoginForm() {
                     className="icon-btn"
                     onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1}
+                    p={1}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </Button>

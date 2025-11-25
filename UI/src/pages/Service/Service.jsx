@@ -715,12 +715,12 @@ const Service = () => {
 
                         <Td>{service.date}</Td>
 
-                        <Td textAlign="center">
+                        <Td>
                           <Tooltip label="Print" bg="#625DF0" color="white">
                             <IconButton
                               icon={<FiPrinter />}
                               aria-label="Print"
-                              size="xs"
+                              size="sm"
                               className="table-action-btn view"
                               onClick={() => handlePrint(service.service_id)}
                             />
