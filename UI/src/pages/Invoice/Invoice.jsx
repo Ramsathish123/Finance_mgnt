@@ -20,6 +20,7 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  Divider,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
@@ -527,56 +528,67 @@ const Invoice = () => {
         </Box>
       </Card>
 
-      {/* Sticky Footer */}
       <Box
         position="fixed"
-        bottom="0"
-        left="0"
-        w="100%"
+        bottom="20px"
+        right="30px"
         bg="white"
-        py={3}
-        px={{ base: 3, md: 6 }}
-        borderTop="1px solid #dfe3ff"
+        border="1px solid #E5E7EB"
+        borderRadius="xl"
         boxShadow="0 -2px 10px rgba(98, 93, 240, 0.08)"
+        w="360px"
+        p={5}
         zIndex={99}
+        className="rounded-xl bg-[#fafbff] shadow-sm"
       >
-        <Flex justify="flex-end" align="center" gap={4} wrap="wrap">
-          <Box className="footer-card">
-            <Text className="footer-label">Total:</Text>
-            <Text className="footer-value">
-              ₹{Number(totalAmount).toFixed(2)}
-            </Text>
-          </Box>
-
-          <Box className="footer-card">
-            <Flex align="center" gap={2}>
-              <Text className="footer-label">Discount:</Text>
-              <Input
-                size="sm"
-                className="input-primary input-small"
-                value={discount}
-                type="number"
-                onChange={(e) => setDiscount(e.target.value)}
-              />
-            </Flex>
-          </Box>
-
-          <Box className="footer-card">
-            <Text className="footer-label">Net:</Text>
-            <Text className="footer-value">
-              ₹{Number(netAmount).toFixed(2)}
-            </Text>
-          </Box>
-
-          <Button
-            className="btn-primary"
-            size="sm"
-            onClick={handleSave}
-            isDisabled={rows.length === 0}
-          >
-            Print Invoice
-          </Button>
+        {/* Sub Total */}
+        <Flex justify="space-between" align="center" mb={2}>
+          <Text fontWeight="semibold" color="gray.700">
+            Total
+          </Text>
+          <Text className="footer-value">
+            ₹{Number(totalAmount || 0).toFixed(2)}
+          </Text>
         </Flex>
+
+        {/* Discount */}
+        <Flex justify="space-between" align="center" mb={3}>
+          <Text color="gray.600">Discount</Text>
+          <Flex align="center" gap={2}>
+            <Input
+              type="number"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
+              width="70px"
+              height="28px"
+              fontSize="sm"
+            />
+            <Text color="gray.500">%</Text>
+            <Text color="gray.700">₹{Number(discount || 0).toFixed(2)}</Text>
+          </Flex>
+        </Flex>
+
+        <Divider my={3} />
+
+        {/* Total */}
+        <Flex justify="space-between" align="center" mb={2}>
+          <Text fontWeight="semibold" color="gray.700">
+            Net Amount ( ₹ )
+          </Text>
+          <Text fontSize="md" fontWeight="bold" color="#012AF6">
+            ₹{Number(netAmount).toFixed(2)}
+          </Text>
+        </Flex>
+
+        {/* Button */}
+        <Button
+          className="btn-primary"
+          size="sm"
+          onClick={handleSave}
+          isDisabled={rows.length === 0}
+        >
+          Print Invoice
+        </Button>
       </Box>
     </Box>
   );
