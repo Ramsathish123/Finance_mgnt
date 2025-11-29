@@ -13,6 +13,10 @@ import {
   Tr,
   useDisclosure,
   Modal,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -39,9 +43,12 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useState, useEffect, useRef } from "react";
-import { FiEye, FiTrash2, FiSearch, FiFilter } from "react-icons/fi";
+import { FiEye, FiTrash2, FiSearch, FiFilter, FiDownload } from "react-icons/fi";
 import axios from "axios";
 import { showToast } from "../../utils/toast";
+import { generatePDF } from "../../components/DownloadHelper/DownloadPDF";
+import { generateXLSX } from "../../components/DownloadHelper/DownloadXLSX";
+
 const Report = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
@@ -71,6 +78,7 @@ const Report = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showDailyReport, setShowDailyReport] = useState(false);
+  const [sumAmount, setSumAmount] = useState(0);
 
   const cardBg = useColorModeValue("white", "gray.700");
   const tableBg = useColorModeValue("white", "gray.800");
@@ -79,6 +87,19 @@ const Report = () => {
   useEffect(() => {
     fetchInvoices();
   }, []);
+
+  useEffect(() => {
+    const sum = invoiceData.reduce((acc, row) => acc + Number(row.amount || 0), 0);
+    setSumAmount(sum);
+  }, [invoiceData]);
+
+  const handleDownloadPDF = () => {
+    generatePDF(invoiceData, sumAmount);
+  };
+
+  const handleDownloadXLSX = () => {
+    generateXLSX(invoiceData, sumAmount);
+  };
 
   const fetchInvoices = async () => {
     setLoading(true);
@@ -350,18 +371,38 @@ const Report = () => {
 
             {/* FILTER BUTTON LIKE ZOHO */}
             <Box position="relative">
-              <Button
-                leftIcon={<FiFilter size={18} />}
-                aria-label="Filter"
-                size="sm"
-                bg="#EEF2FF"
-                color="#4338CA"
-                borderRadius="md"
-                onClick={() => setShowFilterMenu(!showFilterMenu)}
-                _hover={{ bg: "#E0E7FF" }}
-              >
-                Filter
-              </Button>
+              <Flex justify="flex-end" align="center" gap={3}>
+                {/* DOWNLOAD BUTTON */}
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    leftIcon={<FiDownload />}
+                    size="sm"
+                    bg="#E0F2FE"
+                    color="#0369A1"
+                    borderRadius="md"
+                    _hover={{ bg: "#BAE6FD" }}
+                  >
+                    Download
+                  </MenuButton>
+
+                  <MenuList>
+                    <MenuItem onClick={() => handleDownloadPDF()}>PDF Format</MenuItem>
+                    <MenuItem onClick={() => handleDownloadXLSX()}>XLSX Format</MenuItem>
+                  </MenuList>
+                </Menu>
+
+                {/* EXISTING FILTER BUTTON */}
+                <Button
+                  leftIcon={<FiFilter size={18} />}
+                  size="sm"
+                  bg="#EEF2FF"
+                  color="#4338CA"
+                  onClick={() => setShowFilterMenu(!showFilterMenu)}
+                >
+                  Filter
+                </Button>
+              </Flex>
 
               {/* FILTER DROPDOWN MENU */}
               {showFilterMenu && (
@@ -587,6 +628,15 @@ const Report = () => {
                     <Td isNumeric>₹{report?.todayTotalSale}</Td>
                   </Tr>
                 </Tbody>
+                <Tfoot>
+                  <Tr bg="gray.100">
+                    <Th colSpan={3}></Th>
+                    <Th fontWeight="700">₹{sumAmount}</Th>
+                    <Th></Th>
+                    <Th></Th>
+                    <Th></Th>
+                  </Tr>
+                </Tfoot>
               </Table>
             ) : (
               <>
@@ -604,7 +654,7 @@ const Report = () => {
                   <Button size="sm" colorScheme="orange">
                     Record Payment
                   </Button>
-                  <Button size="sm" colorScheme="red">
+                  <Button size="sm" colorScheme="red" onClick={handleDelete}>
                     Delete
                   </Button>
                 </Flex>
