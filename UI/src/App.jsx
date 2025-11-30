@@ -5,12 +5,12 @@ import Register from "./pages/RegisterPage/Register";
 import "./App.css";
 
 import Dashboard from "./pages/dashboard/dashboard";
-import Stock from "./pages/Stock/Stock";
+import Loan from "./pages/Loan/Loan";
 import Expense from "./pages/Expense/Expense";
-import Service from "./pages/Service/Service";
-import Invoice from "./pages/Invoice/Invoice";
+import Repayment from "./pages/Repayment/Repayment";
+import Customer from "./pages/Customer/Customer";
 import { FileProvider } from "./context/Filecontext";
-import Report from "./pages/Invoice/Report";
+import Report from "./pages/Customer/Report";
 import PrivateRoute from "../src/components/Route/PrivateRoute";
 import { MenuProvider } from "./components/Menuprovider";
 import LeftMenu from "./components/Menu/LeftMenu";
@@ -29,12 +29,12 @@ function App() {
             {/* Layout route with nested content */}
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<LeftMenu />}>
-                <Route path="stock" element={<Stock />} />
+                <Route path="loan" element={<Loan />} />
                 <Route path="supplier" element={<Supplier />} />
                 <Route path="expense" element={<Expense />} />
-                <Route path="service" element={<Service />} />
+                <Route path="repayment" element={<Repayment />} />
                 <Route path="dashboard" element={<Dashboard />} />
-                <Route path="invoice" element={<Invoice />} />
+                <Route path="customer" element={<Customer />} />
                 <Route path="report" element={<Report />} />
               </Route>
             </Route>

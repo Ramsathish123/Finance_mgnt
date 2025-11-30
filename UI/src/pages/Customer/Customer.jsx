@@ -36,16 +36,12 @@ import { FiTrash2, FiPlus, FiEye, FiTrash } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { showToast } from "../../utils/toast";
-const Stock = () => {
+const Customer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [stockItems, setStockItems] = useState([]);
   const toast = useToast();
   const [deleteItemId, setDeleteItemId] = useState(null);
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
   const modalSize = useBreakpointValue({ base: "full", md: "lg" });
 
@@ -84,11 +80,7 @@ const Stock = () => {
   const fetchStockItems = async (page = 1) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/stock?page=${page}&limit=${itemsPerPage}`
-      );
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/stock?page=${page}&limit=${itemsPerPage}`);
       setStockItems(response.data.data || response.data);
       setTotalPages(response.data.totalPages || 1);
     } catch (error) {
@@ -105,9 +97,7 @@ const Stock = () => {
   const handleViewHistory = async (id, name) => {
     try {
       setSelectedStock(name);
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/stock/${id}/history`
-      );
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/stock/${id}/history`);
       setHistoryData(response.data);
       setIsHistoryOpen(true);
     } catch {
@@ -121,9 +111,7 @@ const Stock = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/stock/${id}`
-      );
+      const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/stock/${id}`);
       showToast({
         title: "Success",
         description: response.data.message || "Item deleted successfully",
@@ -141,9 +129,7 @@ const Stock = () => {
 
   const handleEdit = async (id) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/stock_select/${id}`
-      );
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/stock_select/${id}`);
       const data = response.data;
       setNewItem({
         productId: data.product_id || "",
@@ -196,20 +182,14 @@ const Stock = () => {
       };
 
       if (isEditing) {
-        await axios.put(
-          `${import.meta.env.VITE_API_BASE_URL}/stock/${editingId}`,
-          itemToSend
-        );
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/stock/${editingId}`, itemToSend);
         showToast({
           title: "Updated",
           description: "Stock updated successfully",
           status: "success",
         });
       } else {
-        await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/stock`,
-          itemToSend
-        );
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/stock`, itemToSend);
         showToast({
           title: "Added",
           description: "New stock item added",
@@ -260,16 +240,14 @@ const Stock = () => {
       {loading && (
         <Box className="loading-overlay">
           <Spinner size="xl" color="#625DF0" thickness="4px" mb={2} />
-          <Text className="loading-text">
-            Retrieving records, please wait...
-          </Text>
+          <Text className="loading-text">Retrieving records, please wait...</Text>
         </Box>
       )}
 
       <Box overflow="hidden">
         {/* Page Header */}
         <Flex className="page-header">
-          <Text className="page-title">Stock Details</Text>
+          <Text className="page-title">Customer</Text>
           <Button
             className="btn-primary"
             size="sm"
@@ -279,7 +257,7 @@ const Stock = () => {
             }}
             leftIcon={<FiPlus />}
           >
-            Add Stock
+            Add Customer
           </Button>
         </Flex>
 
@@ -289,11 +267,11 @@ const Stock = () => {
               <Thead>
                 <Tr>
                   <Th>ID</Th>
-                  <Th>Product Name</Th>
-                  <Th>Purchase Rate (₹)</Th>
-                  <Th>Rate (₹)</Th>
-                  <Th>Total Qty</Th>
-                  <Th>Available Qty</Th>
+                  <Th>Customer Name</Th>
+                  <Th>Mobile</Th>
+                  <Th>Address (₹)</Th>
+                  <Th>Aadhar No</Th>
+                  <Th>Guarantor</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
@@ -331,19 +309,13 @@ const Stock = () => {
                             }}
                           />
                         </Tooltip>
-                        <Tooltip
-                          label="View History"
-                          bg="#625DF0"
-                          color="white"
-                        >
+                        <Tooltip label="View History" bg="#625DF0" color="white">
                           <IconButton
                             icon={<FiEye />}
                             aria-label="View History"
                             size="sm"
                             className="table-action-btn view"
-                            onClick={() =>
-                              handleViewHistory(item.sid, item.name)
-                            }
+                            onClick={() => handleViewHistory(item.sid, item.name)}
                           />
                         </Tooltip>
                       </Flex>
@@ -355,9 +327,7 @@ const Stock = () => {
           </Box>
 
           <Flex className="pagination-footer">
-            <Text className="pagination-text">
-              Showing {stockItems.length} items
-            </Text>
+            <Text className="pagination-text">Showing {stockItems.length} items</Text>
             <HStack spacing={2}>
               <Button
                 size="xs"
@@ -372,9 +342,7 @@ const Stock = () => {
                 <Button
                   key={i}
                   size="xs"
-                  className={`pagination-btn ${
-                    currentPage === i + 1 ? "active" : ""
-                  }`}
+                  className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
                   onClick={() => setCurrentPage(i + 1)}
                 >
                   {i + 1}
@@ -384,9 +352,7 @@ const Stock = () => {
               <Button
                 size="xs"
                 className="pagination-btn"
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 isDisabled={currentPage === totalPages}
               >
                 Next
@@ -399,21 +365,19 @@ const Stock = () => {
         <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
           <ModalOverlay />
           <ModalContent className="modal-box">
-            <ModalHeader className="modal-header">
-              {isEditing ? "Edit Stock Item" : "Add New Stock Item"}
-            </ModalHeader>
+            <ModalHeader className="modal-header">{isEditing ? "Edit Customer" : "Add New Customer"}</ModalHeader>
             <ModalCloseButton />
             <ModalBody className="modal-body">
               <Stack spacing={3} className="modal-form">
                 <FormControl>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    Product ID
+                    Customer Name
                   </FormLabel>
                   <Input
-                    name="productId"
+                    name="customer_name"
                     value={newItem.productId}
                     onChange={handleChange}
-                    placeholder="Enter product ID"
+                    placeholder="Enter customer name"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"
@@ -429,7 +393,7 @@ const Stock = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    Product Name
+                    Mobile
                   </FormLabel>
                   <Input
                     name="name"
@@ -451,7 +415,7 @@ const Stock = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    Purchase Rate (₹)
+                    Aadhar No
                   </FormLabel>
                   <Input
                     type="number"
@@ -474,37 +438,7 @@ const Stock = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    Supplier Name
-                  </FormLabel>
-                  <Select
-                    name="supplier_name"
-                    value={newItem.supplier_name}
-                    onChange={handleChange}
-                    placeholder="Select supplier"
-                    isDisabled={isEditing}
-                    size="sm"
-                    h="1.5rem"
-                    fontFamily="Inter, sans-serif"
-                    borderColor="gray.300"
-                    _hover={{
-                      borderColor: "#625DF0",
-                    }}
-                    _focus={{
-                      borderColor: "#625DF0",
-                      boxShadow: "0 0 0 1px #625DF0",
-                    }}
-                  >
-                    {suppliers?.map((name, index) => (
-                      <option key={index} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    Rate (₹)
+                    Address
                   </FormLabel>
                   <Input
                     type="number"
@@ -527,7 +461,7 @@ const Stock = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    Current Quantity
+                    Guarentor name
                   </FormLabel>
                   <Input
                     type="number"
@@ -548,33 +482,9 @@ const Stock = () => {
                     }}
                   />
                 </FormControl>
-                {isEditing && (
-                  <FormControl>
-                    <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                      Add Quantity
-                    </FormLabel>
-                    <Input
-                      type="number"
-                      name="addQty"
-                      value={newItem.addQty}
-                      onChange={handleChange}
-                      placeholder="Enter quantity to add"
-                      fontFamily="Inter, sans-serif"
-                      borderRadius="lg"
-                      borderColor="gray.300"
-                      _hover={{
-                        borderColor: "#625DF0",
-                      }}
-                      _focus={{
-                        borderColor: "#625DF0",
-                        boxShadow: "0 0 0 1px #625DF0",
-                      }}
-                    />
-                  </FormControl>
-                )}
                 <FormControl>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
-                    GST
+                    Guarantor Aadhar
                   </FormLabel>
                   <Input
                     type="number"
@@ -598,12 +508,7 @@ const Stock = () => {
               </Stack>
             </ModalBody>
             <ModalFooter className="modal-footer">
-              <Button
-                variant="ghost"
-                className="btn-cancel"
-                size="sm"
-                onClick={onClose}
-              >
+              <Button variant="ghost" className="btn-cancel" size="sm" onClick={onClose}>
                 Cancel
               </Button>
               <Button className="btn-primary" size="sm" onClick={handleSave}>
@@ -623,12 +528,7 @@ const Stock = () => {
               <Text>Are you sure you want to delete this stock item?</Text>
             </ModalBody>
             <ModalFooter className="modal-footer">
-              <Button
-                variant="ghost"
-                className="btn-cancel"
-                onClick={onDeleteClose}
-                size="sm"
-              >
+              <Button variant="ghost" className="btn-cancel" onClick={onDeleteClose} size="sm">
                 Cancel
               </Button>
               <Button
@@ -646,17 +546,10 @@ const Stock = () => {
         </Modal>
 
         {/* History Modal */}
-        <Modal
-          isOpen={isHistoryOpen}
-          onClose={() => setIsHistoryOpen(false)}
-          size="lg"
-          isCentered
-        >
+        <Modal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} size="lg" isCentered>
           <ModalOverlay />
           <ModalContent className="modal-box">
-            <ModalHeader className="modal-header">
-              Stock History - {selectedStock}
-            </ModalHeader>
+            <ModalHeader className="modal-header">Stock History - {selectedStock}</ModalHeader>
             <ModalCloseButton />
             <ModalBody className="modal-body">
               {historyData.length > 0 ? (
@@ -674,9 +567,7 @@ const Stock = () => {
                       <Tbody>
                         {historyData.map((record, index) => (
                           <Tr key={index}>
-                            <Td>
-                              {new Date(record.updated_at).toLocaleString()}
-                            </Td>
+                            <Td>{new Date(record.updated_at).toLocaleString()}</Td>
                             <Td>{record.old_qty}</Td>
                             <Td className="added">+{record.added_qty}</Td>
                             <Td>{record.new_qty}</Td>
@@ -687,17 +578,11 @@ const Stock = () => {
                   </Box>
                 </Box>
               ) : (
-                <Text className="empty-text">
-                  No history found for this stock item.
-                </Text>
+                <Text className="empty-text">No history found for this stock item.</Text>
               )}
             </ModalBody>
             <ModalFooter className="modal-footer">
-              <Button
-                className="btn-primary"
-                size="sm"
-                onClick={() => setIsHistoryOpen(false)}
-              >
+              <Button className="btn-primary" size="sm" onClick={() => setIsHistoryOpen(false)}>
                 Close
               </Button>
             </ModalFooter>
@@ -708,4 +593,4 @@ const Stock = () => {
   );
 };
 
-export default Stock;
+export default Customer;

@@ -41,17 +41,10 @@ import {
   Spinner, // <-- Added Spinner import
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import {
-  FiPlus,
-  FiPhone,
-  FiUser,
-  FiSmartphone,
-  FiAlertCircle,
-  FiPrinter,
-} from "react-icons/fi";
+import { FiPlus, FiPhone, FiUser, FiSmartphone, FiAlertCircle, FiPrinter } from "react-icons/fi";
 import axios from "axios";
 import { showToast } from "../../utils/toast";
-const Service = () => {
+const Loan = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const [formData, setFormData] = useState({
@@ -79,16 +72,8 @@ const Service = () => {
     balCost: "",
   });
   const [loading, setLoading] = useState(false); // <-- Added loading state
-  const {
-    isOpen: isAddServiceOpen,
-    onOpen: onAddserviceOpen,
-    onClose: onAddServiceClose,
-  } = useDisclosure();
-  const {
-    isOpen: isServicePrintOpen,
-    onOpen: onServicePrintOpen,
-    onClose: onServicePrintClose,
-  } = useDisclosure();
+  const { isOpen: isAddServiceOpen, onOpen: onAddserviceOpen, onClose: onAddServiceClose } = useDisclosure();
+  const { isOpen: isServicePrintOpen, onOpen: onServicePrintOpen, onClose: onServicePrintClose } = useDisclosure();
   const handleCostChange = () => {
     const advance = parseFloat(formState.advanceCost) || 0;
     const balance = parseFloat(formState.balCost) || 0;
@@ -132,12 +117,7 @@ const Service = () => {
 
   const handleAddService = async () => {
     try {
-      if (
-        !formData.customerName ||
-        !formData.mobileNumber ||
-        !formData.mobileModel ||
-        !formData.issue
-      ) {
+      if (!formData.customerName || !formData.mobileNumber || !formData.mobileModel || !formData.issue) {
         throw new Error("Please fill all required fields");
       }
       const payload = {
@@ -151,16 +131,13 @@ const Service = () => {
         advance: formData.advance,
       };
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/mobile_service`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mobile_service`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
       const data = await response.json();
 
@@ -229,9 +206,7 @@ const Service = () => {
           mobileNumber: item.mob_no,
           issue: item.issue_details,
           status: item.status,
-          date: item.received_date
-            ? new Date(item.received_date).toLocaleDateString("en-IN")
-            : "N/A",
+          date: item.received_date ? new Date(item.received_date).toLocaleDateString("en-IN") : "N/A",
         }));
         setServices(formatted);
         setCurrentPage(json.currentPage);
@@ -253,9 +228,7 @@ const Service = () => {
   const fetchServiceCount = async () => {
     setLoading(true); // <-- Set loading true
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/get_service_count`
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_service_count`);
       const data = await response.json();
       if (response.ok) {
         setServiceCount(data);
@@ -279,14 +252,11 @@ const Service = () => {
       advance: parseFloat(formState.advanceCost),
     };
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/update_service`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }
-    );
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/update_service`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
     if (response.ok) {
       showToast({
@@ -314,9 +284,7 @@ const Service = () => {
     return `${dd}-${mm}-${yyyy}`;
   }
   const handlePrint = async (id) => {
-    const updatedData = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/get_service_by_id/${id}`
-    );
+    const updatedData = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_service_by_id/${id}`);
     const serviceData = await updatedData.json();
 
     // Format for printReceipt
@@ -338,9 +306,7 @@ const Service = () => {
 
   const handleEdit = async (id) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/services/${id}`
-      );
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/services/${id}`);
       const data = response.data;
       setFormState({
         service_id: data.service_id,
@@ -360,22 +326,10 @@ const Service = () => {
   const printReceipt = (data) => {
     const receiptWindow = window.open("", "PRINT", "height=600,width=800");
 
-    const {
-      service_no,
-      customerName,
-      mobileNumber,
-      product,
-      issue,
-      amount,
-      advance,
-      status,
-      address,
-      delivery_date,
-    } = data;
+    const { service_no, customerName, mobileNumber, product, issue, amount, advance, status, address, delivery_date } =
+      data;
 
-    const balance = (
-      parseFloat(amount || 0) - parseFloat(advance || 0)
-    ).toFixed(2);
+    const balance = (parseFloat(amount || 0) - parseFloat(advance || 0)).toFixed(2);
 
     const receiptHTML = `
     <html>
@@ -513,23 +467,12 @@ const Service = () => {
     receiptWindow.close();
   };
 
-  // useEffect(() => {
-  //   const advance = parseFloat(formState.advanceCost) || 0;
-  //   const balance = parseFloat(formState.balCost) || 0;
-  //   const total = advance + balance;
-
-  //   setFormState((prev) => ({
-  //     ...prev,
-  //     actualCost: total,
-  //   }));
-  // }, [formState.advanceCost, formState.balCost]);
-
   return (
     <Box overflow="hidden">
       {/* Page Header */}
       <Flex className="page-header">
-        <Text className="page-title">Device Services</Text>
-        <Button
+        <Text className="page-title">Loan</Text>
+        {/* <Button
           leftIcon={<FiPlus />}
           className="btn-primary"
           onClick={() => {
@@ -539,115 +482,113 @@ const Service = () => {
           size="sm"
         >
           New Service
-        </Button>
+        </Button> */}
       </Flex>
 
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={8}>
-        {/* Total Services */}
-        <Card
-          bg="white"
-          borderRadius="lg"
-          boxShadow="0 4px 12px rgba(98, 93, 240, 0.1)"
-          _hover={{
-            transform: "translateY(-4px)",
-            boxShadow: "0 8px 20px rgba(98, 93, 240, 0.2)",
-          }}
-          transition="all 0.2s ease"
-        >
-          <CardBody>
-            <Flex align="center">
-              <Avatar
-                icon={<FiPhone color="#625DF0" size={20} />}
-                bg="rgba(98, 93, 240, 0.1)"
-                boxShadow="0 4px 12px rgba(98, 93, 240, 0.25)"
-                mr={4}
-                w="50px"
-                h="50px"
-              />
-              <Box>
-                <Text fontSize="0.8rem" color="gray.600" fontWeight="500">
-                  Total Services
-                </Text>
-                <Heading fontSize="1.3rem" color="gray.800">
-                  {serviceCount?.[0]?.total_service ?? 0}
-                </Heading>
-              </Box>
-            </Flex>
-          </CardBody>
-        </Card>
+      {/* Repayment Input Box */}
+      <Card bg="white" borderRadius="lg" p={6} mb={8} boxShadow="0 4px 20px rgba(0,0,0,0.06)">
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4}>
+          {/* Load No */}
+          <FormControl>
+            <FormLabel>Load No</FormLabel>
+            <Input
+              placeholder="Enter load no"
+              // value={repayment.loadNo}
+              // onChange={(e) => setRepayment({ ...repayment, loadNo: e.target.value })}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Mobile</FormLabel>
+            <Input
+              placeholder="Enter load no"
+              // value={repayment.loadNo}
+              // onChange={(e) => setRepayment({ ...repayment, loadNo: e.target.value })}
+            />
+          </FormControl>
 
-        {/* Received */}
-        <Card
-          bg="white"
-          borderRadius="lg"
-          boxShadow="0 4px 12px rgba(255, 122, 61, 0.12)"
-          _hover={{
-            transform: "translateY(-4px)",
-            boxShadow: "0 8px 22px rgba(255, 122, 61, 0.25)",
-          }}
-          transition="all 0.2s ease"
-        >
-          <CardBody>
-            <Flex align="center">
-              <Avatar
-                icon={<FiAlertCircle color="#FF7A3D" size={20} />}
-                bg="rgba(255, 122, 61, 0.1)"
-                boxShadow="0 4px 12px rgba(255, 122, 61, 0.25)"
-                mr={4}
-                w="50px"
-                h="50px"
-              />
-              <Box>
-                <Text fontSize="0.8rem" color="gray.600" fontWeight="500">
-                  Received
-                </Text>
-                <Heading fontSize="1.3rem" color="gray.800">
-                  {serviceCount?.[0]?.received ?? 0}
-                </Heading>
-              </Box>
-            </Flex>
-          </CardBody>
-        </Card>
+          {/* Area */}
+          <FormControl>
+            <FormLabel>Area</FormLabel>
+            <Select
+              placeholder="Select area"
+              // value={repayment.area}
+              // onChange={(e) => setRepayment({ ...repayment, area: e.target.value })}
+            >
+              <option value="Thanjavur">Thanjavur</option>
+              <option value="Trichy">Trichy</option>
+              <option value="Ariyalur">Ariyalur</option>
+            </Select>
+          </FormControl>
 
-        {/* Delivered */}
-        <Card
-          bg="white"
-          borderRadius="lg"
-          boxShadow="0 4px 12px rgba(46, 184, 114, 0.12)"
-          _hover={{
-            transform: "translateY(-4px)",
-            boxShadow: "0 8px 22px rgba(46, 184, 114, 0.25)",
-          }}
-          transition="all 0.2s ease"
-        >
-          <CardBody>
-            <Flex align="center">
-              <Avatar
-                icon={<FiSmartphone color="#2EB872" size={20} />}
-                bg="rgba(46, 184, 114, 0.1)"
-                boxShadow="0 4px 12px rgba(46, 184, 114, 0.25)"
-                mr={4}
-                w="50px"
-                h="50px"
-              />
-              <Box>
-                <Text fontSize="0.8rem" color="gray.600" fontWeight="500">
-                  Delivered
-                </Text>
-                <Heading fontSize="1.3rem" color="gray.800">
-                  {serviceCount?.[0]?.delivered ?? 0}
-                </Heading>
-              </Box>
-            </Flex>
-          </CardBody>
-        </Card>
-      </SimpleGrid>
+          {/* Name / Customer */}
+          <FormControl>
+            <FormLabel>Customer Name</FormLabel>
+            <Select
+              placeholder="Select customer"
+              // value={repayment.customer}
+              // onChange={(e) => setRepayment({ ...repayment, customer: e.target.value })}
+            >
+              {/* {customerList?.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))} */}
+            </Select>
+          </FormControl>
+
+          {/* Loan Amount */}
+          <FormControl>
+            <FormLabel>Loan Amount</FormLabel>
+            <Input
+              type="number"
+              // value={repayment.loanAmount}
+              placeholder="Loan amount"
+              // onChange={(e) => setRepayment({ ...repayment, loanAmount: e.target.value })}
+            />
+          </FormControl>
+
+          {/* Payment */}
+          <FormControl>
+            <FormLabel>Payment</FormLabel>
+            <Input
+              type="number"
+              //value={repayment.payment}
+              placeholder="Enter payment"
+              // onChange={(e) => {
+              //   const payment = e.target.value;
+              //   const balance = Number(repayment.loanAmount || 0) - Number(payment || 0);
+
+              //   setRepayment({
+              //     ...repayment,
+              //     payment,
+              //     balance: balance < 0 ? 0 : balance,
+              //   });
+              // }}
+            />
+          </FormControl>
+
+          {/* Balance (Auto) */}
+          <FormControl>
+            <FormLabel>Balance</FormLabel>
+            <Input type="number" isReadOnly value={0} />
+          </FormControl>
+        </SimpleGrid>
+
+        {/* Buttons */}
+        <Flex mt={6} justify="flex-end" gap={3}>
+          <Button variant="outline" colorScheme="gray" onClick={() => setRepayment(initialState)}>
+            Cancel
+          </Button>
+
+          <Button colorScheme="purple">Approve</Button>
+        </Flex>
+      </Card>
 
       {/* Services Table */}
       <Card className="table-card">
         <CardHeader className="page-header">
           <Text color={"black"} fontWeight={"500"}>
-            Recent Service Requests
+            Loan History
           </Text>
 
           <Input
@@ -691,10 +632,7 @@ const Service = () => {
                       <Tr key={service.id}>
                         <Td className="clickable-id">{service.serviceNo}</Td>
 
-                        <Td
-                          className="clickable-id"
-                          onClick={() => handleEdit(service.service_id)}
-                        >
+                        <Td className="clickable-id" onClick={() => handleEdit(service.service_id)}>
                           {service.customerName}
                         </Td>
 
@@ -704,11 +642,7 @@ const Service = () => {
                         <Td className="text-left">{service.issue}</Td>
 
                         <Td>
-                          <Tag
-                            colorScheme={getStatusColor(service.status)}
-                            size="sm"
-                            borderRadius="full"
-                          >
+                          <Tag colorScheme={getStatusColor(service.status)} size="sm" borderRadius="full">
                             <TagLabel>{service.status}</TagLabel>
                           </Tag>
                         </Td>
@@ -742,9 +676,7 @@ const Service = () => {
 
               {/* Pagination Footer */}
               <Flex className="pagination-footer">
-                <Text className="pagination-text">
-                  Showing {services.length} items
-                </Text>
+                <Text className="pagination-text">Showing {services.length} items</Text>
 
                 <HStack spacing={2}>
                   <Button
@@ -764,9 +696,7 @@ const Service = () => {
                     <Button
                       key={i}
                       size="xs"
-                      className={`pagination-btn ${
-                        currentPage === i + 1 ? "active" : ""
-                      }`}
+                      className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
                       onClick={() => {
                         setCurrentPage(i + 1);
                         fetchServices(i + 1, searchdate);
@@ -801,12 +731,7 @@ const Service = () => {
         <ModalContent className="modal-box">
           <ModalHeader className="modal-header">
             <Flex align="center" gap={2}>
-              <Avatar
-                icon={<FiPlus />}
-                bg="blue.100"
-                color="blue.600"
-                size="sm"
-              />
+              <Avatar icon={<FiPlus />} bg="blue.100" color="blue.600" size="sm" />
               New Service Request
             </Flex>
           </ModalHeader>
@@ -891,10 +816,7 @@ const Service = () => {
                   <FormLabel>Balance (auto)</FormLabel>
                   <Input
                     isReadOnly
-                    value={(
-                      Number(formData.actual_cost || 0) -
-                      Number(formData.advance || 0)
-                    ).toFixed(2)}
+                    value={(Number(formData.actual_cost || 0) - Number(formData.advance || 0)).toFixed(2)}
                   />
                 </FormControl>
               </Flex>
@@ -916,23 +838,14 @@ const Service = () => {
             <Button className="btn-cancel" size="sm" onClick={onClose}>
               Cancel
             </Button>
-            <Button
-              className="btn-primary"
-              size="sm"
-              onClick={handleAddService}
-            >
+            <Button className="btn-primary" size="sm" onClick={handleAddService}>
               Create Service
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      <Modal
-        isOpen={isServicePrintOpen}
-        onClose={onServicePrintClose}
-        size="md"
-        isCentered
-      >
+      <Modal isOpen={isServicePrintOpen} onClose={onServicePrintClose} size="md" isCentered>
         <ModalOverlay />
         <ModalContent className="modal-box">
           <ModalHeader className="modal-header">Update Service</ModalHeader>
@@ -945,9 +858,7 @@ const Service = () => {
                 <FormLabel>Issue Details</FormLabel>
                 <Textarea
                   value={formState.issueDetails}
-                  onChange={(e) =>
-                    setFormState({ ...formState, issueDetails: e.target.value })
-                  }
+                  onChange={(e) => setFormState({ ...formState, issueDetails: e.target.value })}
                 />
               </FormControl>
 
@@ -1009,13 +920,11 @@ const Service = () => {
       {loading && (
         <Box className="loading-overlay">
           <Spinner size="xl" color="#625DF0" thickness="4px" mb={2} />
-          <Text className="loading-text">
-            Retrieving records, please wait...
-          </Text>
+          <Text className="loading-text">Retrieving records, please wait...</Text>
         </Box>
       )}
     </Box>
   );
 };
 
-export default Service;
+export default Loan;
