@@ -33,6 +33,7 @@ import {
   Tag,
   TagLabel,
   Select,
+  FormErrorMessage,
   useColorModeValue,
   IconButton,
   SimpleGrid,
@@ -44,24 +45,26 @@ import { useState, useEffect } from "react";
 import { FiPlus, FiPhone, FiUser, FiSmartphone, FiAlertCircle, FiPrinter } from "react-icons/fi";
 import axios from "axios";
 import { showToast } from "../../utils/toast";
+
 const Loan = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const [formData, setFormData] = useState({
-    serviceNo: "",
-    customerName: "",
-    mobileNumber: "",
-    mobileModel: "",
-    issue: "",
-    status: "Received",
-    advance: "" || 0.0,
+    mobile: "",
+    area: "",
+    customer: "",
+    loanAmount: "",
+    tenure: "",
+    interest: "",
+    tenureType: "",
   });
-  const [services, setServices] = useState([]);
+  const [errors, setErrors] = useState({});
+
+  const [loan, setloan] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
-  const [serviceCount, setServiceCount] = useState([]);
-  const [selectedService, setSelectedService] = useState(null);
+  const [loanCount, setloanCount] = useState([]);
   const [searchdate, setSearchDate] = useState();
   const [formState, setFormState] = useState({
     service_id: "",
@@ -72,107 +75,15 @@ const Loan = () => {
     balCost: "",
   });
   const [loading, setLoading] = useState(false); // <-- Added loading state
-  const { isOpen: isAddServiceOpen, onOpen: onAddserviceOpen, onClose: onAddServiceClose } = useDisclosure();
-  const { isOpen: isServicePrintOpen, onOpen: onServicePrintOpen, onClose: onServicePrintClose } = useDisclosure();
-  const handleCostChange = () => {
-    const advance = parseFloat(formState.advanceCost) || 0;
-    const balance = parseFloat(formState.balCost) || 0;
-    const total = advance + balance;
-
-    setFormState((prev) => ({
-      ...prev,
-      actualCost: total,
-    }));
-  };
-
-  const modalSize = useBreakpointValue({ base: "full", md: "lg" });
-  const cardBg = useColorModeValue("white", "gray.700");
-  const tableBg = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.100", "gray.600");
-
-  const handlePrintClick = (service) => {
-    setSelectedService(service);
-    onServicePrintOpen();
-  };
 
   useEffect(() => {
-    if (selectedService) {
-      setFormState({
-        issueDetails: selectedService.issue_details || "",
-        status: selectedService.status || "Received",
-        actualCost: selectedService.actual_cost || "",
-      });
-    }
-  }, [selectedService]);
-
-  useEffect(() => {
-    fetchServiceCount();
-    fetchServices();
+    fetchloanCount();
+    fetchLoan();
   }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleAddService = async () => {
-    try {
-      if (!formData.customerName || !formData.mobileNumber || !formData.mobileModel || !formData.issue) {
-        throw new Error("Please fill all required fields");
-      }
-      const payload = {
-        cus_name: formData.customerName,
-        address: formData.address,
-        mob_no: formData.mobileNumber,
-        mob_model: formData.mobileModel,
-        issue_details: formData.issue,
-        status: formData.status,
-        actual_cost: formData.actual_cost,
-        advance: formData.advance,
-      };
-
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mobile_service`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        showToast({
-          title: "Added!",
-          description: "Service created successfully!",
-          status: "success",
-        });
-        setFormData({
-          customerName: "",
-          mobileNumber: "",
-          mobileModel: "",
-          issue: "",
-          status: "Received",
-        });
-        onClose();
-      } else {
-        showToast({
-          title: "Failed!",
-          description: "Failed to create service.",
-          status: "error",
-        });
-      }
-    } catch (error) {
-      showToast({
-        title: "Error",
-        description: error.response?.data?.message || error.message,
-        status: "error",
-      });
-      //console.error("Add service error:", error);
-    } finally {
-      fetchServices();
-      fetchServiceCount();
-    }
   };
 
   const getStatusColor = (status) => {
@@ -186,7 +97,26 @@ const Loan = () => {
     }
   };
 
-  const fetchServices = async (page = 1, date = "") => {
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.mobile.trim()) newErrors.mobile = "Enter mobile number";
+    if (!formData.area.trim()) newErrors.area = "Select area";
+    if (!formData.customer.trim()) newErrors.customer = "Select customer";
+    if (!formData.loanAmount.trim()) newErrors.loanAmount = "Enter loan amount";
+    if (Number(formData.loanAmount) <= 0) newErrors.loanAmount = "Loan amount must be greater than 0";
+    if (!formData.tenure.trim()) newErrors.tenure = "Enter tenure";
+    if (Number(formData.tenure) <= 0) newErrors.tenure = "Tenure must be greater than 0";
+    if (!formData.interest.trim()) newErrors.interest = "Enter interest %";
+    if (Number(formData.interest) <= 0) newErrors.interest = "Interest % must be greater than 0";
+    if (!formData.tenureType.trim()) newErrors.tenureType = "Select tenure type";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0; // true if NO errors
+  };
+
+  const fetchLoan = async (page = 1, date = "") => {
     setLoading(true); // <-- Set loading true
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/get_service`);
     url.searchParams.append("page", page);
@@ -208,263 +138,59 @@ const Loan = () => {
           status: item.status,
           date: item.received_date ? new Date(item.received_date).toLocaleDateString("en-IN") : "N/A",
         }));
-        setServices(formatted);
+        setloan(formatted);
         setCurrentPage(json.currentPage);
         setTotalPages(json.totalPages);
       } else {
-        console.error("Failed to fetch services");
+        console.error("Failed to fetch loan");
       }
     } catch (error) {
-      console.error("Fetch services error:", error);
+      console.error("Fetch loan error:", error);
     } finally {
       setLoading(false); // <-- Set loading false
     }
   };
 
   useEffect(() => {
-    fetchServices(currentPage);
+    fetchLoan(currentPage);
   }, [currentPage]);
 
-  const fetchServiceCount = async () => {
+  const fetchloanCount = async () => {
     setLoading(true); // <-- Set loading true
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_service_count`);
       const data = await response.json();
       if (response.ok) {
-        setServiceCount(data);
-        console.log("servicecount", serviceCount);
+        setloanCount(data);
+        console.log("loanCount", loanCount);
       } else {
-        console.error("Failed to fetch services");
+        console.error("Failed to fetch loan");
       }
     } catch (error) {
-      console.error("Fetch services error:", error);
+      console.error("Fetch loan error:", error);
     } finally {
       setLoading(false); // <-- Set loading false
     }
   };
-
-  const handleUpdate = async () => {
-    const payload = {
-      service_id: formState.service_id,
-      issue_details: formState.issueDetails,
-      status: formState.status,
-      actual_cost: parseFloat(formState.actualCost),
-      advance: parseFloat(formState.advanceCost),
-    };
-
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/update_service`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (response.ok) {
+  const handleApprove = () => {
+    if (!validateForm()) {
       showToast({
-        title: "Updated!",
-        description: "Service updated successfully.",
-        status: "success",
-      });
-      await fetchServices();
-      await fetchServiceCount();
-      onServicePrintClose();
-    } else {
-      showToast({
-        title: "Error",
-        description: "Failed to update service.",
+        title: "Validation Error",
+        description: "Please fill all required fields",
         status: "error",
+        duration: 3000,
+        isClosable: true,
       });
+      return;
     }
-  };
-  function formatDateLocal(iso) {
-    if (!iso) return "";
-    const d = new Date(iso);
-    const dd = String(d.getDate()).padStart(2, "0");
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const yyyy = d.getFullYear();
-    return `${dd}-${mm}-${yyyy}`;
-  }
-  const handlePrint = async (id) => {
-    const updatedData = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_service_by_id/${id}`);
-    const serviceData = await updatedData.json();
 
-    // Format for printReceipt
-    const receiptData = {
-      service_no: serviceData.service_no,
-      customerName: serviceData.cus_name,
-      mobileNumber: serviceData.mob_no,
-      amount: serviceData.actual_cost,
-      advance: serviceData.advance,
-      product: serviceData.mob_model,
-      issue: serviceData.issue_details,
-      status: serviceData.status,
-      address: serviceData.address,
-      delivery_date: formatDateLocal(serviceData.delivery_date), // dd-mm-yyyy
-    };
-
-    printReceipt(receiptData);
-  };
-
-  const handleEdit = async (id) => {
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/services/${id}`);
-      const data = response.data;
-      setFormState({
-        service_id: data.service_id,
-        issueDetails: data.issueDetails || "",
-        status: data.status, // force Delivered here
-        advanceCost: data.advance || "",
-        actualCost: data.actualCost || "",
-        balanceCost: data.balance || "",
-      });
-
-      onServicePrintOpen(); // Open modal
-    } catch (error) {
-      console.error("Failed to fetch service data:", error);
-    }
-  };
-
-  const printReceipt = (data) => {
-    const receiptWindow = window.open("", "PRINT", "height=600,width=800");
-
-    const { service_no, customerName, mobileNumber, product, issue, amount, advance, status, address, delivery_date } =
-      data;
-
-    const balance = (parseFloat(amount || 0) - parseFloat(advance || 0)).toFixed(2);
-
-    const receiptHTML = `
-    <html>
-    <head>
-      <style>
-        @media print {
-          @page {
-            size: A5 portrait;
-            margin: 10mm;
-          }
-        }
-        body {
-          font-family: monospace;
-          font-size: 12px;
-          margin: 0;
-          padding: 0;
-        }
-        .receipt-container {
-          width: 100%;
-          padding: 10px;
-          box-sizing: border-box;
-          margin: auto;
-          position: relative;
-        }
-        .center {
-          text-align: center;
-        }
-        .bold {
-          font-weight: bold;
-        }
-        .line {
-          border-top: 1px solid black;
-          margin: 6px 0;
-        }
-        .row {
-          display: flex;
-          justify-content: space-between;
-        }
-        .description-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 6px;
-        }
-        .description-table td {
-          padding: 4px 2px;
-          vertical-align: top;
-        }
-        .right {
-          text-align: right;
-        }
- 
-
-    /* Texture & depth */
-    background: radial-gradient(circle at center, rgba(0, 162, 255, 0.15), rgba(0, 162, 255, 0.05));
-    box-shadow:
-        0 0 12px rgba(0, 0, 0, 0.2), /* subtle shadow */
-        inset 0 0 8px rgba(255, 255, 255, 0.2); /* inner emboss effect */
-
-    /* Slightly worn effect */
-    filter: contrast(1.2) brightness(1.1);
-}
-
-}
-
-        }
-      </style>
-    </head>
-    <body>
-      <div class="receipt-container">
-        <div class="center bold">Muthu Mobiles</div>
-        <div class="center">Uranipuram</div>
-        <div class="center">Mob:9791611603,9363230745</div>
-        <div class="line"></div>
-
-        <div class="row">
-          <div><b>Service No:</b> ${service_no}</div>
-          <div><b>Date:</b> ${delivery_date}</div>
-        </div>
-        <div class="row">
-          <div><b>Customer:</b> ${customerName},${address}</div>
-          <div><b>Mobile No:</b> ${mobileNumber}</div>
-        </div>
-        <div class="line"></div>
-        <table class="description-table">
-          <tr>
-            <td><b>Model</b></td>
-            <td>${product}</td>
-          </tr>
-          <tr>
-            <td><b>Issue</b></td>
-            <td>${issue}</td>
-          </tr>
-           
-          <tr>
-            <td><b>Advance</b></td>
-            <td class="right">₹${parseFloat(advance || 0).toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td><b>Received Amt</b></td>
-            <td class="right">₹${balance}</td>
-          </tr>
-         <tr>
-            <td><b>Total</b></td>
-            <td class="right">₹${parseFloat(amount || 0).toFixed(2)}</td>
-          </tr>
-        </table>
-
-        <div class="line"></div>
-        <div class="center">Thank you! Visit Again</div>
-      </div>
-      <div class="line"></div>
-
-        <!-- Tamil Conditions Section -->
-        <div class="conditions">
-          <b>நிபந்தனைகள்:</b><br>
-          ❖ பில் கொண்டு வந்தால் மட்டுமே செல்போன் திருப்பித் தரப்படும்.<br>
-          ❖  நீங்கள் செல்போன்களை ஒப்படைத்துவிட்டு, அதை நான் தவறாகக் கொடுத்ததாக மறந்துவிட்டேன் என்று சொன்னால், அதற்கு நிறுவனம் பொறுப்பல்ல.பழுதுபார்ப்பதற்காக கொடுக்கப்பட்ட செல்போன்களை 10 நாட்களுக்குள் பெற்றுக்கொள்ள வேண்டும்.10 நாட்களுக்குள் செல்போன் வாங்கவில்லை என்றால், தொலைந்து போன செல்போன்களுக்கு நிறுவனம் பொறுப்பல்ல.<br>
-          ❖ மாற்றுத்திறனாளிகள் மற்றும் துப்புரவுப் பணியாளர்களுக்கு சிறப்புச் சலுகைகள் உண்டு.<br> 
-          <b>NO WARRANTY, NO GUARANTEE</b><br><br>
-          <div>
-            <b>Customer Signature</b> ________________________ 
-            <span style="float:right;">For. Muthu Mobiles</span>
-          </div>
-        </div>
-        <div class="line"></div>
-        <div style="text-align:center">Thank you! Visit Again</div>
-    </body>
-    </html>
-  `;
-
-    receiptWindow.document.write(receiptHTML);
-    receiptWindow.document.close();
-    receiptWindow.focus();
-    receiptWindow.print();
-    receiptWindow.close();
+    showToast({
+      title: "Loan Approved",
+      description: "Loan details saved successfully",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
@@ -472,61 +198,38 @@ const Loan = () => {
       {/* Page Header */}
       <Flex className="page-header">
         <Text className="page-title">Loan</Text>
-        {/* <Button
-          leftIcon={<FiPlus />}
-          className="btn-primary"
-          onClick={() => {
-            onAddserviceOpen();
-            onOpen();
-          }}
-          size="sm"
-        >
-          New Service
-        </Button> */}
       </Flex>
 
       {/* Repayment Input Box */}
       <Card bg="white" borderRadius="lg" p={6} mb={8} boxShadow="0 4px 20px rgba(0,0,0,0.06)">
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4}>
           {/* Load No */}
-          <FormControl>
-            <FormLabel>Load No</FormLabel>
-            <Input
-              placeholder="Enter load no"
-              // value={repayment.loadNo}
-              // onChange={(e) => setRepayment({ ...repayment, loadNo: e.target.value })}
-            />
-          </FormControl>
-          <FormControl>
+
+          <FormControl isInvalid={errors.mobile}>
             <FormLabel>Mobile</FormLabel>
-            <Input
-              placeholder="Enter load no"
-              // value={repayment.loadNo}
-              // onChange={(e) => setRepayment({ ...repayment, loadNo: e.target.value })}
-            />
+            <Input name="mobile" placeholder="Enter mobile no" value={formData.mobile} onChange={handleInputChange} />
+            {errors.mobile && <FormErrorMessage>{errors.mobile}</FormErrorMessage>}
           </FormControl>
 
           {/* Area */}
-          <FormControl>
+          <FormControl isInvalid={errors.area}>
             <FormLabel>Area</FormLabel>
-            <Select
-              placeholder="Select area"
-              // value={repayment.area}
-              // onChange={(e) => setRepayment({ ...repayment, area: e.target.value })}
-            >
+            <Select name="area" placeholder="Select area" value={formData.area} onChange={handleInputChange}>
               <option value="Thanjavur">Thanjavur</option>
               <option value="Trichy">Trichy</option>
               <option value="Ariyalur">Ariyalur</option>
             </Select>
+            {errors.area && <FormErrorMessage>{errors.area}</FormErrorMessage>}
           </FormControl>
 
           {/* Name / Customer */}
-          <FormControl>
+          <FormControl isInvalid={errors.customer}>
             <FormLabel>Customer Name</FormLabel>
             <Select
+              name="customer"
               placeholder="Select customer"
-              // value={repayment.customer}
-              // onChange={(e) => setRepayment({ ...repayment, customer: e.target.value })}
+              value={formData.customer}
+              onChange={handleInputChange}
             >
               {/* {customerList?.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -534,43 +237,53 @@ const Loan = () => {
                 </option>
               ))} */}
             </Select>
+            {errors.customer && <FormErrorMessage>{errors.customer}</FormErrorMessage>}
           </FormControl>
-
-          {/* Loan Amount */}
-          <FormControl>
+          <FormControl isInvalid={errors.loanAmount}>
             <FormLabel>Loan Amount</FormLabel>
             <Input
+              name="loanAmount"
+              placeholder="Enter loan no"
+              value={formData.loanAmount}
+              onChange={handleInputChange}
+            />
+            {errors.loanAmount && <FormErrorMessage>{errors.loanAmount}</FormErrorMessage>}
+          </FormControl>
+          {/* Loan Amount */}
+          <FormControl>
+            <FormLabel>Tenure</FormLabel>
+            <Input
+              name="tenure"
               type="number"
-              // value={repayment.loanAmount}
               placeholder="Loan amount"
-              // onChange={(e) => setRepayment({ ...repayment, loanAmount: e.target.value })}
+              value={formData.tenure}
+              onChange={handleInputChange}
             />
           </FormControl>
 
           {/* Payment */}
           <FormControl>
-            <FormLabel>Payment</FormLabel>
+            <FormLabel>Interest %</FormLabel>
             <Input
+              name="interest"
               type="number"
-              //value={repayment.payment}
               placeholder="Enter payment"
-              // onChange={(e) => {
-              //   const payment = e.target.value;
-              //   const balance = Number(repayment.loanAmount || 0) - Number(payment || 0);
-
-              //   setRepayment({
-              //     ...repayment,
-              //     payment,
-              //     balance: balance < 0 ? 0 : balance,
-              //   });
-              // }}
+              value={formData.interest}
+              onChange={handleInputChange}
             />
           </FormControl>
-
-          {/* Balance (Auto) */}
           <FormControl>
-            <FormLabel>Balance</FormLabel>
-            <Input type="number" isReadOnly value={0} />
+            <FormLabel>Tenure Type</FormLabel>
+            <Select
+              name="tenureType"
+              placeholder="Select type"
+              value={formData.tenureType}
+              onChange={handleInputChange}
+            >
+              <option value="Ariyalur">Daily</option>
+              <option value="Thanjavur">Weekly</option>
+              <option value="Trichy">Monthly</option>
+            </Select>
           </FormControl>
         </SimpleGrid>
 
@@ -579,12 +292,13 @@ const Loan = () => {
           <Button variant="outline" colorScheme="gray" onClick={() => setRepayment(initialState)}>
             Cancel
           </Button>
-
-          <Button colorScheme="purple">Approve</Button>
+          <Button colorScheme="purple" onClick={handleApprove}>
+            Approve
+          </Button>
         </Flex>
       </Card>
 
-      {/* Services Table */}
+      {/* loan Table */}
       <Card className="table-card">
         <CardHeader className="page-header">
           <Text color={"black"} fontWeight={"500"}>
@@ -599,7 +313,7 @@ const Loan = () => {
               const selected = e.target.value;
               setSearchDate(selected);
               setCurrentPage(1);
-              fetchServices(1, selected);
+              fetchLoan(1, selected);
             }}
           />
         </CardHeader>
@@ -616,19 +330,19 @@ const Loan = () => {
                 <Table className="table" size="sm">
                   <Thead>
                     <Tr>
-                      <Th>Service No</Th>
-                      <Th>Customer</Th>
-                      <Th>Device</Th>
-                      <Th>Contact</Th>
-                      <Th>Issue</Th>
-                      <Th>Status</Th>
-                      <Th>Date</Th>
+                      <Th>S.No</Th>
+                      <Th>Customer Name</Th>
+                      <Th>Mobile</Th>
+                      <Th>Address</Th>
+                      <Th>Loan Amount</Th>
+                      <Th>Pending Amount</Th>
+                      <Th>Loan Date</Th>
                       <Th textAlign="center">Action</Th>
                     </Tr>
                   </Thead>
 
                   <Tbody>
-                    {services.map((service) => (
+                    {loan.map((service) => (
                       <Tr key={service.id}>
                         <Td className="clickable-id">{service.serviceNo}</Td>
 
@@ -663,10 +377,10 @@ const Loan = () => {
                       </Tr>
                     ))}
 
-                    {services.length === 0 && (
+                    {loan.length === 0 && (
                       <Tr>
                         <Td colSpan="8" textAlign="center" color="#666">
-                          No recent services found
+                          No recent loan found
                         </Td>
                       </Tr>
                     )}
@@ -676,7 +390,7 @@ const Loan = () => {
 
               {/* Pagination Footer */}
               <Flex className="pagination-footer">
-                <Text className="pagination-text">Showing {services.length} items</Text>
+                <Text className="pagination-text">Showing {loan.length} items</Text>
 
                 <HStack spacing={2}>
                   <Button
@@ -685,7 +399,7 @@ const Loan = () => {
                     onClick={() => {
                       const newPage = Math.max(currentPage - 1, 1);
                       setCurrentPage(newPage);
-                      fetchServices(newPage, searchdate);
+                      fetchLoan(newPage, searchdate);
                     }}
                     isDisabled={currentPage === 1}
                   >
@@ -699,7 +413,7 @@ const Loan = () => {
                       className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
                       onClick={() => {
                         setCurrentPage(i + 1);
-                        fetchServices(i + 1, searchdate);
+                        fetchLoan(i + 1, searchdate);
                       }}
                     >
                       {i + 1}
@@ -712,7 +426,7 @@ const Loan = () => {
                     onClick={() => {
                       const newPage = Math.min(currentPage + 1, totalPages);
                       setCurrentPage(newPage);
-                      fetchServices(newPage, searchdate);
+                      fetchLoan(newPage, searchdate);
                     }}
                     isDisabled={currentPage === totalPages}
                   >
@@ -724,198 +438,6 @@ const Loan = () => {
           )}
         </CardBody>
       </Card>
-
-      {/* Add Service Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
-        <ModalOverlay bg="blackAlpha.600" />
-        <ModalContent className="modal-box">
-          <ModalHeader className="modal-header">
-            <Flex align="center" gap={2}>
-              <Avatar icon={<FiPlus />} bg="blue.100" color="blue.600" size="sm" />
-              New Service Request
-            </Flex>
-          </ModalHeader>
-
-          <ModalCloseButton />
-
-          <ModalBody className="modal-body">
-            <Stack spacing={3} className="modal-form">
-              {/* Customer Info */}
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Customer Name</FormLabel>
-                  <Input
-                    name="customerName"
-                    value={formData.customerName}
-                    onChange={handleInputChange}
-                    placeholder="Enter name"
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Mobile Number</FormLabel>
-                  <Input
-                    type="number"
-                    name="mobileNumber"
-                    value={formData.mobileNumber}
-                    onChange={handleInputChange}
-                    placeholder="Enter number"
-                  />
-                </FormControl>
-              </Flex>
-
-              {/* Address */}
-              <FormControl>
-                <FormLabel>Address</FormLabel>
-                <Input
-                  name="address"
-                  value={formData.address || ""}
-                  onChange={handleInputChange}
-                  placeholder="Enter customer address"
-                />
-              </FormControl>
-
-              {/* Device Info */}
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Mobile Model</FormLabel>
-                  <Input
-                    name="mobileModel"
-                    value={formData.mobileModel}
-                    onChange={handleInputChange}
-                    placeholder="Model"
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Total Amount</FormLabel>
-                  <Input
-                    type="number"
-                    name="actual_cost"
-                    value={formData.actual_cost || ""}
-                    onChange={handleInputChange}
-                    placeholder="Enter total"
-                  />
-                </FormControl>
-              </Flex>
-
-              {/* Payment */}
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Advance</FormLabel>
-                  <Input
-                    type="number"
-                    name="advance"
-                    value={formData.advance || ""}
-                    onChange={handleInputChange}
-                    placeholder="Enter advance"
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Balance (auto)</FormLabel>
-                  <Input
-                    isReadOnly
-                    value={(Number(formData.actual_cost || 0) - Number(formData.advance || 0)).toFixed(2)}
-                  />
-                </FormControl>
-              </Flex>
-
-              {/* Complaint */}
-              <FormControl>
-                <FormLabel>Complaint</FormLabel>
-                <Textarea
-                  name="issue"
-                  value={formData.issue}
-                  onChange={handleInputChange}
-                  placeholder="Describe the issue..."
-                />
-              </FormControl>
-            </Stack>
-          </ModalBody>
-
-          <ModalFooter className="modal-footer">
-            <Button className="btn-cancel" size="sm" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button className="btn-primary" size="sm" onClick={handleAddService}>
-              Create Service
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      <Modal isOpen={isServicePrintOpen} onClose={onServicePrintClose} size="md" isCentered>
-        <ModalOverlay />
-        <ModalContent className="modal-box">
-          <ModalHeader className="modal-header">Update Service</ModalHeader>
-
-          <ModalCloseButton />
-
-          <ModalBody className="modal-body">
-            <Stack spacing={3} className="modal-form">
-              <FormControl>
-                <FormLabel>Issue Details</FormLabel>
-                <Textarea
-                  value={formState.issueDetails}
-                  onChange={(e) => setFormState({ ...formState, issueDetails: e.target.value })}
-                />
-              </FormControl>
-
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Advance</FormLabel>
-                  <Input
-                    type="number"
-                    value={formState.advanceCost}
-                    onChange={(e) =>
-                      setFormState({
-                        ...formState,
-                        advanceCost: e.target.value,
-                      })
-                    }
-                  />
-                </FormControl>
-              </Flex>
-
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Balance</FormLabel>
-                  <Input type="number" value={formState.balanceCost} readOnly />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Total</FormLabel>
-                  <Input type="number" value={formState.actualCost} readOnly />
-                </FormControl>
-              </Flex>
-            </Stack>
-          </ModalBody>
-
-          <ModalFooter className="modal-footer">
-            <Button
-              className="btn-primary"
-              size="sm"
-              mr={2}
-              onClick={handleUpdate}
-              isDisabled={formState.status === "Delivered"}
-            >
-              Update
-            </Button>
-
-            <Button
-              className="btn-cancel"
-              size="sm"
-              onClick={() => {
-                onServicePrintClose();
-                setSelectedService("");
-              }}
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       {loading && (
         <Box className="loading-overlay">

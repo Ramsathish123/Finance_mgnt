@@ -47,35 +47,51 @@ const Customer = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [historyData, setHistoryData] = useState([]);
-  const [selectedStock, setSelectedStock] = useState(null);
-
-  const [newItem, setNewItem] = useState({
-    productId: "",
-    name: "",
-    purchase_rate: "",
-    supplier_name: "",
-    rate: "",
-    qty: "",
-    gst: "",
-    addQty: "",
-  });
-
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [newItem, setNewItem] = useState({
+    customer_name: "",
+    mobile: "",
+    aadhar: "",
+    address: "",
+    guarantor_name: "",
+    guarantor_aadhar: "",
+    document: null,
+  });
 
   const itemsPerPage = 10;
-
-  // Reusable border colors
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const tableBorderColor = "gray.200"; // #e2e8f0 equivalent in Chakra
-  const rowBorderColor = useColorModeValue("gray.100", "gray.500");
 
   useEffect(() => {
     fetchStockItems(currentPage);
   }, [currentPage]);
+
+  const validateCustomer = () => {
+    let newErrors = {};
+
+    if (!newItem.customer_name?.trim()) newErrors.customer_name = "Enter customer name";
+
+    if (!newItem.mobile?.trim()) newErrors.mobile = "Enter valid mobile";
+    else if (newItem.mobile.length !== 10) newErrors.mobile = "Mobile must be 10 digits";
+
+    if (!newItem.aadhar?.trim()) newErrors.aadhar = "Enter Aadhar number";
+    else if (newItem.aadhar.length !== 12) newErrors.aadhar = "Aadhar must be 12 digits";
+
+    if (!newItem.address?.trim()) newErrors.address = "Enter address";
+
+    if (!newItem.guarantor_name?.trim()) newErrors.guarantor_name = "Enter guarantor name";
+
+    if (!newItem.guarantor_aadhar?.trim()) newErrors.guarantor_aadhar = "Enter guarantor Aadhar";
+    else if (newItem.guarantor_aadhar.length !== 12) newErrors.guarantor_aadhar = "Guarantor Aadhar must be 12 digits";
+
+    if (!selectedFile) newErrors.document = "Upload customer document";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const fetchStockItems = async (page = 1) => {
     setLoading(true);
@@ -91,21 +107,6 @@ const Customer = () => {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleViewHistory = async (id, name) => {
-    try {
-      setSelectedStock(name);
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/stock/${id}/history`);
-      setHistoryData(response.data);
-      setIsHistoryOpen(true);
-    } catch {
-      showToast({
-        title: "Error",
-        description: "Failed to load stock history",
-        status: "error",
-      });
     }
   };
 
@@ -127,83 +128,57 @@ const Customer = () => {
     }
   };
 
-  const handleEdit = async (id) => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/stock_select/${id}`);
-      const data = response.data;
-      setNewItem({
-        productId: data.product_id || "",
-        name: data.product_name || "",
-        purchase_rate: data.purchase_rate || "",
-        supplier_name: data.supplier_name || "N/A",
-        rate: data.rate || "",
-        qty: data.quantity || "",
-        gst: data.gst || "",
-        addQty: "",
-      });
-      setIsEditing(true);
-      setEditingId(id);
-      onOpen();
-    } catch {
-      showToast({
-        title: "Error",
-        description: "Failed to fetch item",
-        status: "error",
-      });
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewItem((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // clear error on typing
   };
 
   const handleSave = async () => {
-    try {
-      if (
-        !newItem.productId ||
-        !newItem.name ||
-        !newItem.rate ||
-        !newItem.qty ||
-        !newItem.purchase_rate ||
-        !newItem.supplier_name
-      ) {
-        throw new Error("Please fill all required fields");
-      }
+    if (!validateCustomer()) {
+      showToast({
+        title: "Validation Error",
+        description: "Please fill all required fields",
+        status: "error",
+      });
+      return;
+    }
 
-      const itemToSend = {
-        ...newItem,
-        purchase_rate: parseFloat(newItem.purchase_rate),
-        supplier_name: newItem.supplier_name,
-        rate: parseFloat(newItem.rate),
-        gst: newItem.gst ? parseFloat(newItem.gst) : 0,
-        qty: parseInt(newItem.qty),
-        addQty: parseInt(newItem.addQty) || 0,
-      };
+    try {
+      const formData = new FormData();
+      formData.append("customer_name", newItem.customer_name);
+      formData.append("mobile", newItem.mobile);
+      formData.append("aadhar", newItem.aadhar);
+      formData.append("address", newItem.address);
+      formData.append("guarantor_name", newItem.guarantor_name);
+      formData.append("guarantor_aadhar", newItem.guarantor_aadhar);
+      formData.append("document", selectedFile);
+
+      let response;
 
       if (isEditing) {
-        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/stock/${editingId}`, itemToSend);
-        showToast({
-          title: "Updated",
-          description: "Stock updated successfully",
-          status: "success",
+        response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/customer/${editingId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/stock`, itemToSend);
-        showToast({
-          title: "Added",
-          description: "New stock item added",
-          status: "success",
+        response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/customer`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
       }
+
+      showToast({
+        title: isEditing ? "Updated" : "Added",
+        description: response.data.message || "Customer saved successfully",
+        status: "success",
+      });
 
       onClose();
       resetForm();
       fetchStockItems(currentPage);
-    } catch (error) {
+    } catch (err) {
       showToast({
         title: "Error",
-        description: error.response?.data?.message || error.message,
+        description: err.response?.data?.message || "Failed to save customer",
         status: "error",
       });
     }
@@ -223,17 +198,6 @@ const Customer = () => {
     setIsEditing(false);
     setEditingId(null);
   };
-  const [suppliers, setSuppliers] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/supplier`)
-      .then((res) => {
-        const supplierNames = (res.data.data || []).map((s) => s.supplier_name);
-        setSuppliers(supplierNames);
-      })
-      .catch((err) => console.error("Supplier fetch error", err));
-  }, []);
 
   return (
     <>
@@ -369,13 +333,13 @@ const Customer = () => {
             <ModalCloseButton />
             <ModalBody className="modal-body">
               <Stack spacing={3} className="modal-form">
-                <FormControl>
+                <FormControl isInvalid={errors.customer_name}>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Customer Name
                   </FormLabel>
                   <Input
                     name="customer_name"
-                    value={newItem.productId}
+                    value={newItem.customer_name}
                     onChange={handleChange}
                     placeholder="Enter customer name"
                     isDisabled={isEditing}
@@ -390,16 +354,21 @@ const Customer = () => {
                       boxShadow: "0 0 0 1px #625DF0",
                     }}
                   />
+                  {errors.customer_name && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.customer_name}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={errors.mobile}>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Mobile
                   </FormLabel>
                   <Input
-                    name="name"
-                    value={newItem.name}
+                    name="mobile"
+                    value={newItem.mobile}
                     onChange={handleChange}
-                    placeholder="Enter product name"
+                    placeholder="Enter mobile number"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"
@@ -412,17 +381,22 @@ const Customer = () => {
                       boxShadow: "0 0 0 1px #625DF0",
                     }}
                   />
+                  {errors.mobile && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.mobile}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={errors.aadhar}>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Aadhar No
                   </FormLabel>
                   <Input
                     type="number"
-                    name="purchase_rate"
-                    value={newItem.purchase_rate}
+                    name="aadhar"
+                    value={newItem.aadhar}
                     onChange={handleChange}
-                    placeholder="Enter rate"
+                    placeholder="Enter aadhar number"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"
@@ -435,17 +409,21 @@ const Customer = () => {
                       boxShadow: "0 0 0 1px #625DF0",
                     }}
                   />
+                  {errors.aadhar && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.aadhar}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={errors.address}>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Address
                   </FormLabel>
                   <Input
-                    type="number"
-                    name="rate"
-                    value={newItem.rate}
+                    name="address"
+                    value={newItem.address}
                     onChange={handleChange}
-                    placeholder="Enter rate"
+                    placeholder="Enter address"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"
@@ -458,17 +436,21 @@ const Customer = () => {
                       boxShadow: "0 0 0 1px #625DF0",
                     }}
                   />
+                  {errors.address && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.address}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={errors.guarantor_name}>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Guarentor name
                   </FormLabel>
                   <Input
-                    type="number"
-                    name="qty"
-                    value={newItem.qty}
+                    name="guarantor_name"
+                    value={newItem.guarantor_name}
                     onChange={handleChange}
-                    placeholder="Enter total quantity"
+                    placeholder="Enter guarantor name"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"
@@ -481,17 +463,22 @@ const Customer = () => {
                       boxShadow: "0 0 0 1px #625DF0",
                     }}
                   />
+                  {errors.guarantor_name && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.guarantor_name}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={errors.guarantor_aadhar}>
                   <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
                     Guarantor Aadhar
                   </FormLabel>
                   <Input
                     type="number"
-                    name="gst"
-                    value={newItem.gst}
+                    name="guarantor_aadhar"
+                    value={newItem.guarantor_aadhar}
                     onChange={handleChange}
-                    placeholder="Enter GST"
+                    placeholder="Enter guarantor aadhar"
                     isDisabled={isEditing}
                     fontFamily="Inter, sans-serif"
                     borderRadius="lg"
@@ -504,6 +491,30 @@ const Customer = () => {
                       boxShadow: "0 0 0 1px #625DF0",
                     }}
                   />
+                  {errors.guarantor_aadhar && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.guarantor_aadhar}
+                    </Text>
+                  )}
+                </FormControl>
+                <FormControl isInvalid={errors.document}>
+                  <FormLabel fontFamily="Inter, sans-serif" fontWeight="500">
+                    Upload Document
+                  </FormLabel>
+                  <Input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                    borderRadius="lg"
+                    borderColor="gray.300"
+                    _hover={{ borderColor: "#625DF0" }}
+                    _focus={{ borderColor: "#625DF0", boxShadow: "0 0 0 1px #625DF0" }}
+                  />
+                  {errors.document && (
+                    <Text color="red.500" fontSize="sm">
+                      {errors.document}
+                    </Text>
+                  )}
                 </FormControl>
               </Stack>
             </ModalBody>
@@ -540,50 +551,6 @@ const Customer = () => {
                 }}
               >
                 Delete
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-
-        {/* History Modal */}
-        <Modal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} size="lg" isCentered>
-          <ModalOverlay />
-          <ModalContent className="modal-box">
-            <ModalHeader className="modal-header">Stock History - {selectedStock}</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody className="modal-body">
-              {historyData.length > 0 ? (
-                <Box className="table-card">
-                  <Box className="table-scroll">
-                    <Table className="table">
-                      <Thead>
-                        <Tr>
-                          <Th>Date & Time</Th>
-                          <Th>Old Qty</Th>
-                          <Th>Added Qty</Th>
-                          <Th>New Qty</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {historyData.map((record, index) => (
-                          <Tr key={index}>
-                            <Td>{new Date(record.updated_at).toLocaleString()}</Td>
-                            <Td>{record.old_qty}</Td>
-                            <Td className="added">+{record.added_qty}</Td>
-                            <Td>{record.new_qty}</Td>
-                          </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </Box>
-                </Box>
-              ) : (
-                <Text className="empty-text">No history found for this stock item.</Text>
-              )}
-            </ModalBody>
-            <ModalFooter className="modal-footer">
-              <Button className="btn-primary" size="sm" onClick={() => setIsHistoryOpen(false)}>
-                Close
               </Button>
             </ModalFooter>
           </ModalContent>

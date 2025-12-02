@@ -243,38 +243,6 @@ const Repayment = () => {
     }
   };
 
-  const handleUpdate = async () => {
-    const payload = {
-      service_id: formState.service_id,
-      issue_details: formState.issueDetails,
-      status: formState.status,
-      actual_cost: parseFloat(formState.actualCost),
-      advance: parseFloat(formState.advanceCost),
-    };
-
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/update_service`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (response.ok) {
-      showToast({
-        title: "Updated!",
-        description: "Service updated successfully.",
-        status: "success",
-      });
-      await fetchServices();
-      await fetchServiceCount();
-      onServicePrintClose();
-    } else {
-      showToast({
-        title: "Error",
-        description: "Failed to update service.",
-        status: "error",
-      });
-    }
-  };
   function formatDateLocal(iso) {
     if (!iso) return "";
     const d = new Date(iso);
@@ -283,206 +251,12 @@ const Repayment = () => {
     const yyyy = d.getFullYear();
     return `${dd}-${mm}-${yyyy}`;
   }
-  const handlePrint = async (id) => {
-    const updatedData = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_service_by_id/${id}`);
-    const serviceData = await updatedData.json();
-
-    // Format for printReceipt
-    const receiptData = {
-      service_no: serviceData.service_no,
-      customerName: serviceData.cus_name,
-      mobileNumber: serviceData.mob_no,
-      amount: serviceData.actual_cost,
-      advance: serviceData.advance,
-      product: serviceData.mob_model,
-      issue: serviceData.issue_details,
-      status: serviceData.status,
-      address: serviceData.address,
-      delivery_date: formatDateLocal(serviceData.delivery_date), // dd-mm-yyyy
-    };
-
-    printReceipt(receiptData);
-  };
-
-  const handleEdit = async (id) => {
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/services/${id}`);
-      const data = response.data;
-      setFormState({
-        service_id: data.service_id,
-        issueDetails: data.issueDetails || "",
-        status: data.status, // force Delivered here
-        advanceCost: data.advance || "",
-        actualCost: data.actualCost || "",
-        balanceCost: data.balance || "",
-      });
-
-      onServicePrintOpen(); // Open modal
-    } catch (error) {
-      console.error("Failed to fetch service data:", error);
-    }
-  };
-
-  const printReceipt = (data) => {
-    const receiptWindow = window.open("", "PRINT", "height=600,width=800");
-
-    const { service_no, customerName, mobileNumber, product, issue, amount, advance, status, address, delivery_date } =
-      data;
-
-    const balance = (parseFloat(amount || 0) - parseFloat(advance || 0)).toFixed(2);
-
-    const receiptHTML = `
-    <html>
-    <head>
-      <style>
-        @media print {
-          @page {
-            size: A5 portrait;
-            margin: 10mm;
-          }
-        }
-        body {
-          font-family: monospace;
-          font-size: 12px;
-          margin: 0;
-          padding: 0;
-        }
-        .receipt-container {
-          width: 100%;
-          padding: 10px;
-          box-sizing: border-box;
-          margin: auto;
-          position: relative;
-        }
-        .center {
-          text-align: center;
-        }
-        .bold {
-          font-weight: bold;
-        }
-        .line {
-          border-top: 1px solid black;
-          margin: 6px 0;
-        }
-        .row {
-          display: flex;
-          justify-content: space-between;
-        }
-        .description-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 6px;
-        }
-        .description-table td {
-          padding: 4px 2px;
-          vertical-align: top;
-        }
-        .right {
-          text-align: right;
-        }
- 
-
-    /* Texture & depth */
-    background: radial-gradient(circle at center, rgba(0, 162, 255, 0.15), rgba(0, 162, 255, 0.05));
-    box-shadow:
-        0 0 12px rgba(0, 0, 0, 0.2), /* subtle shadow */
-        inset 0 0 8px rgba(255, 255, 255, 0.2); /* inner emboss effect */
-
-    /* Slightly worn effect */
-    filter: contrast(1.2) brightness(1.1);
-}
-
-}
-
-        }
-      </style>
-    </head>
-    <body>
-      <div class="receipt-container">
-        <div class="center bold">Muthu Mobiles</div>
-        <div class="center">Uranipuram</div>
-        <div class="center">Mob:9791611603,9363230745</div>
-        <div class="line"></div>
-
-        <div class="row">
-          <div><b>Service No:</b> ${service_no}</div>
-          <div><b>Date:</b> ${delivery_date}</div>
-        </div>
-        <div class="row">
-          <div><b>Customer:</b> ${customerName},${address}</div>
-          <div><b>Mobile No:</b> ${mobileNumber}</div>
-        </div>
-        <div class="line"></div>
-        <table class="description-table">
-          <tr>
-            <td><b>Model</b></td>
-            <td>${product}</td>
-          </tr>
-          <tr>
-            <td><b>Issue</b></td>
-            <td>${issue}</td>
-          </tr>
-           
-          <tr>
-            <td><b>Advance</b></td>
-            <td class="right">₹${parseFloat(advance || 0).toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td><b>Received Amt</b></td>
-            <td class="right">₹${balance}</td>
-          </tr>
-         <tr>
-            <td><b>Total</b></td>
-            <td class="right">₹${parseFloat(amount || 0).toFixed(2)}</td>
-          </tr>
-        </table>
-
-        <div class="line"></div>
-        <div class="center">Thank you! Visit Again</div>
-      </div>
-      <div class="line"></div>
-
-        <!-- Tamil Conditions Section -->
-        <div class="conditions">
-          <b>நிபந்தனைகள்:</b><br>
-          ❖ பில் கொண்டு வந்தால் மட்டுமே செல்போன் திருப்பித் தரப்படும்.<br>
-          ❖  நீங்கள் செல்போன்களை ஒப்படைத்துவிட்டு, அதை நான் தவறாகக் கொடுத்ததாக மறந்துவிட்டேன் என்று சொன்னால், அதற்கு நிறுவனம் பொறுப்பல்ல.பழுதுபார்ப்பதற்காக கொடுக்கப்பட்ட செல்போன்களை 10 நாட்களுக்குள் பெற்றுக்கொள்ள வேண்டும்.10 நாட்களுக்குள் செல்போன் வாங்கவில்லை என்றால், தொலைந்து போன செல்போன்களுக்கு நிறுவனம் பொறுப்பல்ல.<br>
-          ❖ மாற்றுத்திறனாளிகள் மற்றும் துப்புரவுப் பணியாளர்களுக்கு சிறப்புச் சலுகைகள் உண்டு.<br> 
-          <b>NO WARRANTY, NO GUARANTEE</b><br><br>
-          <div>
-            <b>Customer Signature</b> ________________________ 
-            <span style="float:right;">For. Muthu Mobiles</span>
-          </div>
-        </div>
-        <div class="line"></div>
-        <div style="text-align:center">Thank you! Visit Again</div>
-    </body>
-    </html>
-  `;
-
-    receiptWindow.document.write(receiptHTML);
-    receiptWindow.document.close();
-    receiptWindow.focus();
-    receiptWindow.print();
-    receiptWindow.close();
-  };
 
   return (
     <Box overflow="hidden">
       {/* Page Header */}
       <Flex className="page-header">
         <Text className="page-title">Repayment</Text>
-        {/* <Button
-          leftIcon={<FiPlus />}
-          className="btn-primary"
-          onClick={() => {
-            onAddserviceOpen();
-            onOpen();
-          }}
-          size="sm"
-        >
-          New Service
-        </Button> */}
       </Flex>
 
       {/* Repayment Input Box */}
@@ -494,9 +268,9 @@ const Repayment = () => {
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4}>
           {/* Load No */}
           <FormControl>
-            <FormLabel>Load No</FormLabel>
+            <FormLabel>Loan No</FormLabel>
             <Input
-              placeholder="Enter load no"
+              placeholder="Enter loan no"
               // value={repayment.loadNo}
               // onChange={(e) => setRepayment({ ...repayment, loadNo: e.target.value })}
             />
@@ -504,7 +278,7 @@ const Repayment = () => {
           <FormControl>
             <FormLabel>Mobile</FormLabel>
             <Input
-              placeholder="Enter load no"
+              placeholder="Enter mobile no"
               // value={repayment.loadNo}
               // onChange={(e) => setRepayment({ ...repayment, loadNo: e.target.value })}
             />
@@ -542,7 +316,7 @@ const Repayment = () => {
 
           {/* Loan Amount */}
           <FormControl>
-            <FormLabel>Loan Amount</FormLabel>
+            <FormLabel>Due Amount</FormLabel>
             <Input
               type="number"
               // value={repayment.loanAmount}
@@ -620,14 +394,14 @@ const Repayment = () => {
                 <Table className="table" size="sm">
                   <Thead>
                     <Tr>
-                      <Th>Service No</Th>
+                      <Th>Loan no</Th>
                       <Th>Customer</Th>
-                      <Th>Device</Th>
-                      <Th>Contact</Th>
-                      <Th>Issue</Th>
-                      <Th>Status</Th>
+                      <Th>Mobile</Th>
+                      <Th>Area</Th>
+                      <Th>Due Amount</Th>
+                      <Th>Paid Amount</Th>
+                      <Th>Pending Amount</Th>
                       <Th>Date</Th>
-                      <Th textAlign="center">Action</Th>
                     </Tr>
                   </Thead>
 
@@ -728,198 +502,6 @@ const Repayment = () => {
           )}
         </CardBody>
       </Card>
-
-      {/* Add Service Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
-        <ModalOverlay bg="blackAlpha.600" />
-        <ModalContent className="modal-box">
-          <ModalHeader className="modal-header">
-            <Flex align="center" gap={2}>
-              <Avatar icon={<FiPlus />} bg="blue.100" color="blue.600" size="sm" />
-              New Service Request
-            </Flex>
-          </ModalHeader>
-
-          <ModalCloseButton />
-
-          <ModalBody className="modal-body">
-            <Stack spacing={3} className="modal-form">
-              {/* Customer Info */}
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Customer Name</FormLabel>
-                  <Input
-                    name="customerName"
-                    value={formData.customerName}
-                    onChange={handleInputChange}
-                    placeholder="Enter name"
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Mobile Number</FormLabel>
-                  <Input
-                    type="number"
-                    name="mobileNumber"
-                    value={formData.mobileNumber}
-                    onChange={handleInputChange}
-                    placeholder="Enter number"
-                  />
-                </FormControl>
-              </Flex>
-
-              {/* Address */}
-              <FormControl>
-                <FormLabel>Address</FormLabel>
-                <Input
-                  name="address"
-                  value={formData.address || ""}
-                  onChange={handleInputChange}
-                  placeholder="Enter customer address"
-                />
-              </FormControl>
-
-              {/* Device Info */}
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Mobile Model</FormLabel>
-                  <Input
-                    name="mobileModel"
-                    value={formData.mobileModel}
-                    onChange={handleInputChange}
-                    placeholder="Model"
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Total Amount</FormLabel>
-                  <Input
-                    type="number"
-                    name="actual_cost"
-                    value={formData.actual_cost || ""}
-                    onChange={handleInputChange}
-                    placeholder="Enter total"
-                  />
-                </FormControl>
-              </Flex>
-
-              {/* Payment */}
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Advance</FormLabel>
-                  <Input
-                    type="number"
-                    name="advance"
-                    value={formData.advance || ""}
-                    onChange={handleInputChange}
-                    placeholder="Enter advance"
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Balance (auto)</FormLabel>
-                  <Input
-                    isReadOnly
-                    value={(Number(formData.actual_cost || 0) - Number(formData.advance || 0)).toFixed(2)}
-                  />
-                </FormControl>
-              </Flex>
-
-              {/* Complaint */}
-              <FormControl>
-                <FormLabel>Complaint</FormLabel>
-                <Textarea
-                  name="issue"
-                  value={formData.issue}
-                  onChange={handleInputChange}
-                  placeholder="Describe the issue..."
-                />
-              </FormControl>
-            </Stack>
-          </ModalBody>
-
-          <ModalFooter className="modal-footer">
-            <Button className="btn-cancel" size="sm" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button className="btn-primary" size="sm" onClick={handleAddService}>
-              Create Service
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      <Modal isOpen={isServicePrintOpen} onClose={onServicePrintClose} size="md" isCentered>
-        <ModalOverlay />
-        <ModalContent className="modal-box">
-          <ModalHeader className="modal-header">Update Service</ModalHeader>
-
-          <ModalCloseButton />
-
-          <ModalBody className="modal-body">
-            <Stack spacing={3} className="modal-form">
-              <FormControl>
-                <FormLabel>Issue Details</FormLabel>
-                <Textarea
-                  value={formState.issueDetails}
-                  onChange={(e) => setFormState({ ...formState, issueDetails: e.target.value })}
-                />
-              </FormControl>
-
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Advance</FormLabel>
-                  <Input
-                    type="number"
-                    value={formState.advanceCost}
-                    onChange={(e) =>
-                      setFormState({
-                        ...formState,
-                        advanceCost: e.target.value,
-                      })
-                    }
-                  />
-                </FormControl>
-              </Flex>
-
-              <Flex gap={3} flexWrap="wrap">
-                <FormControl>
-                  <FormLabel>Balance</FormLabel>
-                  <Input type="number" value={formState.balanceCost} readOnly />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Total</FormLabel>
-                  <Input type="number" value={formState.actualCost} readOnly />
-                </FormControl>
-              </Flex>
-            </Stack>
-          </ModalBody>
-
-          <ModalFooter className="modal-footer">
-            <Button
-              className="btn-primary"
-              size="sm"
-              mr={2}
-              onClick={handleUpdate}
-              isDisabled={formState.status === "Delivered"}
-            >
-              Update
-            </Button>
-
-            <Button
-              className="btn-cancel"
-              size="sm"
-              onClick={() => {
-                onServicePrintClose();
-                setSelectedService("");
-              }}
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       {loading && (
         <Box className="loading-overlay">
