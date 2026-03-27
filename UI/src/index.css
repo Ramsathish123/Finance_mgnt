@@ -1,0 +1,103 @@
+:root {
+  /* Core Brand Colors */
+  --color-brand-primary: #625df0;
+  --color-brand-secondary: #8b87eb;
+  --color-brand-light: #f8faff;
+  --color-brand-primary-light: rgba(98, 93, 240, 0.08);
+
+  /* Text Colors */
+  --color-text: #1e293b;
+  --color-text-light: #4a5568;
+  --color-text-muted: #718096;
+  --color-text-white: #ffffff;
+
+  /* Backgrounds */
+  --color-bg: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-border: #e2e8f0;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 40px rgba(98, 93, 240, 0.2);
+
+  /* Typography */
+  --font-body: "Inter", "Roboto", sans-serif;
+  --font-heading: "Poppins", sans-serif;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 0.2rem;
+  --radius-lg: 0.3rem;
+  --radius-xl: 16px;
+
+  /* Transition */
+  --transition-base: all 0.3s ease;
+
+  /* Chart Colors */
+  --chart-purple: #a9a4ff;
+  --chart-blue: #8fbaff;
+  --chart-green: #8fe3c4;
+  --chart-orange: #ffb98a;
+  --chart-yellow: #ffe58f;
+  --chart-red: #ff9aa2;
+  --grid-color: rgba(0, 0, 0, 0.04);
+}
+
+/* 🌙 Dark Mode */
+[data-theme="dark"],
+html[data-theme="dark"],
+html.dark,
+body.dark {
+  --color-bg: #1a202c;
+  --color-card-bg: #2d3748;
+  --color-border: #4a5568;
+  --color-text: #e2e8f0;
+  --color-text-light: #a0aec0;
+  --color-text-muted: #cbd5e0;
+  --color-brand-light: #2d3748;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 40px rgba(98, 93, 240, 0.4);
+}
+
+/* Global Layout */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: linear-gradient(to bottom, #e8eeff 0%, #ffffff 100%);
+  background-attachment: fixed;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Typography Reset */
+p,
+span,
+a,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: inherit;
+}
+
+/* Box model */
+* {
+  box-sizing: border-box;
+}
